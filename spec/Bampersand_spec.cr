@@ -1,6 +1,6 @@
 require "./spec_helper"
 
-describe Bundesministcr do
+describe Bampersand do
   # TODO: Write tests
 
   it "works" do

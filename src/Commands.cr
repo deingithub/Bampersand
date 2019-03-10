@@ -1,8 +1,8 @@
 require "./core"
 
-module BundesministcrCommands
+module BampersandCommands
 	extend self
-	include BundesministcrCommandsCore
+	include BampersandCommandsCore
 	alias CommandType = Proc(Array(String), CommandContext, CommandResult)
 	alias CommandContext = {issuer: Discord::User}
 	alias CommandResult = String

@@ -1,8 +1,8 @@
 require "./Commands"
 
-module BundesministcrCommandsCore
+module BampersandCommandsCore
 	extend self
-	PING = ->(args : Array(String), ctx : BundesministcrCommands::CommandContext) {
+	PING = ->(args : Array(String), ctx : BampersandCommands::CommandContext) {
 		"Pyongyang!"
 	}
 end

@@ -1,12 +1,12 @@
-name: Bundesministcr
+name: Bampersand
 version: 0.1.0
 
 authors:
   - deing <admin@15318.de>
 
 targets:
-  Bundesministcr:
-    main: src/Bundesministcr.cr
+  Bampersand:
+    main: src/Bampersand.cr
 
 dependencies:
   discordcr:

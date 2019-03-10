@@ -3,9 +3,9 @@ require "discordcr"
 require "logger"
 require "./Commands"
 
-module Bundesministcr
+module Bampersand
 	extend self
-	include BundesministcrCommands
+	include BampersandCommands
 
   VERSION = "0.1.0"
 
@@ -43,5 +43,5 @@ module Bundesministcr
 	end
 end
 
-LOG = Logger.new(STDOUT, level: Logger::INFO, progname: "Bundesministcr")
-Bundesministcr.start
+LOG = Logger.new(STDOUT, level: Logger::INFO, progname: "Bampersand")
+Bampersand.start
