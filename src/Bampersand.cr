@@ -5,7 +5,7 @@ require "./Commands"
 
 module Bampersand
 	extend self
-	include BampersandCommands
+	include Commands
 
   VERSION = "0.1.0"
 
@@ -34,7 +34,7 @@ module Bampersand
 					contextualize(msg)
 				)
 			rescue e
-				output = ":x: Error executing command."
+				output = ":x: Error executing command.\n`#{e}`"
 				LOG.error e
 			end
 			client.create_message(msg.channel_id, output)

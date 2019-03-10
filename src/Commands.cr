@@ -1,8 +1,5 @@
-require "./core"
-
-module BampersandCommands
+module Commands
 	extend self
-	include BampersandCommandsCore
 	alias CommandType = Proc(Array(String), CommandContext, CommandResult)
 	alias CommandContext = {issuer: Discord::User}
 	alias CommandResult = String
@@ -10,8 +7,14 @@ module BampersandCommands
 	def contextualize(msg : Discord::Message)
 		{issuer: msg.author}
 	end
-
-	COMMANDS_AND_WHERE_TO_FIND_THEM = {
-		"ping" => {fun: PING, desc: "Hewwo n_n"}
-	}
 end
+
+require "./commands/*"
+
+#I'm not even sorry to be honest
+COMMANDS_AND_WHERE_TO_FIND_THEM = {
+	"ping" => {fun: CommandsCore::PING, desc: "Hewwo n_n"},
+	"help" => {fun: CommandsCore::HELP, desc: "What does this bot even do"},
+	"hulp" => {fun: CommandsMemes::HULP, desc: ":eyes:"},
+	"leo" => {fun: CommandsUtil::LEO, desc: "Shorten URLs using leo.immobilien"},
+}
