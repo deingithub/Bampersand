@@ -41,6 +41,7 @@ module CommandsHulp
 			"https://i.imgur.com/pk2xS9m.jpg", #bonzenkartoffel!
 			"https://cdn.discordapp.com/emojis/451143444367409193.gif?v=1", #party cat blob
 			"https://cdn.discordapp.com/emojis/554436789612576769.png?v=1", #blob peek
+			"https://i.imgur.com/qXL6XIr.png", #dab eu
 			"FREUDE SCHÖNER GÖTTERFUNKEN, TOCHTER AUS ELYSIUM\nWIR BETRETEN FEUERTRUNKEN, HIMMLISCHE, DEIN HEILIGTUM",
 			":musical_note: Sweet dreams are made-up things—",
 			"Cease and desist.",
