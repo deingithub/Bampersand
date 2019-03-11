@@ -2,6 +2,8 @@ require "ini"
 require "discordcr"
 require "logger"
 require "./Commands"
+require "./Config"
+require "./Mirroring"
 
 module Bampersand
 	extend self
@@ -9,24 +11,20 @@ module Bampersand
 
   VERSION = "0.1.0"
 
-	def load_config(path)
-		INI.parse(File.read(path))["config"]
-	end
-
 	def load_client(config)
 		Discord::Client.new(token: "Bot #{config["token"]}", client_id: config["client"].to_u64)
 	end
 
 	def start()
-		cfg = load_config("config.ini")
-		client = load_client(cfg)
+		client = load_client(Config.f)
 		client.on_message_create do |msg|
+			Mirroring.handle_message(client, msg)
 			next if msg.author.bot
-			Commands.handle_message(client, cfg, msg)
+			Commands.handle_message(client, msg)
 		end
 		client.run
 	end
 end
 
-LOG = Logger.new(STDOUT, level: Logger::INFO, progname: "Bampersand")
+Log = Logger.new(STDOUT, level: Logger::INFO, progname: "Bampersand")
 Bampersand.start

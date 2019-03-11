@@ -8,7 +8,7 @@ module CommandsCore
 	HELP = ->(args : Array(String), ctx : CommandContext) {
 		acc = "**b& commands**\n"
 		COMMANDS_AND_WHERE_TO_FIND_THEM.each do |(name, data)|
-			acc += "#{name} — #{data[:desc]}\n"
+			acc += "| #{name} — #{data[:desc]}\n"
 		end
 		acc += "See https://15318.de/bampersand for detailed information."
 		acc
