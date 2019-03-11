@@ -37,6 +37,6 @@ require "./commands/*"
 COMMANDS_AND_WHERE_TO_FIND_THEM = {
 	"ping" => {fun: CommandsCore::PING, desc: "Check if the Bot's still alive"},
 	"help" => {fun: CommandsCore::HELP, desc: "This command."},
-	"hulp" => {fun: CommandsMemes::HULP, desc: ":eyes:"},
 	"leo" => {fun: CommandsUtil::LEO, desc: "Shorten URLs using leo.immobilien"},
+	"config" => {fun: CommandsCore::CONFIG, desc: "Configure per-guild settings"},
 }

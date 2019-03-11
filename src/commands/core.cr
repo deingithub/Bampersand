@@ -13,4 +13,16 @@ module CommandsCore
 		acc += "See https://15318.de/bampersand for detailed information."
 		acc
 	}
+	CONFIG_SUBCOMMANDS = ["mirror", "board"]
+	CONFIG = ->(args: Array(String), ctx: CommandContext) {
+		if args.size == 0
+			return <<-STR
+			**b& config**
+			| config mirror <#channel | halt>
+			| config board <emoji #channel min_reacts | halt>
+			STR
+		end
+		raise "Unknown subcommand" unless CONFIG_SUBCOMMANDS.includes? args[0]
+		"hulp"
+	}
 end
