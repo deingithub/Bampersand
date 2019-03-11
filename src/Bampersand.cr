@@ -21,23 +21,8 @@ module Bampersand
 		cfg = load_config("config.ini")
 		client = load_client(cfg)
 		client.on_message_create do |msg|
-			next unless msg.content.starts_with?(cfg["prefix"])
-			content = msg.content.lchop(cfg["prefix"])
-			arguments = content.split(" ")
-			command = arguments.shift
-			next unless COMMANDS_AND_WHERE_TO_FIND_THEM[command]?
-			output = ""
-			begin
-				LOG.info "#{msg.author.username}##{msg.author.discriminator} issued #{command} #{arguments}"
-				output = COMMANDS_AND_WHERE_TO_FIND_THEM[command][:fun].call(
-					arguments,
-					contextualize(msg)
-				)
-			rescue e
-				output = ":x: Error executing command.\n`#{e}`"
-				LOG.error e
-			end
-			client.create_message(msg.channel_id, output)
+			next if msg.author.bot
+			Commands.handle_message(client, cfg, msg)
 		end
 		client.run
 	end
