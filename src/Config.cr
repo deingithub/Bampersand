@@ -6,8 +6,8 @@ module Config
 	@@foundation : Foundation = load_foundation("config.ini")
 	@@state = {
 		552249406808653836u64 => {
-			"out_channel" => 554696757175648259u64,
-			"in_channel" => 553000426128015360u64
+			:out_channel => 554696757175648259u64,
+			:in_channel => 553000426128015360u64
 		}
 	}
 
