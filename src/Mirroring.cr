@@ -9,18 +9,18 @@ module Mirroring
 			client.create_message(
 				Config.s(guild)[:out_channel].to_u64,
 				"",
-				embed: format_message(msg.author, msg.timestamp, msg.content)
+				embed: format_message(msg)
 			)
 		rescue e
 			Log.error "Failed to mirror message #{msg.id}: #{e}"
 		end
 	end
 
-	def format_message(author, timestamp, content)
+	def format_message(msg)
 		Discord::Embed.new(
-			title: "#{author.username}##{author.discriminator} (#{author.id})",
-			description: content,
-			timestamp: timestamp
+			title: "#{msg.author.username}##{msg.author.discriminator} (#{msg.author.id})",
+			description: msg.content,
+			timestamp: msg.timestamp
 		)
 	end
 end

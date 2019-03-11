@@ -1,3 +1,9 @@
+#Configuration Store for Bampersand.
+#There are two distinct config "types": Foundation and State.
+#
+#**Foundation** is loaded from a file on startup and includes globally used data that can't be changed during operation, i.e. auth token, prefix, client id etc.
+#
+#**State** is loaded from a DB on startup (TODO: Actually do that) and can be changed at runtime. Is contains guild-specific data.
 module Config
 	extend self
 
@@ -11,12 +17,17 @@ module Config
 		}
 	}
 
+	#Getter for Foundation
 	def f
 		@@foundation
 	end
+
+	#Getter for State of a guild
 	def s(guild_id)
 		@@state[guild_id]
 	end
+
+	#Is there a State for this guild available?
 	def s?(guild_id)
 		@@state[guild_id]?
 	end
