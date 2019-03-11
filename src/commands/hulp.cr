@@ -13,14 +13,14 @@ module CommandsHulp
 			"It's Kat Appreciation Day\n:frog:\nMy frens",
 			"Fundamentalism 2: Electric Mirror",
 			"𝐁𝐋𝐎𝐁𝐁𝐈𝐄 :heart:",
-			"\*inhales* SYSTEMD",
+			"\\*inhales* SYSTEMD",
 			"It's called beauty and it's art.",
 
 			#Facts and Logic[tm]
 			"**b& fact**\n[DATA EXPUNGED]",
 			"**b& fact**\nChainsaws are friends, not food.",
 			"**b& fact**\nHeterosexuality is overrated.",
-			"**b& fact**\nIf you feel like you're superior to other people because you can code stuff, fuck you.",
+			"**b& fact**\nIf you feel like you're superior to other people solely  because you can code stuff, fuck you.",
 			"**b& fact**\nHumanity fUCK YEAAAAAAH",
 			"**b& fact**\nBlockchain as a service is the next big thing. Invest now.",
 
@@ -40,7 +40,7 @@ module CommandsHulp
 			"Has anyone really been far even as decided to use even go want to do look more like?",
 			"https://i.imgur.com/pk2xS9m.jpg", #bonzenkartoffel!
 			"https://cdn.discordapp.com/emojis/451143444367409193.gif?v=1", #party cat blob
-			"https://cdn.discordapp.com/emojis/554436789612576769.png?v=1", #blob peek
+			"https://cdn.discordapp.com/emojis/434109853187964938.gif?v=1", #blob peek
 			"https://i.imgur.com/qXL6XIr.png", #dab eu
 			"FREUDE SCHÖNER GÖTTERFUNKEN, TOCHTER AUS ELYSIUM\nWIR BETRETEN FEUERTRUNKEN, HIMMLISCHE, DEIN HEILIGTUM",
 			":musical_note: Sweet dreams are made-up things—",

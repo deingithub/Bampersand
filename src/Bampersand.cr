@@ -22,6 +22,12 @@ module Bampersand
 			next if msg.author.bot
 			Commands.handle_message(client, msg)
 		end
+		client.on_ready do |payload|
+			client.status_update(
+				"online",
+				Discord::GamePlaying.new(name: "your concerns", type: 2i64)
+			)
+		end
 		client.run
 	end
 end
