@@ -8,16 +8,19 @@ module Config
 	extend self
 
 	alias Foundation = NamedTuple(client: UInt64, token: String, prefix: String)
+	alias GuildState = NamedTuple(out_channel: UInt64, in_channel: UInt64, board_active: Bool)
 
 	@@foundation : Foundation = load_foundation("config.ini")
-	@@state = {
+	@@state : Hash(UInt64, GuildState) = {
 		552249406808653836u64 => {
-			:out_channel => 554696757175648259u64,
-			:in_channel => 553000426128015360u64
+			out_channel: 554696757175648259u64,
+			in_channel: 553000426128015360u64,
+			board_active: true,
 		},
 		472734482206687243u64 => {
-			:out_channel => 530502868084457540u64,
-			:in_channel => 506598595496116244u64
+			out_channel: 530502868084457540u64,
+			in_channel: 506598595496116244u64,
+			board_active: false,
 		}
 	}
 

@@ -23,11 +23,31 @@ module Commands
 				arguments,
 				contextualize(msg)
 			)
+			send_result(client, msg.channel_id, command, :success, output)
 		rescue e
-			output = ":x: Error executing command.\n`#{e}`"
+			send_result(client, msg.channel_id, command, :error, e)
 			Log.error "Failed to execute: #{e}"
 		end
-		client.create_message(msg.channel_id, output)
+
+	end
+	def send_result(client, channel_id, command, result, output)
+		begin
+			if result == :success
+				client.create_message(channel_id, "", embed: Discord::Embed.new(
+					title: "**#{command.upcase}**",
+					colour: 0x16161d,
+					description: output.to_s
+				))
+			elsif result == :error
+				client.create_message(channel_id, "", embed: Discord::Embed.new(
+					title: "**failed to execute: #{command}**".upcase,
+					colour: 0xdd2e44,
+					description: "`#{output.to_s}`"
+				))
+			end
+		rescue e
+			puts "Failed to deliver #{result} message to #{channel_id}: #{e}"
+		end
 	end
 end
 

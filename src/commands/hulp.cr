@@ -36,12 +36,12 @@ module CommandsHulp
 			":x: `Cowode cowwuption detected, performing emewgency shuwutdown.`",
 
 			#Misc Memery
-			"https://i.imgur.com/GMwAhNR.png", #dosebot --discord
+			#"https://i.imgur.com/GMwAhNR.png", #dosebot --discord
 			"Has anyone really been far even as decided to use even go want to do look more like?",
-			"https://i.imgur.com/pk2xS9m.jpg", #bonzenkartoffel!
-			"https://cdn.discordapp.com/emojis/451143444367409193.gif?v=1", #party cat blob
-			"https://cdn.discordapp.com/emojis/434109853187964938.gif?v=1", #blob peek
-			"https://i.imgur.com/qXL6XIr.png", #dab eu
+			#"https://i.imgur.com/pk2xS9m.jpg", #bonzenkartoffel!
+			#"https://cdn.discordapp.com/emojis/451143444367409193.gif?v=1", #party cat blob
+			#"https://cdn.discordapp.com/emojis/434109853187964938.gif?v=1", #blob peek
+			#"https://i.imgur.com/qXL6XIr.png", #dab eu
 			"FREUDE SCHÖNER GÖTTERFUNKEN, TOCHTER AUS ELYSIUM\nWIR BETRETEN FEUERTRUNKEN, HIMMLISCHE, DEIN HEILIGTUM",
 			":musical_note: Sweet dreams are made-up things—",
 			"Cease and desist.",
