@@ -4,6 +4,7 @@ require "logger"
 require "./Commands"
 require "./Config"
 require "./Mirroring"
+require "./Board"
 
 module Bampersand
 	extend self
@@ -12,7 +13,10 @@ module Bampersand
   VERSION = "0.1.0"
 
 	def load_client(config)
-		Discord::Client.new(token: "Bot #{config["token"]}", client_id: config["client"].to_u64)
+		client = Discord::Client.new(token: "Bot #{config["token"]}", client_id: config["client"].to_u64)
+		cache = Discord::Cache.new(client)
+		client.cache = cache
+		client
 	end
 
 	def start()
@@ -27,6 +31,9 @@ module Bampersand
 				"online",
 				Discord::GamePlaying.new(name: "your concerns", type: 2i64)
 			)
+		end
+		client.on_message_reaction_add do |payload|
+			Board.handle_reaction(client, payload)
 		end
 		client.run
 	end
