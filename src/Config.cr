@@ -8,19 +8,26 @@ module Config
 	extend self
 
 	alias Foundation = NamedTuple(client: UInt64, token: String, prefix: String)
-	alias GuildState = NamedTuple(out_channel: UInt64, in_channel: UInt64, board_active: Bool)
+	alias GuildState = NamedTuple(
+		f_mirroring: Bool,
+		out_channel: UInt64,
+		in_channel: UInt64,
+		f_board: Bool
+	)
 
 	@@foundation : Foundation = load_foundation("config.ini")
 	@@state : Hash(UInt64, GuildState) = {
 		552249406808653836u64 => {
+			f_mirroring: false,
 			out_channel: 554696757175648259u64,
 			in_channel: 553000426128015360u64,
-			board_active: true,
+			f_board: true,
 		},
 		472734482206687243u64 => {
+			f_mirroring: true,
 			out_channel: 530502868084457540u64,
 			in_channel: 506598595496116244u64,
-			board_active: false,
+			f_board: false,
 		}
 	}
 
@@ -39,12 +46,27 @@ module Config
 		@@state[guild_id]?
 	end
 
+	#Modify State for a guild
+	def mod_s(guild_id, update)
+		@@state[guild_id] = default_state unless s?(guild_id)
+		@@state[guild_id] = @@state[guild_id].merge(update)
+	end
+
 	def load_foundation(path) : Foundation
 		vals = INI.parse(File.read(path))["foundation"]
 		{
 			client: vals["client"].to_u64,
 			token: vals["token"],
 			prefix: vals["prefix"]
+		}
+	end
+
+	def default_state : GuildState
+		{
+			f_mirroring: false,
+			out_channel: 0u64,
+			in_channel: 0u64,
+			f_board: false,
 		}
 	end
 end
