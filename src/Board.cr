@@ -1,16 +1,13 @@
 require "./Config"
+require "./Util"
 
 module Board
 	extend self
 	def handle_reaction(client, payload)
-		channel = client.cache.as(Discord::Cache).resolve_channel(payload.channel_id)
-		guild = if channel.guild_id.nil?
-				return
-			else
-				channel.guild_id
-			end
+		return unless Util.guild?(client, payload.channel_id)
+		guild = Util.guild(client, payload.channel_id)
 		return unless Config.s?(guild)
-		return unless Config.s(guild)[:board_active]
+		return unless Config.s(guild)[:f_board]
 		message = client.get_channel_message(
 			payload.channel_id,
 			payload.message_id
