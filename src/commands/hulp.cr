@@ -7,6 +7,7 @@ module CommandsHulp
 			#~s
 			"Don't do that again <@#{ctx[:issuer].id}>. Look at my flair\nI only need 0.001% of my power to wipe you out",
 			"You see here, you rudely throw my words back in my face, among other petty nitpicks and your signature holier-than-thou attitude.",
+			"If you feel like you're superior to other people solely because you can code stuff, fuck you.",
 
 			#Frens
 			"<@344166495317655562> DING!",
@@ -17,15 +18,22 @@ module CommandsHulp
 			"It's called beauty and it's art.",
 
 			#Facts and Logic[tm]
-			"**b& fact**\n[DATA EXPUNGED]",
-			"**b& fact**\nChainsaws are friends, not food.",
-			"**b& fact**\nHeterosexuality is overrated.",
-			"**b& fact**\nIf you feel like you're superior to other people solely  because you can code stuff, fuck you.",
-			"**b& fact**\nHumanity fUCK YEAAAAAAH",
-			"**b& fact**\nBlockchain as a service is the next big thing. Invest now.",
+			"**B& FACT**\n[DATA EXPUNGED]",
+			"**B& FACT**\nChainsaws are friends, not food.",
+			"**B& FACT**\nHeterosexuality is overrated.",
+			"**B& FACT**\nYou can reduce your invoices easily using many chemical elements.",
+			"**B& FACT**\nHumanity fUCK YEAAAAAAH",
+			"**B& FACT**\nBlockchain as a service is the next big thing. Invest now.",
+			"**B& FACT**\ndeing is actually an enlightened centrist",
+			"**B& FACT**\ndeing is actually just an attention seeker but is really shitty even at that",
+			"**B& FACT**\nPotatoes are the superior provider of starch.",
+			"**B& FACT**\nBlobs can form pseudopods to manipulate objects or [REDACTED ON GROUNDS OF YOUTH PROTECTION]",
+			"**B& FACT**\nSure, socialism looks nice on paper. But in reality, every attempt at it is foiled by the CIA",
+			"**B& FACT**\nVoluntary Event — Attendance not required",
+			"**B& FACT**\nOpinions.",
 
 			#School
-			"RAILWAY INSPECTION OFFICE MONACO! EVERYONE FREEZE, DROP YOUR WEAPONS! **I SAID DROP THEM!**",
+			"RAILWAY INSPECTION OFFICE VIENNA! EVERYONE FREEZE, DROP YOUR WEAPONS! **I SAID DROP THEM!**",
 			"The metaphysical Sabeth represented as one of the classical Furies is a clear reference to Faber's slowly fading composure. His death is inevitable.",
 			"ａｓｂｅｓｔｏｓ",
 
@@ -58,7 +66,7 @@ module CommandsHulp
 
 			#The television[tm]
 			"Intitiating Spin!",
-			"If you can hear this, you're alone.\nThe only thing left of me is the sound of my voice.\nI don't know if any of us made it. Did we win? Did we lose? I don't know.\nBut either way, it's over.\nSo let me tell you who we were.\nLet me tell you who you are.\nSomeone once asked me if I had learned anything from it all. So let me tell you what I learned.\nI learned everyone dies alone.\nBut if you meant something to someone, if you helped someone, or loved someone… If even a single person remembers you. Then maybe you never really die.\nAnd maybe…\nThis isn't the end at all.﻿",
+			"If you can hear this, you're alone.\nThe only thing left of me is the sound of my voice.\nI don't know if any of us made it. Did we win? Did we lose? I don't know.\nBut either way, it's over.\nSo let me tell you who we were.\nLet me tell you who you are.\nSomeone once asked me if I had learned anything from it all. So let me tell you what I learned. I learned everyone dies alone.\nBut if you meant something to someone, if you helped someone, or loved someone… If even a single person remembers you. Then maybe you never really die.\nAnd maybe? …This isn't the end at all.﻿",
 			"Unauthorized off-world activation.",
 			"[ear-splitting klaxon]"
 		].sample

@@ -46,7 +46,7 @@ module Commands
 				))
 			end
 		rescue e
-			puts "Failed to deliver #{result} message to #{channel_id}: #{e}"
+			Log.error "Failed to deliver #{result} message to #{channel_id}: #{e}"
 		end
 	end
 end
@@ -59,5 +59,5 @@ COMMANDS_AND_WHERE_TO_FIND_THEM = {
 	"help" => {fun: CommandsCore::HELP, desc: "This command."},
 	"leo" => {fun: CommandsUtil::LEO, desc: "Shorten URLs using leo.immobilien"},
 	"config" => {fun: CommandsCore::CONFIG, desc: "Configure per-guild settings"},
-	"hulp" => {fun: CommandsHulp::HULP, desc: " pluh |"},
+	"hulp" => {fun: CommandsHulp::HULP, desc: "pluh |"},
 }
