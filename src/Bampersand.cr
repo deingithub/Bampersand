@@ -5,6 +5,7 @@ require "./Commands"
 require "./Config"
 require "./Mirroring"
 require "./Board"
+require "./Util"
 
 module Bampersand
 	extend self
@@ -23,8 +24,7 @@ module Bampersand
 		client = load_client(Config.f)
 		client.on_message_create do |msg|
 			Mirroring.handle_message(client, msg)
-			next if msg.author.bot
-			Commands.handle_message(client, msg)
+			Commands.handle_message(client, msg) unless msg.author.bot
 		end
 		client.on_ready do |payload|
 			client.status_update(
