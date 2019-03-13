@@ -3,11 +3,28 @@ require "./Config"
 module Commands
 	extend self
 	alias CommandType = Proc(Array(String), CommandContext, CommandResult)
-	alias CommandContext = {issuer: Discord::User}
+	alias CommandContext = NamedTuple(
+		issuer: Discord::User,
+		client: Discord::Client,
+		channel_id: UInt64,
+		guild_id: UInt64?
+	)
 	alias CommandResult = String
 	alias CommandInfo = {fun: CommandType, desc: String}
-	def contextualize(msg : Discord::Message)
-		{issuer: msg.author}
+	def contextualize(client, msg : Discord::Message)
+		guild = msg.guild_id
+		return {
+			issuer: msg.author,
+			client: client,
+			channel_id: msg.channel_id.to_u64,
+			guild_id: guild.to_u64
+		} unless guild.nil?
+		{
+			issuer: msg.author,
+			client: client,
+			channel_id: msg.channel_id.to_u64,
+			guild_id: nil
+		}
 	end
 
 	def handle_message(client, msg)
@@ -21,7 +38,7 @@ module Commands
 			Log.info "#{msg.author.username}##{msg.author.discriminator} issued #{command} #{arguments}"
 			output = COMMANDS_AND_WHERE_TO_FIND_THEM[command][:fun].call(
 				arguments,
-				contextualize(msg)
+				contextualize(client, msg)
 			)
 			send_result(client, msg.channel_id, command, :success, output)
 		rescue e
