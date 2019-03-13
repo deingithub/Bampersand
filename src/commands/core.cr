@@ -6,7 +6,7 @@ module CommandsCore
 		["Pyongyang!", "Ping!", "Ding!", "Pong!", "[reverberating PONG]", "Plonk."].sample
 	}
 	HELP = ->(args : Array(String), ctx : CommandContext) {
-		acc = "**b& commands**\n"
+		acc = "**B& VERSION #{Bampersand::VERSION}**\n"
 		COMMANDS_AND_WHERE_TO_FIND_THEM.each do |(name, data)|
 			acc += "| #{name} — #{data[:desc]}\n"
 		end
@@ -17,7 +17,6 @@ module CommandsCore
 	CONFIG = ->(args: Array(String), ctx: CommandContext) {
 		if args.size == 0
 			return <<-STR
-			**b& config**
 			| config mirror <#channel | halt>
 			| config board <emoji #channel min_reacts | halt>
 			STR
