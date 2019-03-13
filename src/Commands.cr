@@ -75,6 +75,6 @@ COMMANDS_AND_WHERE_TO_FIND_THEM = {
 	"ping" => {fun: CommandsCore::PING, desc: "Check if the Bot's still alive"},
 	"help" => {fun: CommandsCore::HELP, desc: "This command."},
 	"leo" => {fun: CommandsUtil::LEO, desc: "Shorten URLs using leo.immobilien"},
-	"config" => {fun: CommandsCore::CONFIG, desc: "Configure per-guild settings"},
+	"config" => {fun: CommandsConfig::CONFIG, desc: "Configure per-guild settings"},
 	"hulp" => {fun: CommandsHulp::HULP, desc: "pluh |"},
 }
