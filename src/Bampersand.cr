@@ -11,7 +11,7 @@ module Bampersand
 	extend self
 	include Commands
 
-  VERSION = "0.2.0"
+  VERSION = "0.3.0"
 
 	def load_client(config)
 		client = Discord::Client.new(token: "Bot #{config["token"]}", client_id: config["client"].to_u64)
