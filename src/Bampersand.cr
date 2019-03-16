@@ -12,6 +12,7 @@ module Bampersand
 	include Commands
 
   VERSION = "0.3.0"
+	PRESENCES = ["your concerns", "endless complaints", "socialist teachings", "the silence of the lambs", "anarchist teachings", "emo poetry", "FREUDE SCHÖNER GÖTTERFUNKEN", "fading memories"]
 
 	def load_client(config)
 		client = Discord::Client.new(token: "Bot #{config["token"]}", client_id: config["client"].to_u64)
@@ -29,7 +30,7 @@ module Bampersand
 		client.on_ready do |payload|
 			client.status_update(
 				"online",
-				Discord::GamePlaying.new(name: "your concerns", type: 2i64)
+				Discord::GamePlaying.new(name: PRESENCES.sample, type: 2i64)
 			)
 		end
 		client.on_message_reaction_add do |payload|
