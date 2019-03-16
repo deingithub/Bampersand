@@ -17,4 +17,13 @@ module Util
 			return nil
 		end
 	end
+	def perms?(client, user_id, guild_id, permissions)
+		member = client.cache.as(Discord::Cache).resolve_member(guild_id, user_id)
+		roles = member.roles.map do |element|
+			client.cache.as(Discord::Cache).resolve_role(element)
+		end
+		roles.any? do |element|
+			element.permissions.includes?(permissions) || element.permissions.includes?(Discord::Permissions::Administrator)
+		end
+	end
 end
