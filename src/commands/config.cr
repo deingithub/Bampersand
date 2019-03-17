@@ -22,7 +22,7 @@ module CommandsConfig
 
 		return case args[0]
 		when "print"
-			Config.s?(ctx[:guild_id]) ? Config.s(ctx[:guild_id]).to_s : "No state stored for this guild"
+			Config.s?(ctx[:guild_id]) ? "```#{Config.s(ctx[:guild_id]).to_s}```" : "No state stored for this guild"
 		when "mirror"
 			raise "Missing argument" unless args.size == 2
 			if args[1] == "halt"
