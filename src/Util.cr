@@ -8,6 +8,11 @@ module Util
 		channel = client.cache.as(Discord::Cache).resolve_channel(channel_id)
 		return channel.guild_id.as(Discord::Snowflake)
 	end
+	def user(client, user_id)
+		client.cache.as(Discord::Cache).resolve_user(
+			user_id.delete("<@!>").to_u64
+		)
+	end
 	def channel(client, channel_id)
 		begin
 			channel = client.cache.as(Discord::Cache).resolve_channel(

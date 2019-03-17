@@ -72,6 +72,7 @@ require "./commands/*"
 
 #I'm not even sorry to be honest
 COMMANDS_AND_WHERE_TO_FIND_THEM = {
+	"about" => {fun: CommandsCore::ABOUT, desc: "About b&"},
 	"ping" => {fun: CommandsCore::PING, desc: "Check if the Bot's still alive"},
 	"help" => {fun: CommandsCore::HELP, desc: "This command."},
 	"leo" => {fun: CommandsUtil::LEO, desc: "Shorten URLs using leo.immobilien"},
