@@ -13,12 +13,12 @@ module CommandsConfig
 		end
 
 		raise "This command can only be used in guilds" if ctx[:guild_id].nil?
-		raise "Insufficient Permissions" unless Util.perms?(
-			ctx[:client],
-			ctx[:issuer].id,
-			ctx[:guild_id].as(UInt64),
-			Discord::Permissions::ManageGuild
-		)
+		# raise "Insufficient Permissions" unless Util.perms?(
+		# 	ctx[:client],
+		# 	ctx[:issuer].id,
+		# 	ctx[:guild_id].as(UInt64),
+		# 	Discord::Permissions::ManageGuild
+		# )
 
 		return case args[0]
 		when "print"
@@ -50,7 +50,6 @@ module CommandsConfig
 		end
 		raise "Invalid arguments" unless args.size == 4
 		emoji = args[1]
-		raise "Invalid Emoji" unless emoji == "⭐"
 		channel = Util.channel(ctx[:client], args[2])
 		raise "Invalid Channel" if channel.nil?
 		min_reacts = args[3].to_u32

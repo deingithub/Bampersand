@@ -47,7 +47,7 @@ module Config
 
 	#Getter for State of a guild
 	def s(guild_id)
-		return default_state unless @@state[guild_id]
+		return default_state unless @@state.has_key? guild_id
 		@@state[guild_id]
 	end
 

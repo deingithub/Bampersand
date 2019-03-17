@@ -26,4 +26,11 @@ module Util
 			element.permissions.includes?(permissions) || element.permissions.includes?(Discord::Permissions::Administrator)
 		end
 	end
+	def reaction_to_s(emoji)
+		if emoji.id.nil?
+			emoji.name
+		else
+			"<:#{emoji.name}:#{emoji.id}>"
+		end
+	end
 end
