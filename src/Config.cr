@@ -8,7 +8,7 @@ module Config
 	extend self
 	STATE_FILE = "state.ini"
 
-	alias Foundation = NamedTuple(client: UInt64, token: String, prefix: String)
+	alias Foundation = NamedTuple(client: UInt64, token: String, prefix: String, admin: UInt64)
 	alias GuildState = NamedTuple(
 		f_mirroring: Bool,
 		out_channel: UInt64,
@@ -51,7 +51,8 @@ module Config
 		{
 			client: vals["client"].to_u64,
 			token: vals["token"],
-			prefix: vals["prefix"]
+			prefix: vals["prefix"],
+			admin: vals["admin"].to_u64
 		}
 	end
 

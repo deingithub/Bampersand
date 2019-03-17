@@ -11,7 +11,7 @@ module Bampersand
 	extend self
 	include Commands
 
-  VERSION = "0.3.0"
+  VERSION = "0.4.0"
 	PRESENCES = ["your concerns", "endless complaints", "socialist teachings", "the silence of the lambs", "anarchist teachings", "emo poetry", "FREUDE SCHÖNER GÖTTERFUNKEN", "fading memories"]
 
 	def load_client(config)

@@ -18,6 +18,7 @@ module Util
 		end
 	end
 	def perms?(client, user_id, guild_id, permissions)
+		return true if user_id == Config.f["admin"]
 		member = client.cache.as(Discord::Cache).resolve_member(guild_id, user_id)
 		roles = member.roles.map do |element|
 			client.cache.as(Discord::Cache).resolve_role(element)
