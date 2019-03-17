@@ -12,7 +12,10 @@ module Config
 		f_mirroring: Bool,
 		out_channel: UInt64,
 		in_channel: UInt64,
-		f_board: Bool
+		f_board: Bool,
+		board_emoji: String,
+		board_channel: UInt64,
+		board_min_reacts: UInt64
 	)
 
 	@@foundation : Foundation = load_foundation("config.ini")
@@ -22,12 +25,18 @@ module Config
 			out_channel: 554696757175648259u64,
 			in_channel: 553000426128015360u64,
 			f_board: true,
+			board_emoji: "⭐",
+			board_channel: 554696757175648259u64,
+			board_min_reacts: 1u64
 		},
 		472734482206687243u64 => {
 			f_mirroring: true,
 			out_channel: 530502868084457540u64,
 			in_channel: 506598595496116244u64,
 			f_board: false,
+			board_emoji: "",
+			board_channel: 0u64,
+			board_min_reacts: 0u64
 		}
 	}
 
@@ -38,6 +47,7 @@ module Config
 
 	#Getter for State of a guild
 	def s(guild_id)
+		return default_state unless @@state[guild_id]
 		@@state[guild_id]
 	end
 
@@ -67,6 +77,9 @@ module Config
 			out_channel: 0u64,
 			in_channel: 0u64,
 			f_board: false,
+			board_emoji: "",
+			board_channel: 0u64,
+			board_min_reacts: 0u64
 		}
 	end
 end
