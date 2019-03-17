@@ -13,12 +13,12 @@ module CommandsConfig
 		end
 
 		raise "This command can only be used in guilds" if ctx[:guild_id].nil?
-		# raise "Insufficient Permissions" unless Util.perms?(
-		# 	ctx[:client],
-		# 	ctx[:issuer].id,
-		# 	ctx[:guild_id].as(UInt64),
-		# 	Discord::Permissions::ManageGuild
-		# )
+		raise "Insufficient Permissions" unless Util.perms?(
+			ctx[:client],
+			ctx[:issuer].id,
+			ctx[:guild_id].as(UInt64),
+			Discord::Permissions::ManageGuild
+		)
 
 		return case args[0]
 		when "print"
