@@ -2,7 +2,6 @@ module Mirroring
 	extend self
 	def handle_message(client, msg)
 		guild = msg.guild_id
-		return unless Config.s?(guild)
 		return unless Config.s(guild)[:f_mirroring]
 		return unless msg.channel_id == Config.s(guild)[:in_channel].to_u64
 		begin
