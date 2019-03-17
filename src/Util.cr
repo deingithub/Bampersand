@@ -2,7 +2,7 @@ module Util
 	extend self
 	def guild?(client, channel_id)
 		channel = client.cache.as(Discord::Cache).resolve_channel(channel_id)
-		return channel.guild_id.nil?
+		return !channel.guild_id.nil?
 	end
 	def guild(client, channel_id)
 		channel = client.cache.as(Discord::Cache).resolve_channel(channel_id)

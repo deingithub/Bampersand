@@ -15,7 +15,7 @@ module Config
 		f_board: Bool,
 		board_emoji: String,
 		board_channel: UInt64,
-		board_min_reacts: UInt64
+		board_min_reacts: UInt32
 	)
 
 	@@foundation : Foundation = load_foundation("config.ini")
@@ -27,7 +27,7 @@ module Config
 			f_board: true,
 			board_emoji: "⭐",
 			board_channel: 554696757175648259u64,
-			board_min_reacts: 1u64
+			board_min_reacts: 1u32
 		},
 		472734482206687243u64 => {
 			f_mirroring: true,
@@ -36,7 +36,7 @@ module Config
 			f_board: false,
 			board_emoji: "",
 			board_channel: 0u64,
-			board_min_reacts: 0u64
+			board_min_reacts: 0u32
 		}
 	}
 
@@ -79,7 +79,7 @@ module Config
 			f_board: false,
 			board_emoji: "",
 			board_channel: 0u64,
-			board_min_reacts: 0u64
+			board_min_reacts: 0u32
 		}
 	end
 end

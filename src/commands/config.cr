@@ -40,7 +40,8 @@ module CommandsConfig
 					out_channel: channel.id.to_u64
 				}
 			)
-			"Mirroring to <##{channel.id}>"
+			"Mirroring to <##{channel.id}>.
+			Issue `config mirror halt` to stop."
 	when "board"
 		raise "Missing arguments" unless args.size > 1
 		if args[1] == "halt"
@@ -52,7 +53,7 @@ module CommandsConfig
 		raise "Invalid Emoji" unless emoji == "⭐"
 		channel = Util.channel(ctx[:client], args[2])
 		raise "Invalid Channel" if channel.nil?
-		min_reacts = args[3].to_u64
+		min_reacts = args[3].to_u32
 		raise "Zero is too low." if min_reacts == 0
 		Config.mod_s(
 			ctx[:guild_id].as(UInt64),
@@ -63,7 +64,8 @@ module CommandsConfig
 				board_min_reacts: min_reacts
 			}
 		)
-		"Noted."
+		"All messages with #{min_reacts} or more #{emoji} reactions will be posted to <##{channel.id}>.
+		Issue `config board halt` to stop."
 	else
 		raise "Unknown subcommand"
 	end
