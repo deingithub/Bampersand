@@ -51,7 +51,6 @@ module Commands
 		begin
 			if result == :success
 				client.create_message(channel_id, "", embed: Discord::Embed.new(
-					title: "**#{command.upcase}**",
 					colour: 0x16161d,
 					description: output.to_s
 				))
@@ -77,5 +76,6 @@ COMMANDS_AND_WHERE_TO_FIND_THEM = {
 	"help" => {fun: CommandsCore::HELP, desc: "This command."},
 	"leo" => {fun: CommandsUtil::LEO, desc: "Shorten URLs using leo.immobilien"},
 	"config" => {fun: CommandsConfig::CONFIG, desc: "Configure per-guild settings"},
-	"hulp" => {fun: CommandsHulp::HULP, desc: "pluh |"},
+	"quote" => {fun: CommandsHulp::QUOTE, desc: "Fading Memories…"},
+	"hulp" => {fun: CommandsHulp::HULP, desc: "zero point zero zero one percent of my power"},
 }

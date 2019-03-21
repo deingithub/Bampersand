@@ -6,11 +6,11 @@ module CommandsCore
 		["Pyongyang!", "Ping!", "Ding!", "Pong!", "[reverberating PONG]", "Plonk."].sample
 	}
 	HELP = ->(args : Array(String), ctx : CommandContext) {
-		acc = "**VERSION #{Bampersand::VERSION}**\n"
+		acc = "**BAMPERSAND**\n"
 		COMMANDS_AND_WHERE_TO_FIND_THEM.each do |(name, data)|
 			acc += "| #{name} — #{data[:desc]}\n"
 		end
-		acc += "See https://15318.de/bampersand for detailed information."
+		acc += "See `b&about` and https://15318.de/bampersand for detailed information."
 		acc
 	}
 	ABOUT  = ->(args : Array(String), ctx : CommandContext) {

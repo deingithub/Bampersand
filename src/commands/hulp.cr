@@ -2,13 +2,51 @@ require "../Commands"
 
 module CommandsHulp
 	include Commands
+	QUOTE = ->(args : Array(String), ctx : CommandContext) {
+		[
+			"May your lords be merciful!",
+			"Submit to the three, the spirits, and thy lords.",
+			"You. I've seen you. Let me see your face. You are the one from my dreams.",
+			"What a fool you are. I'm a god! How can you kill a god? What a grand and intoxicating innocence. How could you be so naïve? There is no escape, no recall or intervention will work in this place. Come, lay down your weapons, it is not too late for my mercy.",
+			"Intitiating Spin!",
+			"Hallowed are the Ori.",
+			"If you can hear this, you're alone.
+			The only thing left of me is the sound of my voice.
+			I don't know if any of us made it. Did we win? Did we lose? I don't know.
+			But either way, it's over.
+			So let me tell you who we were.
+			Let me tell you who you are.
+			Someone once asked me if I had learned anything from it all. So let me tell you what I learned. I learned everyone dies alone.
+			But if you meant something to someone, if you helped someone, or loved someone… If even a single person remembers you. Then maybe you never really die.
+			And maybe? …This isn't the end at all.﻿",
+			"Unauthorized off-world activation!",
+			"If you feel like you're superior to other people solely because you can code stuff, fuck you.",
+			"Do not go gentle into that good night,
+			Old age should burn and rave at close of day;
+			Rage, rage against the dying of the light.
+			Though wise men at their end know dark is right,
+			Because their words had forked no lightning they
+			Do not go gentle into that good night.
+			Good men, the last wave by, crying how bright
+			Their frail deeds might have danced in a green bay,
+			Rage, rage against the dying of the light.
+			Wild men who caught and sang the sun in flight,
+			And learn, too late, they grieved it on its way,
+			Do not go gentle into that good night.
+			Grave men, near death, who see with blinding sight
+			Blind eyes could blaze like meteors and be gay,
+			Rage, rage against the dying of the light.
+			And you, my father, there on the sad height,
+			Curse, bless, me now with your fierce tears, I pray.
+			Do not go gentle into that good night.
+			Rage, rage against the dying of the light."
+		].sample
+	}
 	HULP = ->(args : Array(String), ctx : CommandContext) {
 		[
-			#~s
 			"Don't do that again <@#{ctx[:issuer].id}>. Look at my flair\nI only need 0.001% of my power to wipe you out",
 			"You see here, you rudely throw my words back in my face, among other petty nitpicks and your signature holier-than-thou attitude.",
-			"If you feel like you're superior to other people solely because you can code stuff, fuck you.",
-
+			"RAILWAY INSPECTION OFFICE VIENNA! EVERYONE FREEZE, DROP YOUR WEAPONS! **I SAID DROP THEM!**",
 			#Frens
 			"<@344166495317655562> DING!",
 			"It's Kat Appreciation Day\n:frog:\nMy frens",
@@ -16,7 +54,6 @@ module CommandsHulp
 			"𝐁𝐋𝐎𝐁𝐁𝐈𝐄 :heart:",
 			"\\*inhales* SYSTEMD",
 			"It's called beauty and it's art.",
-
 			#Facts and Logic[tm]
 			"**B& FACT**\n[DATA EXPUNGED]",
 			"**B& FACT**\nChainsaws are friends, not food.",
@@ -25,50 +62,9 @@ module CommandsHulp
 			"**B& FACT**\nHumanity fUCK YEAAAAAAH",
 			"**B& FACT**\nBlockchain as a service is the next big thing. Invest now.",
 			"**B& FACT**\ndeing is actually an enlightened centrist",
-			"**B& FACT**\ndeing is actually just an attention seeker but is really shitty even at that",
 			"**B& FACT**\nPotatoes are the superior provider of starch.",
 			"**B& FACT**\nBlobs can form pseudopods to manipulate objects or [REDACTED ON GROUNDS OF YOUTH PROTECTION]",
 			"**B& FACT**\nSure, socialism looks nice on paper. But in reality, every attempt at it is foiled by the CIA",
-			"**B& FACT**\nVoluntary Event — Attendance not required",
-			"**B& FACT**\nOpinions.",
-
-			#School
-			"RAILWAY INSPECTION OFFICE VIENNA! EVERYONE FREEZE, DROP YOUR WEAPONS! **I SAID DROP THEM!**",
-			"The metaphysical Sabeth represented as one of the classical Furies is a clear reference to Faber's slowly fading composure. His death is inevitable.",
-			"ａｓｂｅｓｔｏｓ",
-
-			#Errors
-			":x: `Ontological failure. Contact your network administrator.`",
-			":x: `Have you tried turning it on and off again?`",
-			":x: `404 witty reply not found.`",
-			":x: `Cowode cowwuption detected, performing emewgency shuwutdown.`",
-
-			#Misc Memery
-			#"https://i.imgur.com/GMwAhNR.png", #dosebot --discord
-			"Has anyone really been far even as decided to use even go want to do look more like?",
-			#"https://i.imgur.com/pk2xS9m.jpg", #bonzenkartoffel!
-			#"https://cdn.discordapp.com/emojis/451143444367409193.gif?v=1", #party cat blob
-			#"https://cdn.discordapp.com/emojis/434109853187964938.gif?v=1", #blob peek
-			#"https://i.imgur.com/qXL6XIr.png", #dab eu
-			"FREUDE SCHÖNER GÖTTERFUNKEN, TOCHTER AUS ELYSIUM\nWIR BETRETEN FEUERTRUNKEN, HIMMLISCHE, DEIN HEILIGTUM",
-			":musical_note: Sweet dreams are made-up things—",
-			"Cease and desist.",
-			"All systems nominal, thrust vectoring active. Prepare for take-off.",
-			"You can't bweak a man the way you bweak a dog, ow a howse. The hawdew you beat a man, the tawwew he stands. To bweak owo a man's wiww, to bweak his spiwit, you have to bweak his mind. Men have this idea that we can fight with dignyity, that thewe's a pwopew owo way to kiww someonye. It's absuwd, its anyesthetic, we nyeed it to enduwe the bwoody howwow of muwdew. You must destwoy that idea. Show them what a messy, tewwibwe, thing it is to kiww a man, and then show them that you wewish in it. Shoot to wound, and then execute the wounded, buwn them, take them in cwose combat. Destwoy theiw pweconceptions of what a man is and you become theiw pewsonyaw monstew. When they feaw you, you become stwongew, you become bettew. But wet's nyevew fowget, it's a dispway, it's a postuwe, wike a wions woaw, ow a gowiwwa thumping at his chest. If you wose youwsewf uwu in the dispway, if you succumb to the howwow, then you become the monstew. You become weduced, nyot mowe than a man, but wess. And it couwd be fataw.",
-
-			#vidya
-			"May your lords be merciful!",
-			"Submit to the three, the spirits, and thy lords.",
-			"SPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACE!",
-			"Wow! You're the Grand Champion! I saw your fight against the Gray Prince! You're the best! Can I... Can I follow you around? I won't get in the way!",
-			"You. I've seen you. Let me see your face. You are the one from my dreams.",
-			"What a fool you are. I'm a god! How can you kill a god? What a grand and intoxicating innocence. How could you be so naïve? There is no escape, no recall or intervention will work in this place. Come, lay down your weapons, it is not too late for my mercy.",
-
-			#The television[tm]
-			"Intitiating Spin!",
-			"If you can hear this, you're alone.\nThe only thing left of me is the sound of my voice.\nI don't know if any of us made it. Did we win? Did we lose? I don't know.\nBut either way, it's over.\nSo let me tell you who we were.\nLet me tell you who you are.\nSomeone once asked me if I had learned anything from it all. So let me tell you what I learned. I learned everyone dies alone.\nBut if you meant something to someone, if you helped someone, or loved someone… If even a single person remembers you. Then maybe you never really die.\nAnd maybe? …This isn't the end at all.﻿",
-			"Unauthorized off-world activation.",
-			"[ear-splitting klaxon]"
 		].sample
 	}
 end

@@ -6,6 +6,7 @@ module CommandsConfig
 	CONFIG = ->(args: Array(String), ctx: CommandContext) {
 		if args.size == 0
 			return <<-STR
+			**BAMPERSAND CONFIGURATION**
 			| config mirror <#channel | halt>
 			| config board <emoji #channel min_reacts | halt>
 			| config print
