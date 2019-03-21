@@ -3,7 +3,7 @@ require "../Commands"
 module CommandsCore
 	include Commands
 	PING = ->(args : Array(String), ctx : CommandContext) {
-		["Pyongyang!", "Ping!", "Ding!", "Pong!", "[reverberating PONG]", "Plonk."].sample
+		":ping_pong: " + ["Pyongyang!", "Ping!", "Ding!", "Pong!", "[reverberating PONG]", "Plonk."].sample
 	}
 	HELP = ->(args : Array(String), ctx : CommandContext) {
 		acc = "**BAMPERSAND**\n"
