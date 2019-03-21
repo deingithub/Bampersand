@@ -14,10 +14,6 @@ module Bampersand
   VERSION = "0.5.0"
 	PRESENCES = ["your concerns", "endless complaints", "socialist teachings", "the silence of the lambs", "anarchist teachings", "emo poetry", "FREUDE SCHÖNER GÖTTERFUNKEN", "the heat death of the universe", "[ASMR] Richard Stallman tells you to use free software", "the decline of western civilisation", "4'33'' (Nightcore Remix)", "General Protection Fault", "breadtube", "the book of origin"]
 	STARTUP = Time.monotonic
-	@@GUILD_COUNT = 0u32
-	def guild_count
-		@@GUILD_COUNT
-	end
 
 	def load_client(config)
 		client = Discord::Client.new(token: "Bot #{config["token"]}", client_id: config["client"].to_u64)
@@ -43,7 +39,6 @@ module Bampersand
 		end
 		client.on_guild_create do |payload|
 			Log.info("Joined new guild #{payload.name} — Owner is #{payload.owner_id}")
-			@@GUILD_COUNT += 1
 		end
 		client.run
 	end
