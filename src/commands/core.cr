@@ -14,7 +14,7 @@ module CommandsCore
 		COMMANDS_AND_WHERE_TO_FIND_THEM.each do |(name, data)|
 			acc += "| #{name} — #{data[:desc]}\n"
 		end
-		acc += "Prefix is `b&`. See `about` for more information."
+		acc += "Prefix is `#{Config.f[:prefix]}`. See `about` for more information."
 		acc
 	}
 	ABOUT  = ->(args : Array(String), ctx : CommandContext) {

@@ -44,5 +44,5 @@ module Bampersand
 	end
 end
 
-Log = Logger.new(STDOUT, level: Logger::INFO, progname: "Bampersand")
+Log = Logger.new(STDOUT, level: Logger::INFO, progname: "B&")
 Bampersand.start
