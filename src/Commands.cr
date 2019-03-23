@@ -77,5 +77,5 @@ COMMANDS_AND_WHERE_TO_FIND_THEM = {
 	"leo" => {fun: CommandsUtil::LEO, desc: "Shorten URLs using leo.immobilien"},
 	"config" => {fun: CommandsConfig::CONFIG, desc: "Configure per-guild settings"},
 	"quote" => {fun: CommandsHulp::QUOTE, desc: "Fading Memories…"},
-	"hulp" => {fun: CommandsHulp::HULP, desc: "zero point zero zero one percent of my power"},
+	"hulp" => {fun: CommandsHulp::HULP, desc: "what?"},
 }

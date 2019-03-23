@@ -7,7 +7,6 @@ module CommandsHulp
 			"May your lords be merciful!",
 			"Submit to the three, the spirits, and thy lords.",
 			"You. I've seen you. Let me see your face. You are the one from my dreams.",
-			"What a fool you are. I'm a god! How can you kill a god? What a grand and intoxicating innocence. How could you be so naïve? There is no escape, no recall or intervention will work in this place. Come, lay down your weapons, it is not too late for my mercy.",
 			"Intitiating Spin!",
 			"Hallowed are the Ori.",
 			"If you can hear this, you're alone.
@@ -43,6 +42,7 @@ module CommandsHulp
 		].sample
 	}
 	HULP = ->(args : Array(String), ctx : CommandContext) {
-		"Ffs\nDon't do that again <@#{ctx[:issuer].id}>. Look at my flair\nI only need 0.001% of my power to wipe you out"
+		return "Ffs\nDon't do that again <@#{ctx[:issuer].id}>. Look at my flair\nI only need 0.001% of my power to wipe you out" unless ctx[:issuer].id == Config.f[:admin]
+		"`\#TODO`"
 	}
 end
