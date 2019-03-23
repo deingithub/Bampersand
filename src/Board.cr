@@ -73,7 +73,7 @@ module Board
 					"#{count}x #{emoji} — Posted to <##{message.channel_id}> — [Jump](https://discordapp.com/channels/#{guild_id}/#{message.channel_id}/#{message.id})"
 				)
 			],
-			colour: 0x16161d_u32
+			colour: 0x16161d
 		)
 		if message.content.size > 0
 			embed.description = message.content
