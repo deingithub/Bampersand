@@ -4,14 +4,10 @@ require "../Util"
 module CommandsConfig
 	include Commands
 	CONFIG = ->(args: Array(String), ctx: CommandContext) {
-		if args.size == 0
-			return <<-STR
-			**BAMPERSAND CONFIGURATION**
-			| config mirror <#channel | halt>
-			| config board <emoji #channel min_reacts | halt>
-			| config print
-			STR
-		end
+		return "**BAMPERSAND CONFIGURATION**
+		| config mirror <#channel | stop>
+		| config board <emoji #channel min_reacts | stop>
+		| config print" if args.size == 0
 
 		raise "This command can only be used in guilds" if ctx[:guild_id].nil?
 		raise "Insufficient Permissions" unless Util.perms?(
@@ -25,10 +21,10 @@ module CommandsConfig
 		when "print"
 			Config.s?(ctx[:guild_id]) ? "```#{Config.s(ctx[:guild_id]).to_s}```" : "No state stored for this guild"
 		when "mirror"
-			raise "Missing argument" unless args.size == 2
-			if args[1] == "halt"
+			raise "Missing target channel" unless args.size == 2
+			if args[1] == "stop"
 				Config.mod_s(ctx[:guild_id].as(UInt64), {f_mirroring: false})
-				return "Stopped mirroring."
+				return "Disabled mirroring."
 			end
 			channel = Util.channel(ctx[:client], args[1])
 			raise "Invalid channel" if channel.nil?
@@ -41,11 +37,11 @@ module CommandsConfig
 					out_channel: channel.id.to_u64
 				}
 			)
-			"Mirroring to <##{channel.id}>.
-			Issue `config mirror halt` to stop."
+			return "Mirroring to <##{channel.id}>.
+			Issue `config mirror stop` to disable."
 	when "board"
 		raise "Missing arguments" unless args.size > 1
-		if args[1] == "halt"
+		if args[1] == "stop"
 			Config.mod_s(ctx[:guild_id].as(UInt64), {f_board: false})
 			return "Disabled board."
 		end
@@ -65,7 +61,7 @@ module CommandsConfig
 			}
 		)
 		"All messages with #{min_reacts} or more #{emoji} reactions will be posted to <##{channel.id}>.
-		Issue `config board halt` to stop."
+		Issue `config board stop` to disable."
 	else
 		raise "Unknown subcommand"
 	end

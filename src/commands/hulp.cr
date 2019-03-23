@@ -43,28 +43,6 @@ module CommandsHulp
 		].sample
 	}
 	HULP = ->(args : Array(String), ctx : CommandContext) {
-		[
-			"Don't do that again <@#{ctx[:issuer].id}>. Look at my flair\nI only need 0.001% of my power to wipe you out",
-			"You see here, you rudely throw my words back in my face, among other petty nitpicks and your signature holier-than-thou attitude.",
-			"RAILWAY INSPECTION OFFICE VIENNA! EVERYONE FREEZE, DROP YOUR WEAPONS! **I SAID DROP THEM!**",
-			#Frens
-			"<@344166495317655562> DING!",
-			"It's Kat Appreciation Day\n:frog:\nMy frens",
-			"Fundamentalism 2: Electric Mirror",
-			"𝐁𝐋𝐎𝐁𝐁𝐈𝐄 :heart:",
-			"\\*inhales* SYSTEMD",
-			"It's called beauty and it's art.",
-			#Facts and Logic[tm]
-			"**B& FACT**\n[DATA EXPUNGED]",
-			"**B& FACT**\nChainsaws are friends, not food.",
-			"**B& FACT**\nHeterosexuality is overrated.",
-			"**B& FACT**\nYou can reduce your invoices easily using many chemical elements.",
-			"**B& FACT**\nHumanity fUCK YEAAAAAAH",
-			"**B& FACT**\nBlockchain as a service is the next big thing. Invest now.",
-			"**B& FACT**\ndeing is actually an enlightened centrist",
-			"**B& FACT**\nPotatoes are the superior provider of starch.",
-			"**B& FACT**\nBlobs can form pseudopods to manipulate objects or [REDACTED ON GROUNDS OF YOUTH PROTECTION]",
-			"**B& FACT**\nSure, socialism looks nice on paper. But in reality, every attempt at it is foiled by the CIA",
-		].sample
+		"Ffs\nDon't do that again <@#{ctx[:issuer].id}>. Look at my flair\nI only need 0.001% of my power to wipe you out"
 	}
 end

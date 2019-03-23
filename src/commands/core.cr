@@ -3,14 +3,18 @@ require "../Commands"
 module CommandsCore
 	include Commands
 	PING = ->(args : Array(String), ctx : CommandContext) {
-		":ping_pong: " + ["Pyongyang!", "Ping!", "Ding!", "Pong!", "[reverberating PONG]", "Plonk."].sample
+		#NOTE change this if VA secedes again
+		rva = Time.now Time::Location.load("America/New_York")
+		return ":ping_pong: It's Kat Appreciation Day, My Frens" if rva.month == 3 && rva.day == 24
+
+		":ping_pong: " + ["Pyongyang!", "Ding!", "Pong!", "[reverberating PONG]", "Plonk."].sample
 	}
 	HELP = ->(args : Array(String), ctx : CommandContext) {
-		acc = "**BAMPERSAND**\n"
+		acc = "**BAMPERSAND COMMANDS**\n"
 		COMMANDS_AND_WHERE_TO_FIND_THEM.each do |(name, data)|
 			acc += "| #{name} — #{data[:desc]}\n"
 		end
-		acc += "See `b&about` and https://15318.de/bampersand for detailed information."
+		acc += "See `about` for more information."
 		acc
 	}
 	ABOUT  = ->(args : Array(String), ctx : CommandContext) {
