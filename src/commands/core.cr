@@ -21,7 +21,8 @@ module CommandsCore
 		uptime = Time.monotonic - Bampersand::STARTUP
 		<<-STR
 		**BAMPERSAND VERSION #{Bampersand::VERSION}**
-		This is a simple utility bot for Discord powered by [Crystal](https://crystal-lang.org). Visit the documentation at https://15318.de/bampersand.
+		This is a simple utility bot for Discord powered by [Crystal](https://crystal-lang.org).
+		Visit the documentation at https://15318.de/bampersand.
 		Currently running on #{ctx[:client].cache.as(Discord::Cache).guilds.size} guilds, serving #{ctx[:client].cache.as(Discord::Cache).users.size} users.
 		Uptime is #{uptime.days}d #{uptime.hours}h #{uptime.minutes}m #{uptime.seconds}s. Bot operator is <@#{Config.f["admin"]}>.
 		STR
