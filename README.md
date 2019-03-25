@@ -13,7 +13,7 @@ client = discord-client-id
 prefix = whatever
 admin = your-discord-id
 ```
-and an empty file called `state.ini`.
+and an empty file called `state.ini`. Add to that a sqlite3 database called `bampersand.sqlite3`
 
 ## Contributing
 

@@ -1,6 +1,14 @@
 version: 1.0
 shards:
+  db:
+    github: crystal-lang/crystal-db
+    version: 0.5.1
+
   discordcr:
     github: meew0/discordcr
     commit: 1d40f5fa0c9069a817ddbb3daf26782607d69d7d
+
+  sqlite3:
+    github: crystal-lang/crystal-sqlite3
+    version: 0.10.0
 
