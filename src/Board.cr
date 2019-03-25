@@ -77,8 +77,11 @@ module Board
 		)
 		if message.content.size > 0
 			embed.description = message.content
-		else
-			embed.description = "`[Attachment]`"
+		elsif message.attachments.size > 1
+			embed.description = "`[Multiple Attachments]`"
+		end
+		if message.attachments.size == 1
+			embed.image = Discord::EmbedImage.new(message.attachments[0].url)
 		end
 		embed
 	end
