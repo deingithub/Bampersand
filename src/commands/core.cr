@@ -22,7 +22,7 @@ module CommandsCore
 		<<-STR
 		**BAMPERSAND VERSION #{Bampersand::VERSION}**
 		This is a simple utility bot for Discord powered by [Crystal](https://crystal-lang.org).
-		Visit the documentation at https://15318.de/bampersand.
+		You can take a peek <:blobpeek:559732380697362482> at the [documentation](https://15318.de/bampersand) and the [source code](https://gitlab.com/deing/bampersand).
 		Currently running on #{ctx[:client].cache.as(Discord::Cache).guilds.size} guilds, serving #{ctx[:client].cache.as(Discord::Cache).users.size} users.
 		Uptime is #{uptime.days}d #{uptime.hours}h #{uptime.minutes}m #{uptime.seconds}s. Bot operator is <@#{Config.f["admin"]}>.
 		STR
