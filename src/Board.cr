@@ -1,4 +1,3 @@
-require "./Config"
 require "./Util"
 
 module Board
@@ -8,11 +7,11 @@ module Board
 		# Abort if not in a guild
 		return unless Util.guild?(client, payload.channel_id)
 		guild = Util.guild(client, payload.channel_id)
-		config = Config.s(guild)
-		# Abort if a) board is disabled,
+		# Abort if a) board is disabled
+		return unless State.feature? guild, State::Features::Board
 		# b) Message is from the board channel
 		# c) The reaction isn't the correct emoji
-		return unless config[:f_board]
+		config = State.get(guild)
 		return if payload.channel_id.to_u64 == config[:board_channel]
 		return unless Util.reaction_to_s(payload.emoji) == config[:board_emoji]
 		message = client.get_channel_message(
@@ -27,33 +26,33 @@ module Board
 
 		unless @@board_messages.has_key? payload.message_id
 			begin
-			posted_message = client.create_message(
-				config[:board_channel],
-				"",
-				build_embed(
-					guild,
-					message,
-					count,
-					config[:board_emoji]
+				posted_message = client.create_message(
+					config[:board_channel],
+					"",
+					build_embed(
+						guild,
+						message,
+						count,
+						config[:board_emoji]
+					)
 				)
-			)
-			@@board_messages[payload.message_id.to_u64] = posted_message.id.to_u64
+				@@board_messages[payload.message_id.to_u64] = posted_message.id.to_u64
 			rescue e
 				Log.error("Failed to post board message: #{e}")
 			end
 		else
 			begin
-			client.edit_message(
-				config[:board_channel],
-				@@board_messages[payload.message_id.to_u64],
-				"",
-				build_embed(
-					guild,
-					message,
-					count,
-					config[:board_emoji]
+				client.edit_message(
+					config[:board_channel],
+					@@board_messages[payload.message_id.to_u64],
+					"",
+					build_embed(
+						guild,
+						message,
+						count,
+						config[:board_emoji]
+					)
 				)
-			)
 			rescue e
 				Log.error("Failed to edit board message: #{e}")
 			end

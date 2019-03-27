@@ -1,11 +1,15 @@
-require "ini"
+require "db"
 require "discordcr"
+require "ini"
 require "logger"
+require "sqlite3"
+
 require "./Commands"
 require "./Config"
 require "./Mirroring"
 require "./Board"
 require "./Util"
+require "./State"
 
 module Bampersand
 	extend self
@@ -14,6 +18,7 @@ module Bampersand
   VERSION = "0.5.4"
 	PRESENCES = ["your concerns", "endless complaints", "socialist teachings", "the silence of the lambs", "anarchist teachings", "emo poetry", "FREUDE SCHÖNER GÖTTERFUNKEN", "the heat death of the universe", "[ASMR] Richard Stallman tells you to use free software", "the decline of western civilisation", "4'33'' (Nightcore Remix)", "General Protection Fault", "breadtube", "the book of origin"]
 	STARTUP = Time.monotonic
+	DATABASE = DB.open "sqlite3://./bampersand.sqlite3"
 
 	def load_client(config)
 		client = Discord::Client.new(token: "Bot #{config["token"]}", client_id: config["client"].to_u64)
@@ -43,6 +48,15 @@ module Bampersand
 		client.run
 	end
 end
+
+SHUTDOWN = ->(s : Signal) {
+	Log.fatal "Received #{s}"
+	Bampersand::DATABASE.close
+	Log.fatal "This program is halting now, checkmate Alan"
+	exit 0
+}
+Signal::INT.trap &SHUTDOWN
+Signal::TERM.trap &SHUTDOWN
 
 Log = Logger.new(STDOUT, level: Logger::INFO, progname: "B&")
 Bampersand.start

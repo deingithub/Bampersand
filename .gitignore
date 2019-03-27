@@ -5,3 +5,4 @@
 *.dwarf
 config.ini
 state.ini
+bampersand.sqlite3
