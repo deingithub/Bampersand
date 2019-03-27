@@ -49,8 +49,7 @@ module State
 	def set(guild_id, update)
 		new_state = @@state[guild_id].merge(update)
 		@@state[guild_id] = new_state
-		Bampersand::DATABASE.exec
-		"insert into state (guild_id, features, mirror_in, mirror_out, board_emoji, board_channel, board_min_reacts) values (?,?,?,?,?,?,?)",
+		Bampersand::DATABASE.exec "insert into state (guild_id, features, mirror_in, mirror_out, board_emoji, board_channel, board_min_reacts) values (?,?,?,?,?,?,?)",
 		guild_id.to_i64,
 		new_state[:features].to_i64,
 		new_state[:mirror_in].to_i64,

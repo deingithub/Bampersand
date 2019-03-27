@@ -15,7 +15,7 @@ module Bampersand
 	extend self
 	include Commands
 
-  VERSION = "0.5.4"
+  VERSION = "0.6.0"
 	PRESENCES = ["your concerns", "endless complaints", "socialist teachings", "the silence of the lambs", "anarchist teachings", "emo poetry", "FREUDE SCHÖNER GÖTTERFUNKEN", "the heat death of the universe", "[ASMR] Richard Stallman tells you to use free software", "the decline of western civilisation", "4'33'' (Nightcore Remix)", "General Protection Fault", "breadtube", "the book of origin"]
 	STARTUP = Time.monotonic
 	DATABASE = DB.open "sqlite3://./bampersand.sqlite3"
