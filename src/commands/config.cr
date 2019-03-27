@@ -19,30 +19,30 @@ module CommandsConfig
 
 		return case args[0]
 		when "print"
-			Config.s?(ctx[:guild_id]) ? "```#{Config.s(ctx[:guild_id]).to_s}```" : "No state stored for this guild"
+			"```#{State.get(ctx[:guild_id]).to_s}```"
 		when "mirror"
 			raise "Missing target channel" unless args.size == 2
 			if args[1] == "stop"
-				Config.mod_s(ctx[:guild_id].as(UInt64), {f_mirroring: false})
+				State.feature(ctx[:guild_id].as(UInt64), State::Features::Mirror, false)
 				return "Disabled mirroring."
 			end
 			channel = Util.channel(ctx[:client], args[1])
 			raise "Invalid channel" if channel.nil?
 			raise "You can't mirror a channel into itself" if channel.id == ctx[:channel_id]
-			Config.mod_s(
+			State.set(
 				ctx[:guild_id].as(UInt64),
 				{
-					f_mirroring: true,
-					in_channel: ctx[:channel_id],
-					out_channel: channel.id.to_u64
+					mirror_in: ctx[:channel_id],
+					mirror_out: channel.id.to_u64
 				}
 			)
+			State.feature(ctx[:guild_id].as(UInt64), State::Features::Mirror, true)
 			return "Mirroring to <##{channel.id}>.
 			Issue `config mirror stop` to disable."
 	when "board"
 		raise "Missing arguments" unless args.size > 1
 		if args[1] == "stop"
-			Config.mod_s(ctx[:guild_id].as(UInt64), {f_board: false})
+			State.feature(ctx[:guild_id].as(UInt64), State::Features::Board, false)
 			return "Disabled board."
 		end
 		raise "Invalid arguments" unless args.size == 4
@@ -51,15 +51,15 @@ module CommandsConfig
 		raise "Invalid Channel" if channel.nil?
 		min_reacts = args[3].to_u32
 		raise "Zero is too low." if min_reacts == 0
-		Config.mod_s(
+		State.set(
 			ctx[:guild_id].as(UInt64),
 			{
-				f_board: true,
 				board_emoji: emoji,
 				board_channel: channel.id.to_u64,
 				board_min_reacts: min_reacts
 			}
 		)
+		State.feature(ctx[:guild_id].as(UInt64), State::Features::Board, true)
 		"All messages with #{min_reacts} or more #{emoji} reactions will be posted to <##{channel.id}>.
 		Issue `config board stop` to disable."
 	else

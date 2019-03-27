@@ -9,6 +9,7 @@ require "./Config"
 require "./Mirroring"
 require "./Board"
 require "./Util"
+require "./State"
 
 module Bampersand
 	extend self

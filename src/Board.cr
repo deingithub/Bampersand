@@ -1,4 +1,3 @@
-require "./Config"
 require "./Util"
 
 module Board
@@ -8,11 +7,11 @@ module Board
 		# Abort if not in a guild
 		return unless Util.guild?(client, payload.channel_id)
 		guild = Util.guild(client, payload.channel_id)
-		config = Config.s(guild)
-		# Abort if a) board is disabled,
+		# Abort if a) board is disabled
+		return unless State.feature? guild, State::Features::Board
 		# b) Message is from the board channel
 		# c) The reaction isn't the correct emoji
-		return unless config[:f_board]
+		config = State.get(guild)
 		return if payload.channel_id.to_u64 == config[:board_channel]
 		return unless Util.reaction_to_s(payload.emoji) == config[:board_emoji]
 		message = client.get_channel_message(
