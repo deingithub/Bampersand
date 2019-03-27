@@ -26,33 +26,33 @@ module Board
 
 		unless @@board_messages.has_key? payload.message_id
 			begin
-			posted_message = client.create_message(
-				config[:board_channel],
-				"",
-				build_embed(
-					guild,
-					message,
-					count,
-					config[:board_emoji]
+				posted_message = client.create_message(
+					config[:board_channel],
+					"",
+					build_embed(
+						guild,
+						message,
+						count,
+						config[:board_emoji]
+					)
 				)
-			)
-			@@board_messages[payload.message_id.to_u64] = posted_message.id.to_u64
+				@@board_messages[payload.message_id.to_u64] = posted_message.id.to_u64
 			rescue e
 				Log.error("Failed to post board message: #{e}")
 			end
 		else
 			begin
-			client.edit_message(
-				config[:board_channel],
-				@@board_messages[payload.message_id.to_u64],
-				"",
-				build_embed(
-					guild,
-					message,
-					count,
-					config[:board_emoji]
+				client.edit_message(
+					config[:board_channel],
+					@@board_messages[payload.message_id.to_u64],
+					"",
+					build_embed(
+						guild,
+						message,
+						count,
+						config[:board_emoji]
+					)
 				)
-			)
 			rescue e
 				Log.error("Failed to edit board message: #{e}")
 			end
