@@ -13,7 +13,8 @@ client = discord-client-id
 prefix = whatever
 admin = your-discord-id
 ```
-and an empty file called `state.ini`. Add to that a sqlite3 database called `bampersand.sqlite3`
+and a sqlite3 database called `bampersand.sqlite3` with the following table:  
+`create table state (guild_id unsigned integer unique on conflict replace, features unsigned integer, mirror_in unsigned integer, mirror_out unsigned integer, board_emoji string, board_channel unsigned integer, board_min_reacts unsigned integer);`
 
 ## Contributing
 
