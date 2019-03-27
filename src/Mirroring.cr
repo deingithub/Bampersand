@@ -16,15 +16,18 @@ module Mirroring
 	end
 
 	def format_message(msg)
-		content = if msg.content.size == 0
-			"`[empty message]`"
-		else
-			msg.content
-		end
-		Discord::Embed.new(
+		embed = Discord::Embed.new(
 			title: "#{msg.author.username}##{msg.author.discriminator} (#{msg.author.id})",
-			description: content,
 			timestamp: msg.timestamp
 		)
+		if msg.content.size > 0
+			embed.description = msg.content
+		elsif msg.attachments.size > 1
+			embed.description = "`[Multiple Attachments]`"
+		end
+		if msg.attachments.size == 1
+			embed.image = Discord::EmbedImage.new(msg.attachments[0].url)
+		end
+		embed
 	end
 end
