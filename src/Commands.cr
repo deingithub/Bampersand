@@ -1,5 +1,3 @@
-require "./Config"
-
 module Commands
 	extend self
 	alias CommandType = Proc(Array(String), CommandContext, CommandResult)
@@ -10,7 +8,8 @@ module Commands
 		guild_id: UInt64?
 	)
 	alias CommandResult = String
-	alias CommandInfo = {fun: CommandType, desc: String}
+	alias CommandInfo = NamedTuple(fun: CommandType, desc: String)
+
 	def contextualize(client, msg : Discord::Message)
 		guild = msg.guild_id
 		return {
@@ -28,8 +27,8 @@ module Commands
 	end
 
 	def handle_message(client, msg)
-		return unless msg.content.starts_with?(Config.f["prefix"])
-		content = msg.content.lchop(Config.f["prefix"])
+		return unless msg.content.starts_with?(Bampersand::CONFIG["prefix"])
+		content = msg.content.lchop(Bampersand::CONFIG["prefix"])
 		arguments = content.split(" ")
 		command = arguments.shift
 		return unless COMMANDS_AND_WHERE_TO_FIND_THEM[command]?
@@ -45,8 +44,8 @@ module Commands
 			send_result(client, msg.channel_id, command, :error, e)
 			Log.error "Failed to execute: #{e}"
 		end
-
 	end
+
 	def send_result(client, channel_id, command, result, output)
 		begin
 			if result == :success
