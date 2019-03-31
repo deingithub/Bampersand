@@ -25,6 +25,8 @@ and a sqlite3 database called `bampersand.sqlite3` with the following tables:
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
+Please follow the guidelines in CONTRIBUTING.md.
+
 ## Contributors
 
 - [deing](https://gitlab.com/deing) - creator and maintainer
