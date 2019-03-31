@@ -6,10 +6,10 @@ Avoid line lengths over 80 characters, and if that's not possible, expand argume
 ```
 SomeModule::very_long_function_invocation(
   "String argument", 123,
-	{
-		NamedTuple: "That couldn't fit",
-		IntoALine: "With 80 chars"
-	},
-	:loremipsum
+  {
+    NamedTuple: "That couldn't fit",
+    IntoALine: "With 80 chars"
+  },
+  :loremipsum
   )
 ```
