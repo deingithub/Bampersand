@@ -4,7 +4,7 @@ Simple Utility Bot for Discord written in Crystal and discordcr. See https://153
 
 ## Development
 
-Requires two configuration files being available:  
+Requires this configuration file being available:  
 `config.ini`
 ```
 [foundation]
@@ -13,8 +13,9 @@ client = discord-client-id
 prefix = whatever
 admin = your-discord-id
 ```
-and a sqlite3 database called `bampersand.sqlite3` with the following table:  
-`create table state (guild_id unsigned integer unique on conflict replace, features unsigned integer, mirror_in unsigned integer, mirror_out unsigned integer, board_emoji string, board_channel unsigned integer, board_min_reacts unsigned integer);`
+and a sqlite3 database called `bampersand.sqlite3` with the following tables:  
+ 1. `create table state (guild_id unsigned integer unique on conflict replace, features unsigned integer, mirror_in unsigned integer, mirror_out unsigned integer, board_emoji string, board_channel unsigned integer, board_min_reacts unsigned integer);`
+ 2. `create table board (source_message unsigned integer unique on conflict replace, board_message unsigned integer);`
 
 ## Contributing
 

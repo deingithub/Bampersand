@@ -1,8 +1,18 @@
 require "./Util"
 
 module Board
-	@@board_messages = {} of UInt64 => UInt64
+	@@board_messages: Hash(UInt64, UInt64) = load_board()
 	extend self
+	def load_board()
+		board_data = {} of UInt64 => UInt64;
+		Bampersand::DATABASE.query "select source_message, board_message from board" do |rs|
+			raise "Invalid column count" unless rs.column_count == 2
+			rs.each do
+				board_data[rs.read(Int64).to_u64] = rs.read(Int64).to_u64
+			end
+		end
+		board_data
+	end
 	def handle_reaction(client, payload)
 		# Abort if not in a guild
 		return unless Util.guild?(client, payload.channel_id)
@@ -37,6 +47,7 @@ module Board
 					)
 				)
 				@@board_messages[payload.message_id.to_u64] = posted_message.id.to_u64
+				Bampersand::DATABASE.exec "insert into board (source_message, board_message) values (?,?)", payload.message_id.to_u64.to_i64, posted_message.id.to_u64.to_i64
 			rescue e
 				Log.error("Failed to post board message: #{e}")
 			end
