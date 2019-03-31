@@ -11,5 +11,5 @@ SomeModule::very_long_function_invocation(
     IntoALine: "With 80 chars"
   },
   :loremipsum
-  )
+)
 ```
