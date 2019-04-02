@@ -14,7 +14,7 @@ prefix = whatever
 admin = your-discord-id
 ```
 and a sqlite3 database called `bampersand.sqlite3` with the following tables:  
- 1. `create table state (guild_id unsigned integer unique on conflict replace, features unsigned integer, mirror_in unsigned integer, mirror_out unsigned integer, board_emoji string, board_channel unsigned integer, board_min_reacts unsigned integer);`
+ 1. `create table state (guild_id unsigned integer unique on conflict replace, features unsigned integer, mirror_in unsigned integer, mirror_out unsigned integer, board_emoji string, board_channel unsigned integer, board_min_reacts unsigned integer, join_channel unsigned integer, join_text string, leave_channel unsigned integer, leave_text string);`
  2. `create table board (source_message unsigned integer unique on conflict replace, board_message unsigned integer);`
 
 ## Contributing
