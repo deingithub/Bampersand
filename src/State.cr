@@ -9,7 +9,11 @@ module State
     mirror_out: UInt64,
     board_emoji: String,
     board_channel: UInt64,
-    board_min_reacts: UInt32)
+    board_min_reacts: UInt32,
+    join_channel: UInt64,
+    join_text: String,
+    leave_channel: UInt64,
+    leave_text: String)
 
   def default_state : GuildState
     {
@@ -19,6 +23,10 @@ module State
       board_emoji:      "",
       board_channel:    0u64,
       board_min_reacts: 0u32,
+      join_channel:     0u64,
+      join_text:        "",
+      leave_channel:    0u64,
+      leave_text:       "",
     }
   end
 
@@ -26,9 +34,9 @@ module State
 
   def load_state
     state = {} of UInt64 => GuildState
-    Bampersand::DATABASE.query "select guild_id, features, mirror_in, mirror_out, board_emoji, board_channel, board_min_reacts from state" do |rs|
+    Bampersand::DATABASE.query "select * from state" do |rs|
       # Adjust expected column count when the data schema is changed
-      raise "Invalid column count" unless rs.column_count == 1 + 6
+      raise "Invalid column count #{rs.column_count}" unless rs.column_count == 1 + 10
       rs.each do
         state[rs.read(Int64).to_u64] = {
           features:         Features.new(rs.read(Int32)),
@@ -37,6 +45,10 @@ module State
           board_emoji:      rs.read(String),
           board_channel:    rs.read(Int64).to_u64,
           board_min_reacts: rs.read(Int32).to_u32,
+          join_channel:     rs.read(Int64).to_u64,
+          join_text:        rs.read(String),
+          leave_channel:    rs.read(Int64).to_u64,
+          leave_text:       rs.read(String),
         }
       end
     end
@@ -52,14 +64,19 @@ module State
     new_state = get(guild_id).merge(update)
     @@state[guild_id] = new_state
     Bampersand::DATABASE.exec(
-      "insert into state (guild_id, features, mirror_in, mirror_out, board_emoji, board_channel, board_min_reacts) values (?,?,?,?,?,?,?)",
+      "insert into state (guild_id, features, mirror_in, mirror_out, board_emoji, board_channel, board_min_reacts, join_channel, join_text, leave_channel, leave_text) values (?,?,?,?,?,?,?,?,?,?,?)",
       guild_id.to_i64,
       new_state[:features].to_i64,
       new_state[:mirror_in].to_i64,
       new_state[:mirror_out].to_i64,
       new_state[:board_emoji],
       new_state[:board_channel].to_i64,
-      new_state[:board_min_reacts].to_i32)
+      new_state[:board_min_reacts].to_i32,
+      new_state[:join_channel].to_i64,
+      new_state[:join_text],
+      new_state[:leave_channel].to_i64,
+      new_state[:leave_text],
+    )
   end
 
   def feature(guild_id, feature, state)
@@ -82,5 +99,7 @@ module State
   enum Features
     Mirror
     Board
+    JoinLog
+    LeaveLog
   end
 end

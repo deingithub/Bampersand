@@ -7,6 +7,8 @@ module CommandsConfig
     return "**BAMPERSAND CONFIGURATION**
     | config mirror <#channel | stop>
     | config board <emoji #channel min_reacts | stop>
+    | config join-log <#channel welcome @user! some more text here. | stop>
+    | config leave-log <#channel @user left. more text. | stop>
     | config print" if args.size == 0
 
     raise "This command can only be used in guilds" if ctx[:guild_id].nil?
@@ -53,6 +55,30 @@ module CommandsConfig
       State.feature(guild, State::Features::Board, true)
       "All messages with #{min_reacts} or more #{emoji} reactions will be posted to <##{channel.id}>.
       Issue `config board stop` to disable."
+    when "join-log"
+      raise "Missing arguments" unless args.size > 1
+      if args[1] == "stop"
+        State.feature(guild, State::Features::JoinLog, false)
+        return "Disabled join log."
+      end
+      args.shift
+      channel = Util.channel(ctx[:client], args.shift)
+      raise "Invalid channel" if channel.nil?
+      text = args.join(" ")
+      State.feature(guild, State::Features::JoinLog, true)
+      State.set(guild, {join_channel: channel.id.to_u64, join_text: text})
+    when "leave-log"
+      raise "Missing arguments" unless args.size > 1
+      if args[1] == "stop"
+        State.feature(guild, State::Features::LeaveLog, false)
+        return "Disabled leave log."
+      end
+      args.shift
+      channel = Util.channel(ctx[:client], args.shift)
+      raise "Invalid channel" if channel.nil?
+      text = args.join(" ")
+      State.feature(guild, State::Features::LeaveLog, true)
+      State.set(guild, {leave_channel: channel.id.to_u64, leave_text: text})
     else
       raise "Unknown subcommand"
     end
