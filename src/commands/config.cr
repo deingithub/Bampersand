@@ -64,7 +64,8 @@ module CommandsConfig
       args.shift
       channel = Util.channel(ctx[:client], args.shift)
       raise "Invalid channel" if channel.nil?
-      text = args.join(" ")
+      text = args.join(" ").strip
+      raise "Missing join message" if text.size == 0
       State.feature(guild, State::Features::JoinLog, true)
       State.set(guild, {join_channel: channel.id.to_u64, join_text: text})
       "New members will be greeted in <##{channel.id}>."
@@ -77,7 +78,8 @@ module CommandsConfig
       args.shift
       channel = Util.channel(ctx[:client], args.shift)
       raise "Invalid channel" if channel.nil?
-      text = args.join(" ")
+      text = args.join(" ").strip
+      raise "Missing leave message" if text.size == 0
       State.feature(guild, State::Features::LeaveLog, true)
       State.set(guild, {leave_channel: channel.id.to_u64, leave_text: text})
       "Departures will be announced in <##{channel.id}>."
