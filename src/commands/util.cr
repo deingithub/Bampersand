@@ -59,7 +59,7 @@ module CommandsUtil
         end
       end
       raise "Tag not found" if output.size == 0
-      output
+      {title: "**#{command.upcase}**", text: output}
     end
   }
 end

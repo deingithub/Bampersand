@@ -6,7 +6,7 @@ module Commands
     client: Discord::Client,
     channel_id: UInt64,
     guild_id: UInt64?)
-  alias CommandResult = String
+  alias CommandResult = NamedTuple(title: String, text: String) | String
   alias CommandInfo = NamedTuple(fun: CommandType, desc: String)
 
   def contextualize(client, msg : Discord::Message)
@@ -47,9 +47,15 @@ module Commands
   def send_result(client, channel_id, command, result, output)
     begin
       if result == :success
-        client.create_message(channel_id, "", embed: Discord::Embed.new(
-          colour: 0x16161d, description: output.to_s
-        ))
+        if output.is_a?(String)
+          client.create_message(channel_id, "", embed: Discord::Embed.new(
+            colour: 0x16161d, description: output.to_s
+          ))
+        elsif output.is_a?(NamedTuple(title: String, text: String))
+          client.create_message(channel_id, "", embed: Discord::Embed.new(
+            colour: 0x16161d, description: output[:text], title: output[:title]
+          ))
+        end
       elsif result == :error
         client.create_message(channel_id, "", embed: Discord::Embed.new(
           title: "**failed to execute: #{command}**".upcase,

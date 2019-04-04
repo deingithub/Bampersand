@@ -4,12 +4,14 @@ require "../Util"
 module CommandsConfig
   include Commands
   CONFIG = ->(args : Array(String), ctx : CommandContext) {
-    return "**BAMPERSAND CONFIGURATION**
+    help_text = <<-STR
     | config mirror <#channel | stop>
     | config board <emoji #channel min_reacts | stop>
     | config join-log <#channel welcome @user! some more text here. | stop>
     | config leave-log <#channel @user left. more text. | stop>
-    | config print" if args.size == 0
+    | config print
+    STR
+    return {title: "**BAMPERSAND CONFIGURATION**", text: help_text} if args.size == 0
 
     raise "This command can only be used in guilds" if ctx[:guild_id].nil?
     guild = ctx[:guild_id].as(UInt64)
