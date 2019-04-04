@@ -73,6 +73,9 @@ COMMANDS_AND_WHERE_TO_FIND_THEM = {
   "leo"   => {
     fun: CommandsUtil::LEO, desc: "Shorten URLs using leo.immobilien",
   },
+  "tag" => {
+    fun: CommandsUtil::TAG, desc: "Display and edit custom messages",
+  },
   "config" => {fun: CommandsConfig::CONFIG, desc: "Configure per-guild settings"},
   "hulp"   => {fun: CommandsHulp::HULP, desc: "what?"},
 }
