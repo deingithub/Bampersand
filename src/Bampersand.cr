@@ -1,6 +1,6 @@
 require "db"
 require "discordcr"
-require "ini"
+require "dotenv"
 require "logger"
 require "sqlite3"
 
@@ -15,26 +15,16 @@ module Bampersand
   extend self
   include Commands
 
-  VERSION   = "0.8.1"
+  VERSION   = "0.8.2"
   PRESENCES = ["your concerns", "endless complaints", "socialist teachings", "the silence of the lambs", "anarchist teachings", "emo poetry", "FREUDE SCHÖNER GÖTTERFUNKEN", "the heat death of the universe", "[ASMR] Richard Stallman tells you to use free software", "the decline of western civilisation", "4'33'' (Nightcore Remix)", "General Protection Fault", "breadtube", "the book of origin"]
   STARTUP   = Time.monotonic
   DATABASE  = DB.open "sqlite3://./bampersand.sqlite3"
-  CONFIG    = load_config()
-
-  def load_config
-    vals = INI.parse(File.read("config.ini"))["foundation"]
-    {
-      client: vals["client"].to_u64,
-      token:  vals["token"],
-      prefix: vals["prefix"],
-      admin:  vals["admin"].to_u64,
-    }
-  end
+  CONFIG    = Dotenv.load!
 
   def start
     client = Discord::Client.new(
       token: "Bot #{CONFIG["token"]}",
-      client_id: CONFIG["client"]
+      client_id: CONFIG["client"].to_u64
     )
     client.cache = Discord::Cache.new(client)
 

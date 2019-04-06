@@ -10,7 +10,7 @@ module CommandsCore
     COMMANDS_AND_WHERE_TO_FIND_THEM.each do |(name, data)|
       acc += "| #{name} — #{data[:desc]}\n"
     end
-    acc += "Prefix is `#{Bampersand::CONFIG[:prefix]}`. See `about` for more information."
+    acc += "Prefix is `#{Bampersand::CONFIG["prefix"]}`. See `about` for more information."
     {title: "**BAMPERSAND COMMANDS**", text: acc}
   }
   ABOUT = ->(args : Array(String), ctx : CommandContext) {

@@ -1,5 +1,5 @@
 name: Bampersand
-version: 0.8.1
+version: 0.8.2
 
 authors:
   - deing <admin@15318.de>
@@ -16,6 +16,8 @@ dependencies:
     github: crystal-lang/crystal-db
   sqlite3:
     github: crystal-lang/crystal-sqlite3
+  dotenv:
+    github: gdotdesign/cr-dotenv
 crystal: 0.27.2
 
 license: MIT

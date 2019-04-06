@@ -8,6 +8,10 @@ shards:
     github: meew0/discordcr
     commit: 1d40f5fa0c9069a817ddbb3daf26782607d69d7d
 
+  dotenv:
+    github: gdotdesign/cr-dotenv
+    version: 0.2.0
+
   sqlite3:
     github: crystal-lang/crystal-sqlite3
     version: 0.10.0

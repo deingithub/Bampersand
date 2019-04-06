@@ -4,16 +4,7 @@ Simple Utility Bot for Discord written in Crystal and discordcr. See https://153
 
 ## Development
 
-Requires this configuration file being available:  
-`config.ini`
-```
-[foundation]
-token = discord-token-here
-client = discord-client-id
-prefix = whatever
-admin = your-discord-id
-```
-and a sqlite3 database called `bampersand.sqlite3` with the following tables:  
+Adapt `.env.example` to your needs and rename it to `.env`. It's gitignored by default. Create a sqlite3 database called `bampersand.sqlite3` with the following tables:  
  1. `create table state (guild_id unsigned integer unique on conflict replace, features unsigned integer, mirror_in unsigned integer, mirror_out unsigned integer, board_emoji string, board_channel unsigned integer, board_min_reacts unsigned integer, join_channel unsigned integer, join_text string, leave_channel unsigned integer, leave_text string);`
  2. `create table board (source_message unsigned integer unique on conflict replace, board_message unsigned integer);`
  3. `create table tags (guild_id unsigned integer, name string, content string, constraint yikes unique (guild_id, name) on conflict replace);`

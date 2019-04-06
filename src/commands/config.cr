@@ -26,7 +26,7 @@ module CommandsConfig
         State.feature(guild, State::Features::Mirror, false)
         return "Disabled mirroring."
       end
-      raise "Command restricted to admin." unless ctx[:issuer].id == Bampersand::CONFIG[:admin]
+      raise "Command restricted to bot operator." unless ctx[:issuer].id == Bampersand::CONFIG["admin"].to_u64
       channel = Util.channel(ctx[:client], args[1])
       raise "Invalid channel" if channel.nil?
       raise "You can't mirror a channel into itself" if channel.id == ctx[:channel_id]
