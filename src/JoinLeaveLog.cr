@@ -6,7 +6,8 @@ module JoinLeaveLog
     client.create_message(channel_id, out_string)
   end
 
-  def handle_join(client, payload)
+  def handle_join(payload)
+    client = Bampersand::CLIENT
     return unless State.feature?(payload.guild_id, State::Features::JoinLog)
     config = State.get(payload.guild_id)
     handle_update(
@@ -14,7 +15,8 @@ module JoinLeaveLog
     )
   end
 
-  def handle_leave(client, payload)
+  def handle_leave(payload)
+    client = Bampersand::CLIENT
     return unless State.feature?(payload.guild_id, State::Features::LeaveLog)
     config = State.get(payload.guild_id)
     handle_update(

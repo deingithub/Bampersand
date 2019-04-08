@@ -27,7 +27,7 @@ module CommandsUtil
     command = args.shift
     case command
     when "update"
-      raise "Insufficient Permissions" unless Util.perms?(ctx[:client], ctx[:issuer].id, guild, Discord::Permissions::ManageGuild)
+      Util.assert_perms(ctx, ManageGuild)
       raise "Missing tag name" unless args.size > 0
       tag_name = args.shift
       raise "Tag name may not contain newlines." if tag_name.includes?("\n")
@@ -37,7 +37,7 @@ module CommandsUtil
         guild.to_i64, tag_name, tag_content
       return "Updated tag **#{tag_name}**:\n#{tag_content}"
     when "delete"
-      raise "Insufficient Permissions" unless Util.perms?(ctx[:client], ctx[:issuer].id, guild, Discord::Permissions::ManageGuild)
+      Util.assert_perms(ctx, ManageGuild)
       raise "Missing tag name" unless args.size > 0
       tag_name = args.shift
       Bampersand::DATABASE.exec "delete from tags where guild_id == ? and name == ?",

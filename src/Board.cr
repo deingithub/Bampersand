@@ -15,10 +15,10 @@ module Board
     board_data
   end
 
-  def handle_reaction(client, payload)
-    # Abort if not in a guild
-    return unless Util.guild?(client, payload.channel_id)
+  def handle_reaction(payload)
+    client = Bampersand::CLIENT
     guild = Util.guild(client, payload.channel_id)
+    return if guild.nil?
     # Abort if a) board is disabled
     return unless State.feature? guild, State::Features::Board
     # b) Message is from the board channel

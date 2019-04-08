@@ -1,7 +1,8 @@
 module Mirroring
   extend self
 
-  def handle_message(client, msg)
+  def handle_message(msg)
+    client = Bampersand::CLIENT
     guild = msg.guild_id
     return unless State.feature? guild, State::Features::Mirror
     return unless msg.channel_id == State.get(guild)[:mirror_in]

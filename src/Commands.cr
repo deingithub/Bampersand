@@ -9,7 +9,8 @@ module Commands
   alias CommandResult = NamedTuple(title: String, text: String) | String
   alias CommandInfo = NamedTuple(fun: CommandType, desc: String)
 
-  def contextualize(client, msg : Discord::Message)
+  def contextualize(msg : Discord::Message)
+    client = Bampersand::CLIENT
     guild = msg.guild_id
     return {
       issuer:     msg.author,
@@ -25,7 +26,8 @@ module Commands
     }
   end
 
-  def handle_message(client, msg)
+  def handle_message(msg)
+    client = Bampersand::CLIENT
     return unless msg.content.starts_with?(Bampersand::CONFIG["prefix"])
     content = msg.content.lchop(Bampersand::CONFIG["prefix"])
     arguments = content.split(" ")
@@ -35,7 +37,7 @@ module Commands
     begin
       Log.info "#{msg.author.username}##{msg.author.discriminator} issued #{command} #{arguments}"
       output = COMMANDS_AND_WHERE_TO_FIND_THEM[command][:fun].call(
-        arguments, contextualize(client, msg)
+        arguments, contextualize(msg)
       )
       send_result(client, msg.channel_id, command, :success, output)
     rescue e
