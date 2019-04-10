@@ -14,7 +14,7 @@ HELP = {
 macro check_stop(feature_enum, feature_name)
   if args[0] == "stop"
     State.feature(guild, State::Features::{{feature_enum}}, false)
-    next "Disabled #{{{feature_name}}}."
+    next true
   end
 end
 
@@ -37,8 +37,7 @@ Commands.register_command(
     raise "You can't mirror a channel into itself" if channel.id == ctx[:channel_id]
     State.set(guild, {mirror_in: ctx[:channel_id], mirror_out: channel.id.to_u64})
     State.feature(guild, State::Features::Mirror, true)
-    "Mirroring to <##{channel.id}>.
-    Issue `config mirror stop` to disable."
+    true
   when "board"
     Arguments.assert_count(args, 1)
     check_stop(Board, "board")
@@ -67,7 +66,7 @@ Commands.register_command(
     raise "Missing join message" if text.size == 0
     State.feature(guild, State::Features::JoinLog, true)
     State.set(guild, {join_channel: channel.id.to_u64, join_text: text})
-    "New members will be greeted in <##{channel.id}>."
+    true
   when "leave-log"
     Arguments.assert_count(args, 1)
     check_stop(LeaveLog, "leave log")
@@ -77,7 +76,7 @@ Commands.register_command(
     raise "Missing leave message" if text.size == 0
     State.feature(guild, State::Features::LeaveLog, true)
     State.set(guild, {leave_channel: channel.id.to_u64, leave_text: text})
-    "Departures will be announced in <##{channel.id}>."
+    true
   else
     raise "Unknown subcommand"
   end

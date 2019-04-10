@@ -8,7 +8,7 @@ module Commands
     client: Discord::Client,
     channel_id: UInt64,
     guild_id: UInt64?)
-  alias CommandResult = NamedTuple(title: String, text: String) | String
+  alias CommandResult = NamedTuple(title: String, text: String) | String | Bool
   alias CommandInfo = NamedTuple(fun: CommandType, desc: String)
   @@COMMANDS = {} of String => CommandInfo
 
@@ -52,14 +52,14 @@ module Commands
       output = @@COMMANDS[command][:fun].call(
         arguments, contextualize(msg)
       )
-      send_result(client, msg.channel_id, command, :success, output)
+      send_result(client, msg.channel_id, msg.id, command, :success, output)
     rescue e
-      send_result(client, msg.channel_id, command, :error, e)
+      send_result(client, msg.channel_id, msg.id, command, :error, e)
       Log.error "Failed to execute: #{e}"
     end
   end
 
-  def send_result(client, channel_id, command, result, output)
+  def send_result(client, channel_id, message_id, command, result, output)
     begin
       if result == :success
         if output.is_a?(String)
@@ -70,6 +70,8 @@ module Commands
           client.create_message(channel_id, "", embed: Discord::Embed.new(
             colour: 0x16161d, description: output[:text], title: output[:title]
           ))
+        elsif output.is_a?(Bool) && output
+          client.create_reaction(channel_id, message_id, "✅")
         end
       elsif result == :error
         client.create_message(channel_id, "", embed: Discord::Embed.new(

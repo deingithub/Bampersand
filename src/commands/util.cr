@@ -44,14 +44,14 @@ Commands.register_command(
     tag_content = args.join(" ")
     Bampersand::DATABASE.exec "insert into tags (guild_id, name, content) values (?,?,?)",
       guild.to_i64, tag_name, tag_content
-    "Updated tag **#{tag_name}**:\n#{tag_content}"
+    true
   when "delete"
     Util.assert_perms(ctx, ManageGuild)
     raise "Missing tag name" unless args.size > 0
     tag_name = args.shift
     Bampersand::DATABASE.exec "delete from tags where guild_id == ? and name == ?",
       guild.to_i64, tag_name
-    "Deleted tag **#{tag_name}**"
+    true
   when "list"
     output = ""
     Bampersand::DATABASE.query "select name from tags where guild_id == ?", guild.to_i64 do |rs|
