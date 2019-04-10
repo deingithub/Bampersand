@@ -37,7 +37,7 @@ Commands.register_command(
   case command
   when "update"
     Util.assert_perms(ctx, ManageGuild)
-    Args.assert_count(args, 2)
+    Arguments.assert_count(args, 2)
     tag_name = args.shift
     raise "Tag name may not contain newlines." if tag_name.includes?("\n")
     tag_content = args.join(" ")

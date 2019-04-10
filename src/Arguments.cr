@@ -33,7 +33,7 @@ module Arguments
     when :user
       to_user(args[position])
     else
-      args[position]
+      raise "this can't happen luckily"
     end
   end
 
