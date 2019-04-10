@@ -37,17 +37,16 @@ Commands.register_command(
   case command
   when "update"
     Util.assert_perms(ctx, ManageGuild)
-    raise "Missing tag name" unless args.size > 0
+    Args.assert_count(args, 2)
     tag_name = args.shift
     raise "Tag name may not contain newlines." if tag_name.includes?("\n")
-    raise "Missing tag content" unless args.size > 0
     tag_content = args.join(" ")
     Bampersand::DATABASE.exec "insert into tags (guild_id, name, content) values (?,?,?)",
       guild.to_i64, tag_name, tag_content
     true
   when "delete"
     Util.assert_perms(ctx, ManageGuild)
-    raise "Missing tag name" unless args.size > 0
+    Arguments.assert_count(args, 1)
     tag_name = args.shift
     Bampersand::DATABASE.exec "delete from tags where guild_id == ? and name == ?",
       guild.to_i64, tag_name

@@ -33,7 +33,7 @@ module Arguments
     when :user
       to_user(args[position])
     else
-      raise "Unknown argument type #{type}"
+      args[position]
     end
   end
 
