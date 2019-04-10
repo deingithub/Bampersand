@@ -63,9 +63,7 @@ module Commands
     begin
       if result == :success
         if output.is_a?(String)
-          client.create_message(channel_id, "", embed: Discord::Embed.new(
-            colour: 0x16161d, description: output.to_s
-          ))
+          client.create_message(channel_id, output)
         elsif output.is_a?(NamedTuple(title: String, text: String))
           client.create_message(channel_id, "", embed: Discord::Embed.new(
             colour: 0x16161d, description: output[:text], title: output[:title]

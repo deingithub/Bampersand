@@ -11,7 +11,7 @@ HELP = {
   title: "**BAMPERSAND CONFIGURATION**",
 }
 
-macro check_stop(feature_enum, feature_name)
+macro check_stop(feature_enum)
   if args[0] == "stop"
     State.feature(guild, State::Features::{{feature_enum}}, false)
     next true
@@ -31,7 +31,7 @@ Commands.register_command(
     "```#{State.get(guild).to_s}```"
   when "mirror"
     Arguments.assert_count(args, 1)
-    check_stop(Mirror, "mirroring")
+    check_stop(Mirror)
     raise "Command restricted to bot operator." unless ctx[:issuer].id == Bampersand::CONFIG["admin"].to_u64
     channel = Arguments.at_position(args, 0, :channel)
     raise "You can't mirror a channel into itself" if channel.id == ctx[:channel_id]
@@ -40,7 +40,7 @@ Commands.register_command(
     true
   when "board"
     Arguments.assert_count(args, 1)
-    check_stop(Board, "board")
+    check_stop(Board)
     Arguments.assert_count(args, 3)
     emoji = args[0]
     channel = Arguments.at_position(args, 1, :channel)
@@ -55,11 +55,10 @@ Commands.register_command(
       }
     )
     State.feature(guild, State::Features::Board, true)
-    "All messages with #{min_reacts} or more #{emoji} reactions will be posted to <##{channel.id}>.
-    Issue `config board stop` to disable."
+    true
   when "join-log"
     Arguments.assert_count(args, 1)
-    check_stop(JoinLog, "join log")
+    check_stop(JoinLog)
     channel = Arguments.at_position(args, 0, :channel)
     args.shift
     text = args.join(" ").strip
@@ -69,7 +68,7 @@ Commands.register_command(
     true
   when "leave-log"
     Arguments.assert_count(args, 1)
-    check_stop(LeaveLog, "leave log")
+    check_stop(LeaveLog)
     channel = Arguments.at_position(args, 0, :channel)
     args.shift
     text = args.join(" ").strip
