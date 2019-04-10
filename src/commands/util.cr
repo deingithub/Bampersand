@@ -3,9 +3,7 @@ require "http/client"
 require "../Arguments"
 require "../L10N"
 
-Commands.register_command(
-  "leo", "Shorten URLs using leo.immobilien"
-) do |args, ctx|
+Commands.register_command("leo") do |args, ctx|
   Arguments.assert_count(args, 1)
   body = <<-BODY
   {"url": "#{args[0]}"}
@@ -27,9 +25,7 @@ TAG_HELP = {
   title: "**BAMPERSAND TAGS**",
 }
 
-Commands.register_command(
-  "tag", "Display and edit custom messages"
-) do |args, ctx|
+Commands.register_command("tag") do |args, ctx|
   next TAG_HELP if args.size == 0
   raise L10N.do("e_guild_only") if ctx[:guild_id].nil?
   Arguments.assert_count(args, 1)

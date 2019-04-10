@@ -1,22 +1,22 @@
 require "../Commands"
 require "../L10N"
 
-Commands.register_command(
-  "ping", "Check if the bot's still alive"
-) do |args, ctx|
+Commands.register_command("ping") do |args, ctx|
   ":ping_pong: " + ["Pyongyang!", "Ding!", "Pong!", "[reverberating PONG]", "Plonk."].sample
 end
 
-Commands.register_command("help", "This command.") do |args, ctx|
+Commands.register_command("help") do |args, ctx|
   output = ""
-  Commands.get_commands.each do |(name, data)|
-    output += "| #{name} — #{data[:desc]}\n"
+  Commands.get_commands.keys.each do |name|
+    output += "`#{Bampersand::CONFIG["prefix"]}#{name}` | "
   end
+  output = output.rchop("| ")
+  output += "\n\n"
   output += L10N.do("help_info_line", Bampersand::CONFIG["prefix"])
   {title: L10N.do("help_title"), text: output}
 end
 
-Commands.register_command("about", "About Bampersand") do |args, ctx|
+Commands.register_command("about") do |args, ctx|
   uptime = Time.monotonic - Bampersand::STARTUP
   {
     title: L10N.do("about_title", Bampersand::VERSION),

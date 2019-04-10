@@ -17,9 +17,7 @@ macro check_stop(feature_enum)
   end
 end
 
-Commands.register_command(
-  "config", "Configure per-guild settings"
-) do |args, ctx|
+Commands.register_command("config") do |args, ctx|
   next {text: HELP_TEXT, title: L10N.do("config_title")} if args.size == 0
   raise L10N.do("e_guild_only") if ctx[:guild_id].nil?
   Util.assert_perms(ctx, ManageGuild)

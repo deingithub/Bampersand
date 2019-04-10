@@ -9,13 +9,12 @@ module Commands
     channel_id: UInt64,
     guild_id: UInt64?)
   alias CommandResult = NamedTuple(title: String, text: String) | String | Bool
-  alias CommandInfo = NamedTuple(fun: CommandType, desc: String)
-  @@COMMANDS = {} of String => CommandInfo
+  @@COMMANDS = {} of String => CommandType
 
   def register_command(
-    name, desc, &execute : Array(String), CommandContext -> CommandResult
+    name, &execute : Array(String), CommandContext -> CommandResult
   )
-    @@COMMANDS[name] = {fun: execute, desc: desc}
+    @@COMMANDS[name] = execute
   end
 
   def get_commands
@@ -49,7 +48,7 @@ module Commands
     output = ""
     begin
       Log.info "#{msg.author.username}##{msg.author.discriminator} issued #{command} #{arguments}"
-      output = @@COMMANDS[command][:fun].call(
+      output = @@COMMANDS[command].call(
         arguments, contextualize(msg)
       )
       send_result(client, msg.channel_id, msg.id, command, :success, output)
