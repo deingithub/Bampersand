@@ -23,7 +23,7 @@ TAG_HELP = {
   | tag delete <tag-name>
   | tag list
   | tag <tag-name>",
-  title: "**BAMPERSAND TAGS**"
+  title: "**BAMPERSAND TAGS**",
 }
 
 Commands.register_command(

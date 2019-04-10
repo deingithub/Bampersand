@@ -12,7 +12,9 @@ module Commands
   alias CommandInfo = NamedTuple(fun: CommandType, desc: String)
   @@COMMANDS = {} of String => CommandInfo
 
-  def register_command(name, desc, &execute : Array(String), CommandContext -> CommandResult)
+  def register_command(
+    name, desc, &execute : Array(String), CommandContext -> CommandResult
+  )
     @@COMMANDS[name] = {fun: execute, desc: desc}
   end
 
