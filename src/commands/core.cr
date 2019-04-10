@@ -7,12 +7,12 @@ Commands.register_command(
 end
 
 Commands.register_command("help", "This command.") do |args, ctx|
-  acc = ""
+  output = ""
   Commands.get_commands.each do |(name, data)|
-    acc += "| #{name} — #{data[:desc]}\n"
+    output += "| #{name} — #{data[:desc]}\n"
   end
-  acc += "Prefix is `#{Bampersand::CONFIG["prefix"]}`. See `about` for more information."
-  {title: "**BAMPERSAND COMMANDS**", text: acc}
+  output += "Prefix is `#{Bampersand::CONFIG["prefix"]}`. See `about` for more information."
+  {title: "**BAMPERSAND COMMANDS**", text: output}
 end
 
 Commands.register_command("about", "About Bampersand") do |args, ctx|
