@@ -59,6 +59,9 @@ module Commands
   end
 
   def send_result(client, channel_id, message_id, command, result, output)
+    ctx = {
+      guild_id: Util.guild(client, channel_id),
+    }
     begin
       if result == :success
         if output.is_a?(String)
@@ -72,7 +75,7 @@ module Commands
         end
       elsif result == :error
         client.create_message(channel_id, "", embed: Discord::Embed.new(
-          title: "**failed to execute: #{command}**".upcase,
+          title: L10N.do("command_failed", command).upcase,
           colour: 0xdd2e44,
           description: "`#{output.to_s}`"
         ))

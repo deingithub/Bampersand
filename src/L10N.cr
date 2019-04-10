@@ -13,6 +13,10 @@ module L10N
     @@translations[lang][key]
   end
 
+  def lang?(lang)
+    @@translations.has_key? lang
+  end
+
   macro do(key, *substs)
 		%lang = if ctx[:guild_id].nil?
 			"en"

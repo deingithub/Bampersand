@@ -7,7 +7,7 @@ HELP_TEXT = "| config mirror <#channel | stop>
   | config board <emoji #channel min_reacts | stop>
   | config join-log <#channel welcome @user! some more text here. | stop>
   | config leave-log <#channel @user left. more text. | stop>
-  | config lang <en de>
+  | config lang <en …>
   | config print"
 
 macro check_stop(feature_enum)
@@ -74,6 +74,7 @@ Commands.register_command("config") do |args, ctx|
   when "lang"
     Arguments.assert_count(args, 1)
     language = args[0]
+    raise L10N.do("config_bad_lang") unless L10N.lang? language
     State.set(guild, {language: language})
     true
   else
