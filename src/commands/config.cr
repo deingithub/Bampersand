@@ -1,15 +1,14 @@
 require "../Commands"
 require "../Util"
 require "../Arguments"
+require "../L10N"
 
-HELP = {
-  text: "| config mirror <#channel | stop>
+HELP_TEXT = "| config mirror <#channel | stop>
   | config board <emoji #channel min_reacts | stop>
   | config join-log <#channel welcome @user! some more text here. | stop>
   | config leave-log <#channel @user left. more text. | stop>
-  | config print",
-  title: "**BAMPERSAND CONFIGURATION**",
-}
+  | config lang <en de>
+  | config print"
 
 macro check_stop(feature_enum)
   if args[0] == "stop"
@@ -21,8 +20,8 @@ end
 Commands.register_command(
   "config", "Configure per-guild settings"
 ) do |args, ctx|
-  next HELP if args.size == 0
-  raise "This command can only be used in guilds" if ctx[:guild_id].nil?
+  next {text: HELP_TEXT, title: L10N.do("config_title")} if args.size == 0
+  raise L10N.do("e_guild_only") if ctx[:guild_id].nil?
   Util.assert_perms(ctx, ManageGuild)
   guild = ctx[:guild_id].as(UInt64)
   subcommand = args.shift.downcase
@@ -32,9 +31,9 @@ Commands.register_command(
   when "mirror"
     Arguments.assert_count(args, 1)
     check_stop(Mirror)
-    raise "Command restricted to bot operator." unless ctx[:issuer].id == Bampersand::CONFIG["admin"].to_u64
+    raise L10N.do("config_restricted") unless ctx[:issuer].id == Bampersand::CONFIG["admin"].to_u64
     channel = Arguments.at_position(args, 0, :channel)
-    raise "You can't mirror a channel into itself" if channel.id == ctx[:channel_id]
+    raise L10N.do("config_bad_mirror") if channel.id == ctx[:channel_id]
     State.set(guild, {mirror_in: ctx[:channel_id], mirror_out: channel.id.to_u64})
     State.feature(guild, State::Features::Mirror, true)
     true
@@ -45,7 +44,7 @@ Commands.register_command(
     emoji = args[0]
     channel = Arguments.at_position(args, 1, :channel)
     min_reacts = args[2].to_u32
-    raise "min_reacts must be greater than zero" if min_reacts == 0
+    raise L10N.do("config_bad_min_reacts") if min_reacts == 0
     State.set(
       guild,
       {
@@ -57,26 +56,29 @@ Commands.register_command(
     State.feature(guild, State::Features::Board, true)
     true
   when "join-log"
-    Arguments.assert_count(args, 1)
+    Arguments.assert_count(args, 2)
     check_stop(JoinLog)
     channel = Arguments.at_position(args, 0, :channel)
     args.shift
     text = args.join(" ").strip
-    raise "Missing join message" if text.size == 0
     State.feature(guild, State::Features::JoinLog, true)
     State.set(guild, {join_channel: channel.id.to_u64, join_text: text})
     true
   when "leave-log"
-    Arguments.assert_count(args, 1)
+    Arguments.assert_count(args, 2)
     check_stop(LeaveLog)
     channel = Arguments.at_position(args, 0, :channel)
     args.shift
     text = args.join(" ").strip
-    raise "Missing leave message" if text.size == 0
     State.feature(guild, State::Features::LeaveLog, true)
     State.set(guild, {leave_channel: channel.id.to_u64, leave_text: text})
     true
+  when "lang"
+    Arguments.assert_count(args, 1)
+    language = args[0]
+    State.set(guild, {language: language})
+    true
   else
-    raise "Unknown subcommand"
+    raise L10N.do("config_bad_subcommand")
   end
 end

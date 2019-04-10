@@ -1,6 +1,7 @@
 require "../Commands"
 require "http/client"
 require "../Arguments"
+require "../L10N"
 
 Commands.register_command(
   "leo", "Shorten URLs using leo.immobilien"
@@ -14,7 +15,7 @@ Commands.register_command(
     headers: HTTP::Headers{"Content-Type" => "application/json"},
     body: body
   ).body
-  raise "API Response Negative" unless response["status"] == "success"
+  raise L10N.do("leo_bad_api") unless response["status"] == "success"
   "https://leo.immobilien/#{response["urlKey"]}"
 end
 
@@ -30,7 +31,7 @@ Commands.register_command(
   "tag", "Display and edit custom messages"
 ) do |args, ctx|
   next TAG_HELP if args.size == 0
-  raise "This command can only be used in guilds" if ctx[:guild_id].nil?
+  raise L10N.do("e_guild_only") if ctx[:guild_id].nil?
   Arguments.assert_count(args, 1)
   guild = ctx[:guild_id].as(UInt64)
   command = args.shift
@@ -39,7 +40,7 @@ Commands.register_command(
     Util.assert_perms(ctx, ManageGuild)
     Arguments.assert_count(args, 2)
     tag_name = args.shift
-    raise "Tag name may not contain newlines." if tag_name.includes?("\n")
+    raise L10N.do("tag_no_newlines") if tag_name.includes?("\n")
     tag_content = args.join(" ")
     Bampersand::DATABASE.exec "insert into tags (guild_id, name, content) values (?,?,?)",
       guild.to_i64, tag_name, tag_content
@@ -58,7 +59,7 @@ Commands.register_command(
         output += " `#{rs.read(String)}`"
       end
     end
-    output.size == 0 ? "No tags available" : output
+    output.size == 0 ? L10N.do("tag_no_tags") : output
   else
     output = ""
     Bampersand::DATABASE.query "select content from tags where guild_id == ? and name == ?", guild.to_i64, command do |rs|
@@ -66,7 +67,7 @@ Commands.register_command(
         output = rs.read(String)
       end
     end
-    raise "Tag not found" if output.size == 0
+    raise L10N.do("tag_not_found") if output.size == 0
     {title: "**#{command.upcase}**", text: output}
   end
 end
