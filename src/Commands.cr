@@ -84,4 +84,7 @@ module Commands
       Log.error "Failed to deliver #{result} message to #{channel_id}: #{e}"
     end
   end
+  Log.info(
+    "Loaded #{Commands.get_commands.size} commands: #{Commands.get_commands.keys}"
+  )
 end

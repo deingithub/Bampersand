@@ -13,6 +13,7 @@ module Board
         board_data[rs.read(Int64).to_u64] = rs.read(Int64).to_u64
       end
     end
+    Log.info("Loaded Board Module: #{board_data.size} stored board messages")
     board_data
   end
 

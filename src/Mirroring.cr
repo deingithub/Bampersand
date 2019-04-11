@@ -28,4 +28,5 @@ module Mirroring
     end
     embed
   end
+  Log.info("Loaded Mirroring Module")
 end

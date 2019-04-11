@@ -84,4 +84,6 @@ Signal::INT.trap &SHUTDOWN
 Signal::TERM.trap &SHUTDOWN
 
 Log = Logger.new(STDOUT, level: Logger::INFO, progname: "B&")
+Log.info("Loaded Bampersand v#{Bampersand::VERSION}")
+Log.info("WHAT ARE YOUR COMMANDS?")
 Bampersand.start
