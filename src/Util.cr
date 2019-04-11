@@ -8,7 +8,7 @@ module Util
 
   def perms?(context, permissions)
     user_id = context[:issuer].id
-    return true if user_id == Bampersand::CONFIG["admin"]
+    return true if user_id == Bampersand::CONFIG["admin"].to_u64
     return true if context[:guild_id].nil?
     guild_id = context[:guild_id].not_nil!
     client = Bampersand::CLIENT
