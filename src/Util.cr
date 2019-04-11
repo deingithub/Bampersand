@@ -24,6 +24,9 @@ module Util
   macro assert_perms(context, permissions)
     raise "Insufficient permissions" unless Util.perms?({{context}}, Discord::Permissions::{{permissions}})
   end
+  def assert_guild(context)
+    raise "This command can only be used in guilds" if context[:guild_id].nil?
+  end
 
   def reaction_to_s(emoji)
     if emoji.id.nil?

@@ -24,17 +24,11 @@ module Commands
   def contextualize(msg : Discord::Message)
     client = Bampersand::CLIENT
     guild = msg.guild_id
-    return {
-      issuer:     msg.author,
-      client:     client,
-      channel_id: msg.channel_id.to_u64,
-      guild_id:   guild.to_u64,
-    } unless guild.nil?
     {
       issuer:     msg.author,
       client:     client,
       channel_id: msg.channel_id.to_u64,
-      guild_id:   nil,
+      guild_id:   guild.try &.to_u64,
     }
   end
 

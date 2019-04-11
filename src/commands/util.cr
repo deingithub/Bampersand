@@ -27,7 +27,7 @@ TAG_HELP = {
 
 Commands.register_command("tag") do |args, ctx|
   next TAG_HELP if args.size == 0
-  raise L10N.do("e_guild_only") if ctx[:guild_id].nil?
+  Util.assert_guild(ctx)
   Arguments.assert_count(args, 1)
   guild = ctx[:guild_id].as(UInt64)
   command = args.shift
