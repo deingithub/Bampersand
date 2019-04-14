@@ -23,5 +23,6 @@ module JoinLeaveLog
       client, config[:leave_channel], payload.user.id, config[:leave_text]
     )
   end
+
   Log.info("Loaded JoinLeaveLog Module")
 end
