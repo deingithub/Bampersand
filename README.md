@@ -11,7 +11,9 @@ Adapt `.env.example` to your needs and rename it to `.env`. It's gitignored by d
 
 ## Contributing
 
-1. Fork it (<https://gitlab.com/deing/Bampersand/fork>)
+The main codebase is located on https://git.15318.de. You can log in using GitLab or GitHub there.
+
+1. Fork it (<https://git.15318.de/deing/Bampersand/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
