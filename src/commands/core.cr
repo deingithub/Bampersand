@@ -1,4 +1,5 @@
 require "../Commands"
+require "../Arguments"
 require "../L10N"
 
 Commands.register_command("ping") do |args, ctx|
@@ -26,4 +27,21 @@ Commands.register_command("about") do |args, ctx|
       uptime.hours, uptime.minutes, uptime.seconds, Bampersand::CONFIG["admin"]
     ),
   }
+end
+
+Commands.register_command("ops") do |args, ctx|
+  raise L10N.do("config_restricted") unless ctx[:issuer].id == Bampersand::CONFIG["admin"].to_u64
+  Arguments.assert_count(args, 1)
+  command = args.shift.downcase
+  case command
+  when "restart"
+    system("sudo systemctl restart bampersand")
+    raise "Don't panic"
+  when "rebuild"
+    raise "Pull failed" unless system("git pull origin master")
+    raise "Build failed" unless system("shards build --release")
+    "Successfully rebuilt"
+  else
+    raise "Unknown subcommand"
+  end
 end
