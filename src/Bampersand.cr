@@ -47,7 +47,7 @@ module Bampersand
       elsif CONFIG["runas"] == "dev"
         client.status_update(
           "online",
-          Discord::GamePlaying.new(name: VERSION.to_s, type: 0i64)
+          Discord::GamePlaying.new(name: "#{VERSION.to_s} | #{`git status | head -n 1 | sed "s/On //"`.chomp}", type: 0i64)
         )
       else
         raise "Invalid run-as environment #{CONFIG["runas"]}"
