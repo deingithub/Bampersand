@@ -8,6 +8,7 @@ Adapt `.env.example` to your needs and rename it to `.env`. It's gitignored by d
  1. `create table state (guild_id unsigned integer unique on conflict replace, features unsigned integer, mirror_in unsigned integer, mirror_out unsigned integer, board_emoji string, board_channel unsigned integer, board_min_reacts unsigned integer, join_channel unsigned integer, join_text string, leave_channel unsigned integer, leave_text string, language string);`
  2. `create table board (source_message unsigned integer unique on conflict replace, board_message unsigned integer);`
  3. `create table tags (guild_id unsigned integer, name string, content string, constraint yikes unique (guild_id, name) on conflict replace);`
+ 4. `create table slowmodes (channel_id unsigned integer, secs unsigned integer);`
 
 ## Contributing
 
