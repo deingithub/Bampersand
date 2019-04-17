@@ -2,12 +2,14 @@ require "../Commands"
 require "../Util"
 require "../Arguments"
 require "../L10N"
+require "../ModTools"
 
 HELP_TEXT = "| config mirror <#channel | stop>
   | config board <emoji #channel min_reacts | stop>
   | config join-log <#channel welcome @user! some more text here. | stop>
   | config leave-log <#channel @user left. more text. | stop>
   | config lang <en …>
+  | config slowmode <secs | stop>
   | config print"
 
 macro check_stop(feature_enum)
@@ -76,6 +78,15 @@ Commands.register_command("config") do |args, ctx|
     language = args[0]
     raise L10N.do("config_bad_lang") unless L10N.lang? language
     State.set(guild, {language: language})
+    true
+  when "slowmode"
+    Arguments.assert_count(args, 1)
+    if args[0].downcase == "stop"
+      ModTools.remove_channel_slowmode(ctx[:channel_id])
+      next true
+    end
+    secs = args[0].to_u32
+    ModTools.set_channel_slowmode(ctx[:channel_id], secs)
     true
   else
     raise L10N.do("config_bad_subcommand")

@@ -10,6 +10,7 @@ require "./Board"
 require "./Util"
 require "./State"
 require "./JoinLeaveLog"
+require "./ModTools"
 
 module Bampersand
   extend self
@@ -34,6 +35,7 @@ module Bampersand
   def start
     client = CLIENT
     client.on_message_create do |msg|
+      ModTools.enforce_slowmode(msg)
       Mirroring.handle_message(msg)
       Commands.handle_message(msg) unless msg.author.bot
     end
@@ -83,7 +85,7 @@ SHUTDOWN = ->(s : Signal) {
 Signal::INT.trap &SHUTDOWN
 Signal::TERM.trap &SHUTDOWN
 
-Log = Logger.new(STDOUT, level: Logger::INFO, progname: "B&")
+Log = Logger.new(STDOUT, level: Logger::DEBUG, progname: "B&")
 Log.info("Loaded Bampersand v#{Bampersand::VERSION}")
 Log.info("WHAT ARE YOUR COMMANDS?")
 Bampersand.start
