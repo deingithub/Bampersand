@@ -4,6 +4,7 @@ module ModTools
   extend self
   @@slowmodes : Hash(UInt64, UInt32) = load_slowmodes
   @@last_msgs = {} of UInt64 => Hash(UInt64, Time)
+  Log.info("Loaded ModTools Module: #{@@slowmodes.size} channels with slowmode")
 
   def mute_role?(guild_id)
     mute_role_id = Bampersand::CACHE.guild_roles[guild_id].find do |role_id|
