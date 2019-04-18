@@ -1,6 +1,6 @@
 # Bampersand
 
-Simple Utility Bot for Discord written in Crystal and discordcr. See https://15318.de/bampersand for documentation.
+Simple Utility Bot for Discord written in Crystal and discordcr. See [the project wiki](https://git.15318.de/Dingens/Bampersand/wiki) for documentation.
 
 ## Development
 
