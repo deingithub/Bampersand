@@ -9,6 +9,7 @@ Adapt `.env.example` to your needs and rename it to `.env`. It's gitignored by d
  2. `create table board (source_message unsigned integer unique on conflict replace, board_message unsigned integer);`
  3. `create table tags (guild_id unsigned integer, name string, content string, constraint yikes unique (guild_id, name) on conflict replace);`
  4. `create table slowmodes (channel_id unsigned integer, secs unsigned integer);`
+ 5. `create table warnings (guild_id unsigned integer, user_id unsigned integer, mod_id unsigned integer, text string, timestamp date default current_timestamp);`
 
 ## Contributing
 
