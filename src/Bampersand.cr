@@ -12,6 +12,38 @@ require "./State"
 require "./JoinLeaveLog"
 require "./ModTools"
 
+module Discord::REST
+  # Changes the position of roles. Requires the "Manage Roles" permission
+  # and you cannot raise roles above the bot's highest role.
+  #
+  # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#modify-guild-role-positions)
+  def modify_guild_role_positions(guild_id : UInt64 | Snowflake,
+                                  positions : Array(ModifyRolePositionPayload))
+    response = request(
+      :guilds_gid_roles,
+      guild_id,
+      "PATCH",
+      "/guilds/#{guild_id}/roles",
+      HTTP::Headers{"Content-Type" => "application/json"},
+      positions.to_json
+    )
+
+    Array(Role).from_json(response.body)
+  end
+
+  struct ModifyRolePositionPayload
+    JSON.mapping(
+      id: Snowflake,
+      position: Int32
+    )
+
+    def initialize(id : UInt64 | Snowflake, @position : Int32)
+      id = Snowflake.new(id) unless id.is_a?(Snowflake)
+      @id = id
+    end
+  end
+end
+
 module Bampersand
   extend self
   include Commands
@@ -25,10 +57,7 @@ module Bampersand
   CACHE     = CLIENT.cache.not_nil!
 
   def load_client
-    client = Discord::Client.new(
-      token: "Bot #{CONFIG["token"]}",
-      client_id: CONFIG["client"].to_u64
-    )
+    client = Discord::Client.new(token: "Bot #{CONFIG["token"]}")
     client.cache = Discord::Cache.new(client)
     client
   end
