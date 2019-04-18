@@ -30,7 +30,6 @@ module ModTools
         slowmodes[rs.read(Int64).to_u64] = rs.read(Int64).to_u32
       end
     end
-    puts slowmodes
     slowmodes
   end
 
