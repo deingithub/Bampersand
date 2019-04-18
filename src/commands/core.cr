@@ -6,7 +6,7 @@ Commands.register_command("ping") do |args, ctx|
   ping = Time.now - ctx[:timestamp]
   {
     title: "#{ping.total_milliseconds}ms",
-    text: ":ping_pong: " + ["Pyongyang!", "Ding!", "Pong!", "[reverberating PONG]", "Plonk."].sample
+    text:  ":ping_pong: " + ["Pyongyang!", "Ding!", "Pong!", "[reverberating PONG]", "Plonk."].sample,
   }
 end
 

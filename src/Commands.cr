@@ -30,7 +30,7 @@ module Commands
       client:     client,
       channel_id: msg.channel_id.to_u64,
       guild_id:   guild.try &.to_u64,
-      timestamp:  msg.timestamp
+      timestamp:  msg.timestamp,
     }
   end
 

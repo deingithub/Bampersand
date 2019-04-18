@@ -17,44 +17,46 @@ module ModTools
     cache.guild_channels(guild_id).each do |channel_id|
       client.edit_channel_permissions(channel_id, mute_role.id, "role", Discord::Permissions::None, Discord::Permissions::SendMessages)
     end
-    Bampersand::CLIENT.cache.not_nil!.cache(mute_role)
-    Bampersand::CLIENT.cache.not_nil!.add_guild_role(guild_id, mute_role.id)
+    Bampersand::CACHE.cache(mute_role)
+    Bampersand::CACHE.add_guild_role(guild_id, mute_role.id)
     mute_role
   end
 
-	def load_slowmodes
-		slowmodes = {} of UInt64 => UInt32
+  def load_slowmodes
+    slowmodes = {} of UInt64 => UInt32
     Bampersand::DATABASE.query "select * from slowmodes" do |rs|
       raise "Invalid column count #{rs.column_count}" unless rs.column_count == 2
       rs.each do
         slowmodes[rs.read(Int64).to_u64] = rs.read(Int64).to_u32
       end
     end
-		puts slowmodes
+    puts slowmodes
     slowmodes
-	end
+  end
 
   def set_channel_slowmode(channel_id, secs)
     @@slowmodes[channel_id] = secs
     @@last_msgs[channel_id] = {} of UInt64 => Time
-		Bampersand::DATABASE.exec "insert into slowmodes values (?, ?)", channel_id.to_i64, secs.to_i64
+    Bampersand::DATABASE.exec "insert into slowmodes values (?, ?)", channel_id.to_i64, secs.to_i64
   end
-	def remove_channel_slowmode(channel_id)
-		@@slowmodes.delete(channel_id)
-		@@last_msgs.delete(channel_id)
-		Bampersand::DATABASE.exec "delete from slowmodes where channel_id == ?", channel_id.to_i64
-	end
+
+  def remove_channel_slowmode(channel_id)
+    @@slowmodes.delete(channel_id)
+    @@last_msgs.delete(channel_id)
+    Bampersand::DATABASE.exec "delete from slowmodes where channel_id == ?", channel_id.to_i64
+  end
+
   def get_channel_slowmode(channel_id)
-		@@slowmodes[channel_id]?
-	end
+    @@slowmodes[channel_id]?
+  end
 
   def enforce_slowmode(msg)
     cooldown = @@slowmodes[msg.channel_id]?
-		return if cooldown.nil?
-		if @@last_msgs[msg.channel_id.to_u64]?.nil?
-			@@last_msgs[msg.channel_id.to_u64] = {} of UInt64 => Time
-		end
-		channel_data = @@last_msgs[msg.channel_id]
+    return if cooldown.nil?
+    if @@last_msgs[msg.channel_id.to_u64]?.nil?
+      @@last_msgs[msg.channel_id.to_u64] = {} of UInt64 => Time
+    end
+    channel_data = @@last_msgs[msg.channel_id]
     last_timestamp = channel_data[msg.author.id]?
     last_timestamp = Time.unix(0) if last_timestamp.nil?
     if Time.now - last_timestamp > Time::Span.new(0, 0, cooldown)

@@ -22,6 +22,7 @@ module Bampersand
   DATABASE  = DB.open "sqlite3://./bampersand.sqlite3"
   CONFIG    = Dotenv.load!
   CLIENT    = load_client
+  CACHE     = CLIENT.cache.not_nil!
 
   def load_client
     client = Discord::Client.new(
