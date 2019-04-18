@@ -13,11 +13,18 @@ module ModTools
     return Bampersand::CACHE.resolve_role(mute_role_id) unless mute_role_id.nil?
     nil
   end
+
   def create_mute_role(guild_id)
     mute_role = Bampersand::CLIENT.create_guild_role(guild_id, "B& Muted")
     Bampersand::CACHE.guild_channels(guild_id).each do |channel_id|
       Bampersand::CLIENT.edit_channel_permissions(channel_id, mute_role.id, "role", Discord::Permissions::None, Discord::Permissions::SendMessages)
     end
+    current_user = Bampersand::CACHE.resolve_current_user
+    member = Bampersand::CACHE.resolve_member(guild_id, current_user.id)
+    position = member.roles.map do |role_id|
+      Bampersand::CACHE.resolve_role(role_id).position
+    end.max
+    Bampersand::CLIENT.modify_guild_role_positions(guild_id, [Discord::REST::ModifyRolePositionPayload.new(mute_role.id, position)])
     Bampersand::CACHE.cache(mute_role)
     Bampersand::CACHE.add_guild_role(guild_id, mute_role.id)
     mute_role
