@@ -44,7 +44,7 @@ Commands.register_command("ops") do |args, ctx|
   when "rebuild"
     raise "Pull failed" unless system("git pull origin master")
     raise "Build failed" unless system("shards build --release")
-    "Successfully rebuilt"
+    "Successfully rebuilt in #{Time.now - ctx[:timestamp]}s."
   else
     raise "Unknown subcommand"
   end
