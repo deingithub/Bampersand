@@ -2,7 +2,7 @@ module Util
   extend self
 
   def guild(client, channel_id)
-    Bampersand::CACHE.resolve_channel(channel_id)
+    channel = Bampersand::CACHE.resolve_channel(channel_id)
     return channel.guild_id
   end
 

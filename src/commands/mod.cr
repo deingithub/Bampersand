@@ -62,11 +62,11 @@ Commands.register_command("unban") do |args, ctx|
 end
 
 Commands.register_command("mute") do |args, ctx|
-  raise "Not implemented"
   Util.assert_guild(ctx)
   Util.assert_perms(ctx, ManageMessages)
   Arguments.assert_count(args, 1)
-  mute_role = ModTools.mute_role(ctx[:guild_id].not_nil!)
+  mute_role = ModTools.mute_role?(ctx[:guild_id].not_nil!)
+  mute_role = ModTools.create_mute_role(ctx[:guild_id].not_nil!) if mute_role.nil?
   output = L10N.do("mute_title", args.size, ctx[:issuer].id)
   guild_id = ctx[:guild_id].as(UInt64)
   args.each do |argument|
@@ -76,6 +76,26 @@ Commands.register_command("mute") do |args, ctx|
       output += L10N.do("mute_successful", argument) + "\n"
     rescue
       output += L10N.do("mute_failed", argument) + "\n"
+    end
+  end
+  {title: "", text: output}
+end
+
+Commands.register_command("unmute") do |args, ctx|
+  Util.assert_guild(ctx)
+  Util.assert_perms(ctx, ManageMessages)
+  Arguments.assert_count(args, 1)
+  mute_role = ModTools.mute_role?(ctx[:guild_id].not_nil!)
+  raise L10N.do("unmute_no_role") if mute_role.nil?
+  output = L10N.do("unmute_title", args.size, ctx[:issuer].id)
+  guild_id = ctx[:guild_id].as(UInt64)
+  args.each do |argument|
+    begin
+      user = Arguments.to_user(argument)
+      ctx[:client].remove_guild_member_role(guild_id, user.id.to_u64, mute_role.id.to_u64)
+      output += L10N.do("unmute_successful", argument) + "\n"
+    rescue
+      output += L10N.do("unmute_failed", argument) + "\n"
     end
   end
   {title: "", text: output}

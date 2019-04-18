@@ -5,17 +5,17 @@ module ModTools
   @@slowmodes : Hash(UInt64, UInt32) = load_slowmodes
   @@last_msgs = {} of UInt64 => Hash(UInt64, Time)
 
-  def mute_role(guild_id)
-    client = Bampersand::CLIENT
-    cache = client.cache.as(Discord::Cache)
-    mute_role = cache.resolve_guild(guild_id).roles.find do |role|
-      puts role.name
-      role.name == "B& Muted"
+  def mute_role?(guild_id)
+    mute_role_id = Bampersand::CACHE.guild_roles[guild_id].find do |role_id|
+      Bampersand::CACHE.resolve_role(role_id).name == "B& Muted"
     end
-    return mute_role unless mute_role.nil?
-    mute_role = client.create_guild_role(guild_id, "B& Muted")
-    cache.guild_channels(guild_id).each do |channel_id|
-      client.edit_channel_permissions(channel_id, mute_role.id, "role", Discord::Permissions::None, Discord::Permissions::SendMessages)
+    return Bampersand::CACHE.resolve_role(mute_role_id) unless mute_role_id.nil?
+    nil
+  end
+  def create_mute_role(guild_id)
+    mute_role = Bampersand::CLIENT.create_guild_role(guild_id, "B& Muted")
+    Bampersand::CACHE.guild_channels(guild_id).each do |channel_id|
+      Bampersand::CLIENT.edit_channel_permissions(channel_id, mute_role.id, "role", Discord::Permissions::None, Discord::Permissions::SendMessages)
     end
     Bampersand::CACHE.cache(mute_role)
     Bampersand::CACHE.add_guild_role(guild_id, mute_role.id)
