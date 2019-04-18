@@ -3,10 +3,10 @@ require "../Util"
 require "../Arguments"
 require "../L10N"
 require "../ModTools"
+require "../Perms"
 
 Commands.register_command("ban") do |args, ctx|
-  Util.assert_guild(ctx)
-  Util.assert_perms(ctx, BanMembers)
+  Perms.assert_perms(ctx, Moderator)
   Arguments.assert_count(args, 1)
   output = L10N.do("ban_title", args.size, ctx[:issuer].id)
   guild_id = ctx[:guild_id].as(UInt64)
@@ -26,8 +26,7 @@ Commands.register_command("ban") do |args, ctx|
 end
 
 Commands.register_command("kick") do |args, ctx|
-  Util.assert_guild(ctx)
-  Util.assert_perms(ctx, KickMembers)
+  Perms.assert_perms(ctx, Moderator)
   Arguments.assert_count(args, 1)
   output = L10N.do("kick_title", args.size, ctx[:issuer].id)
   guild_id = ctx[:guild_id].as(UInt64)
@@ -44,8 +43,7 @@ Commands.register_command("kick") do |args, ctx|
 end
 
 Commands.register_command("unban") do |args, ctx|
-  Util.assert_guild(ctx)
-  Util.assert_perms(ctx, BanMembers)
+  Perms.assert_perms(ctx, Moderator)
   Arguments.assert_count(args, 1)
   output = L10N.do("unban_title", args.size, ctx[:issuer].id)
   guild_id = ctx[:guild_id].as(UInt64)
@@ -62,8 +60,7 @@ Commands.register_command("unban") do |args, ctx|
 end
 
 Commands.register_command("mute") do |args, ctx|
-  Util.assert_guild(ctx)
-  Util.assert_perms(ctx, ManageMessages)
+  Perms.assert_perms(ctx, Moderator)
   Arguments.assert_count(args, 1)
   mute_role = ModTools.mute_role?(ctx[:guild_id].not_nil!)
   mute_role = ModTools.create_mute_role(ctx[:guild_id].not_nil!) if mute_role.nil?
@@ -82,8 +79,7 @@ Commands.register_command("mute") do |args, ctx|
 end
 
 Commands.register_command("unmute") do |args, ctx|
-  Util.assert_guild(ctx)
-  Util.assert_perms(ctx, ManageMessages)
+  Perms.assert_perms(ctx, Moderator)
   Arguments.assert_count(args, 1)
   mute_role = ModTools.mute_role?(ctx[:guild_id].not_nil!)
   raise L10N.do("unmute_no_role") if mute_role.nil?
@@ -110,8 +106,7 @@ WARN_HELP = {
 }
 
 Commands.register_command("warn") do |args, ctx|
-  Util.assert_guild(ctx)
-  Util.assert_perms(ctx, ManageMessages)
+  Perms.assert_perms(ctx, Moderator)
   if args.size == 0
     next WARN_HELP
   end
@@ -147,6 +142,7 @@ Commands.register_command("warn") do |args, ctx|
     Bampersand::DATABASE.exec "delete from warnings where guild_id == ? and user_id == ? limit 1", ctx[:guild_id].not_nil!.to_i64, target_user.id.to_u64.to_i64
     true
   when "expunge"
+    Perms.assert_perms(ctx, Admin)
     Bampersand::DATABASE.exec "delete from warnings where guild_id == ? and user_id == ?", ctx[:guild_id].not_nil!.to_i64, target_user.id.to_u64.to_i64
     true
   else

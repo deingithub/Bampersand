@@ -1,6 +1,7 @@
 require "../Commands"
 require "../Arguments"
 require "../L10N"
+require "../Perms"
 
 Commands.register_command("ping") do |args, ctx|
   ping = Time.now - ctx[:timestamp]
@@ -34,7 +35,7 @@ Commands.register_command("about") do |args, ctx|
 end
 
 Commands.register_command("ops") do |args, ctx|
-  raise L10N.do("config_restricted") unless ctx[:issuer].id == Bampersand::CONFIG["admin"].to_u64
+  Perms.assert_perms(ctx, Operator)
   Arguments.assert_count(args, 1)
   command = args.shift.downcase
   case command

@@ -11,6 +11,7 @@ require "./Util"
 require "./State"
 require "./JoinLeaveLog"
 require "./ModTools"
+require "./Perms"
 
 module Discord::REST
   # Changes the position of roles. Requires the "Manage Roles" permission

@@ -25,6 +25,17 @@ module Arguments
     user
   end
 
+  def to_role(input)
+    begin
+      input = input.delete("<@&>").to_u64
+      role = Bampersand::CACHE.resolve_role(input)
+    rescue e
+      Log.error("to_role failed to resolve #{input}")
+      raise "Invalid role" if role.nil?
+    end
+    role
+  end
+
   def at_position(args, position, type)
     raise "Missing #{type} argument at #{position}" unless args[position]?
     return case type
@@ -32,6 +43,8 @@ module Arguments
       to_channel(args[position])
     when :user
       to_user(args[position])
+    when :role
+      to_role(args[position])
     else
       raise "this can't happen luckily"
     end

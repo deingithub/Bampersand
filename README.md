@@ -10,6 +10,7 @@ Adapt `.env.example` to your needs and rename it to `.env`. It's gitignored by d
  3. `create table tags (guild_id unsigned integer, name string, content string, constraint yikes unique (guild_id, name) on conflict replace);`
  4. `create table slowmodes (channel_id unsigned integer, secs unsigned integer);`
  5. `create table warnings (guild_id unsigned integer, user_id unsigned integer, mod_id unsigned integer, text string, timestamp date default current_timestamp);`
+ 6. `create table perms (guild_id unsigned integer unique on conflict replace, admin_id unsigned integer, moderator_id unsigned integer);`
 
 ## Contributing
 

@@ -2,6 +2,7 @@ require "../Commands"
 require "http/client"
 require "../Arguments"
 require "../L10N"
+require "../Perms"
 
 Commands.register_command("leo") do |args, ctx|
   Arguments.assert_count(args, 1)
@@ -33,7 +34,7 @@ Commands.register_command("tag") do |args, ctx|
   command = args.shift
   case command
   when "update"
-    Util.assert_perms(ctx, ManageGuild)
+    Perms.assert_perms(ctx, Moderator)
     Arguments.assert_count(args, 2)
     tag_name = args.shift
     raise L10N.do("tag_no_newlines") if tag_name.includes?("\n")
@@ -42,7 +43,7 @@ Commands.register_command("tag") do |args, ctx|
       guild.to_i64, tag_name, tag_content
     true
   when "delete"
-    Util.assert_perms(ctx, ManageGuild)
+    Perms.assert_perms(ctx, Moderator)
     Arguments.assert_count(args, 1)
     tag_name = args.shift
     Bampersand::DATABASE.exec "delete from tags where guild_id == ? and name == ?",

@@ -3,6 +3,7 @@ require "../Util"
 require "../Arguments"
 require "../L10N"
 require "../ModTools"
+require "../Perms"
 
 HELP_TEXT = "| config mirror <#channel | stop>
   | config board <emoji #channel min_reacts | stop>
@@ -21,9 +22,8 @@ end
 
 Commands.register_command("config") do |args, ctx|
   next {text: HELP_TEXT, title: L10N.do("config_title")} if args.size == 0
-  Util.assert_guild(ctx)
-  Util.assert_perms(ctx, ManageGuild)
-  guild = ctx[:guild_id].as(UInt64)
+  Perms.assert_perms(ctx, Admin)
+  guild = ctx[:guild_id].not_nil!
   subcommand = args.shift.downcase
   next case subcommand
   when "print"
@@ -31,7 +31,7 @@ Commands.register_command("config") do |args, ctx|
   when "mirror"
     Arguments.assert_count(args, 1)
     check_stop(Mirror)
-    raise L10N.do("config_restricted") unless ctx[:issuer].id == Bampersand::CONFIG["admin"].to_u64
+    Perms.assert_perms(ctx, Operator)
     channel = Arguments.at_position(args, 0, :channel)
     raise L10N.do("config_bad_mirror") if channel.id == ctx[:channel_id]
     State.set(guild, {mirror_in: ctx[:channel_id], mirror_out: channel.id.to_u64})
@@ -87,6 +87,15 @@ Commands.register_command("config") do |args, ctx|
     end
     secs = args[0].to_u32
     ModTools.set_channel_slowmode(ctx[:channel_id], secs)
+    true
+  when "mod-role"
+    role = Arguments.at_position(args, 0, :role)
+    Perms.update_perms(guild, Perms::Level::Moderator, role.id.to_u64)
+    true
+  when "admin-role"
+    Perms.assert_perms(ctx, Owner)
+    role = Arguments.at_position(args, 0, :role)
+    Perms.update_perms(guild, Perms::Level::Admin, role.id.to_u64)
     true
   else
     raise L10N.do("config_bad_subcommand")
