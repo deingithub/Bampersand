@@ -44,7 +44,17 @@ Commands.register_command("ops") do |args, ctx|
   when "rebuild"
     raise "Pull failed" unless system("git pull origin master")
     raise "Build failed" unless system("shards build --release")
-    "Successfully rebuilt in #{Time.now - ctx[:timestamp]}s."
+    "Successfully rebuilt in #{Time.now - ctx[:timestamp]}."
+  when "perms"
+    Util.assert_guild(ctx)
+    user_id = Arguments.at_position(args, 0, :user).id
+    member = Bampersand::CLIENT.cache.not_nil!.resolve_member(ctx[:guild_id].not_nil!, user_id)
+    perms = Discord::Permissions::None
+    member.roles.each do |role_id|
+      role = Bampersand::CLIENT.cache.not_nil!.resolve_role(role_id)
+      perms += role.permissions.value
+    end
+    "```#{perms.to_s}```"
   else
     raise "Unknown subcommand"
   end
