@@ -3,7 +3,11 @@ require "../Arguments"
 require "../L10N"
 
 Commands.register_command("ping") do |args, ctx|
-  ":ping_pong: " + ["Pyongyang!", "Ding!", "Pong!", "[reverberating PONG]", "Plonk."].sample
+  ping = Time.now - ctx[:timestamp]
+  {
+    title: "#{ping.total_milliseconds}ms",
+    text: ":ping_pong: " + ["Pyongyang!", "Ding!", "Pong!", "[reverberating PONG]", "Plonk."].sample
+  }
 end
 
 Commands.register_command("help") do |args, ctx|

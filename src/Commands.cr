@@ -7,7 +7,8 @@ module Commands
     issuer: Discord::User,
     client: Discord::Client,
     channel_id: UInt64,
-    guild_id: UInt64?)
+    guild_id: UInt64?,
+    timestamp: Time)
   alias CommandResult = NamedTuple(title: String, text: String) | String | Bool
   @@COMMANDS = {} of String => CommandType
 
@@ -29,6 +30,7 @@ module Commands
       client:     client,
       channel_id: msg.channel_id.to_u64,
       guild_id:   guild.try &.to_u64,
+      timestamp:  msg.timestamp
     }
   end
 
