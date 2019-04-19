@@ -1,9 +1,6 @@
 Commands.register_command("ping") do |args, ctx|
   ping = Time.utc_now - ctx.timestamp
-  {
-    title: "#{ping.total_milliseconds}ms",
-    text:  ":ping_pong: " + ["Pyongyang!", "Ding!", "Pong!", "[reverberating PONG]", "Plonk."].sample,
-  }
+  ":ping_pong: " + ["Pyongyang!", "Ding!", "Pong!", "[reverberating PONG]", "Plonk."].sample + " | `#{ping.total_milliseconds.to_i}ms`"
 end
 
 Commands.register_command("help") do |args, ctx|
@@ -14,7 +11,7 @@ Commands.register_command("help") do |args, ctx|
   output = output.rchop("| ")
   output += "\n\n"
   output += "See `#{Bampersand::CONFIG["prefix"]}about` for more info."
-  {title: "**BAMPERSAND HELP**", text: output}
+  {title: "**BAMPERSAND COMMANDS**", text: output}
 end
 
 Commands.register_command("about") do |args, ctx|
@@ -32,7 +29,7 @@ Commands.register_command("ops") do |args, ctx|
   case command
   when "restart"
     system("sudo systemctl restart bampersand")
-    raise "Don't panic"
+    raise "You should not be able to see this."
   when "rebuild"
     raise "Pull failed" unless system("git pull origin master")
     raise "Build failed" unless system("shards build --release")
