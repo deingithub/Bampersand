@@ -27,8 +27,8 @@ Commands.register_command("about") do |args, ctx|
   {
     title: L10N.do("about_title", Bampersand::VERSION),
     text:  L10N.do(
-      "about_text", ctx[:client].cache.as(Discord::Cache).guilds.size,
-      ctx[:client].cache.as(Discord::Cache).users.size, uptime.days,
+      "about_text", Bampersand::CACHE.guilds.size,
+      Bampersand::CACHE.users.size, uptime.days,
       uptime.hours, uptime.minutes, uptime.seconds, Bampersand::CONFIG["admin"]
     ),
   }

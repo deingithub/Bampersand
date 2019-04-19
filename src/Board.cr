@@ -2,7 +2,7 @@ require "./Util"
 require "./L10N"
 
 module Board
-  @@board_messages : Hash(UInt64, UInt64) = load_board()
+  @@board_messages : Hash(UInt64, UInt64) = load_board
   extend self
 
   def load_board
@@ -20,7 +20,7 @@ module Board
   def handle_reaction(payload)
     client = Bampersand::CLIENT
     guild = Util.guild(client, payload.channel_id)
-    return if guild.nil?
+    return unless guild
     # Abort if a) board is disabled
     return unless State.feature? guild, State::Features::Board
     # b) Message is from the board channel
@@ -30,9 +30,9 @@ module Board
     return unless Util.reaction_to_s(payload.emoji) == config[:board_emoji]
     message = client.get_channel_message(payload.channel_id, payload.message_id)
     # Abort if the amount of board-triggering reactions is below threshold
-    count = message.reactions.as(Array(Discord::Reaction)).find { |element|
+    count = message.reactions.not_nil!.find { |element|
       Util.reaction_to_s(element.emoji) == config[:board_emoji]
-    }.as(Discord::Reaction).count
+    }.not_nil!.count
     return if count < config[:board_min_reacts]
 
     unless @@board_messages.has_key? payload.message_id
@@ -84,10 +84,8 @@ module Board
       ],
       colour: 0x16161d
     )
-    if message.content.size > 0
-      embed.description = message.content
-    end
-    if message.attachments.size == 1
+    embed.description = message.content
+    if message.attachments.size > 0
       embed.image = Discord::EmbedImage.new(message.attachments[0].url)
     end
     embed
