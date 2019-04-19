@@ -3,19 +3,18 @@ require "./commands/*"
 module Commands
   extend self
 
-
   record CommandContext,
-  issuer : Discord::User,
-  channel_id : UInt64,
-  guild_id : UInt64?,
-  timestamp : Time
+    issuer : Discord::User,
+    channel_id : UInt64,
+    guild_id : UInt64?,
+    timestamp : Time,
+    permissions : Discord::Permissions,
+    level : Perms::Level
   record GuildOnlyContext, guild_id : UInt64?
 
   alias CommandType = Proc(Array(String), CommandContext, CommandResult)
   alias CommandResult = NamedTuple(title: String, text: String) | String | Bool
   @@COMMANDS = {} of String => CommandType
-
-
 
   def register_command(
     name, &execute : Array(String), CommandContext -> CommandResult
@@ -30,11 +29,24 @@ module Commands
   def build_context(msg : Discord::Message)
     client = Bampersand::CLIENT
     guild = msg.guild_id
+    perms = if guild
+              member = Bampersand::CACHE.resolve_member(guild, msg.author.id)
+              perms_tmp = Discord::Permissions::None
+              member.roles.each do |role_id|
+                role = Bampersand::CACHE.resolve_role(role_id)
+                perms_tmp += role.permissions.value
+              end
+              perms_tmp
+            else
+              Discord::Permissions::None
+            end
     CommandContext.new(
-      issuer:     msg.author,
+      issuer: msg.author,
       channel_id: msg.channel_id.to_u64,
-      guild_id:   guild.try &.to_u64,
-      timestamp:  msg.timestamp,
+      guild_id: guild.try &.to_u64,
+      timestamp: msg.timestamp,
+      permissions: perms,
+      level: Perms.get_highest(guild, msg.author.id)
     )
   end
 
@@ -59,7 +71,6 @@ module Commands
   end
 
   def send_result(client, channel_id, message_id, command, result, output)
-
     ctx = GuildOnlyContext.new(
       guild_id: Util.guild(client, channel_id).try &.to_u64,
     )

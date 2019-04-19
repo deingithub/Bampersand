@@ -21,28 +21,25 @@ module Perms
   end
 
   def check(guild_id, user_id, level)
-    return true if user_id == Bampersand::CONFIG["admin"].to_u64
-    return true if level == Level::User
-    return false if guild_id.nil?
+    return get_highest(guild_id, user_id) >= level
+  end
+  def get_highest(guild_id, user_id)
+    return Level::Operator if user_id == Bampersand::CONFIG["admin"].to_u64
+    return Level::User if guild_id.nil?
     guild_id = guild_id.not_nil!
+    return Level::Owner if user_id == Bampersand::CACHE.resolve_guild(guild_id).owner_id.to_u64
     guild_perms = @@perms[guild_id]?
-    owner_id = Bampersand::CACHE.resolve_guild(guild_id).owner_id.to_u64
-    return true if user_id == owner_id && level != Level::Operator
-    raise "No permission roles configured" if guild_perms.nil?
-    if level == Level::Admin
-      role_id = guild_perms.not_nil![Level::Admin]?
-      raise "Admin role not set" if role_id.nil?
+    if guild_perms && guild_perms[Level::Admin]?
       member = Bampersand::CACHE.resolve_member(guild_id, user_id)
-      return member.roles.any? { |role| role.to_u64 == role_id }
+      role_id = guild_perms[Level::Admin]
+      return Level::Admin if member.roles.any? { |role| role.to_u64 == role_id }
     end
-    if level == Level::Moderator
-      admin_role_id = guild_perms.not_nil![Level::Admin]?
-      role_id = guild_perms.not_nil![Level::Moderator]?
-      raise "Moderator role not set" if role_id.nil? && admin_role_id.nil?
+    if guild_perms && guild_perms[Level::Moderator]?
       member = Bampersand::CACHE.resolve_member(guild_id, user_id)
-      return member.roles.any? { |role| role.to_u64 == role_id || role.to_u64 == admin_role_id }
+      role_id = guild_perms[Level::Moderator]
+      return Level::Moderator if member.roles.any? { |role| role.to_u64 == role_id }
     end
-    return false
+    return Level::User
   end
 
   def update_perms(guild_id, level, role_id)
