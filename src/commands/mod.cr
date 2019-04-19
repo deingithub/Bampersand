@@ -112,7 +112,7 @@ Commands.register_command("warn") do |args, ctx|
     Bampersand::DATABASE.exec "insert into warnings (guild_id, user_id, mod_id, text) values (?,?,?,?)", ctx.guild_id.not_nil!.to_i64, target_user.id.to_u64.to_i64, ctx.issuer.id.to_u64.to_i64, reason
     {
       title: "Warning added for #{target_user.username}##{target_user.discriminator}",
-      text:  "Responsible Moderator#{reason}",
+      text:  "Responsible Moderator<@#{ctx.issuer.id}>\n#{reason}",
     }
   when "list"
     output = ""
