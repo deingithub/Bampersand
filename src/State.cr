@@ -1,5 +1,3 @@
-require "db"
-
 module State
   extend self
 

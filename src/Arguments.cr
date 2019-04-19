@@ -1,5 +1,3 @@
-require "./Bampersand"
-
 module Arguments
   extend self
 

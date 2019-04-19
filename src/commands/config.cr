@@ -1,16 +1,12 @@
-require "../Commands"
-require "../Util"
-require "../Arguments"
-require "../L10N"
-require "../ModTools"
-require "../Perms"
-
-HELP_TEXT = "| config mirror <#channel | stop>
+CONFIG_HELP = {
+  text: "| config mirror <#channel | stop>
   | config board <emoji #channel min_reacts | stop>
   | config join-log <#channel welcome @user! some more text here. | stop>
   | config leave-log <#channel @user left. more text. | stop>
   | config slowmode <secs | stop>
-  | config print"
+  | config print",
+  title: "**BAMPERSAND CONFIGURATION**",
+}
 
 macro check_stop(feature_enum)
   if args[0] == "stop"
@@ -20,7 +16,7 @@ macro check_stop(feature_enum)
 end
 
 Commands.register_command("config") do |args, ctx|
-  next {text: HELP_TEXT, title: L10N.do("config_title")} if args.size == 0
+  next CONFIG_HELP if args.size == 0
   Perms.assert_level(Admin)
   guild = ctx.guild_id.not_nil!
   subcommand = args.shift.downcase
@@ -32,7 +28,7 @@ Commands.register_command("config") do |args, ctx|
     check_stop(Mirror)
     Perms.assert_level(Operator)
     channel = Arguments.at_position(args, 0, :channel)
-    raise L10N.do("config_bad_mirror") if channel.id == ctx.channel_id
+    raise "Bad mirror target." if channel.id == ctx.channel_id
     State.set(guild, {mirror_in: ctx.channel_id, mirror_out: channel.id.to_u64})
     State.feature(guild, State::Features::Mirror, true)
     true
@@ -43,7 +39,7 @@ Commands.register_command("config") do |args, ctx|
     emoji = args[0]
     channel = Arguments.at_position(args, 1, :channel)
     min_reacts = args[2].to_u32
-    raise L10N.do("config_bad_min_reacts") if min_reacts == 0
+    raise "min_reacts must be greater than zero." if min_reacts == 0
     State.set(
       guild,
       {
@@ -91,6 +87,6 @@ Commands.register_command("config") do |args, ctx|
     Perms.update_perms(guild, Perms::Level::Admin, role.id.to_u64)
     true
   else
-    raise L10N.do("config_bad_subcommand")
+    raise "Unknown subcommand."
   end
 end

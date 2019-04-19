@@ -23,6 +23,7 @@ module Perms
   def check(guild_id, user_id, level)
     get_highest(guild_id, user_id) >= level
   end
+
   def get_highest(guild_id, user_id)
     return Level::Operator if user_id == Bampersand::CONFIG["admin"].to_u64
     return Level::User if guild_id.nil?

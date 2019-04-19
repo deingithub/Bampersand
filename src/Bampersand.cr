@@ -5,14 +5,16 @@ require "logger"
 require "sqlite3"
 require "./DiscordCr" # Fix for modify_guild_role_positions until it's merged into their master
 
-require "./Commands"
-require "./Mirroring"
-require "./Board"
 require "./Util"
 require "./State"
+require "./Arguments"
+require "./Perms"
+
+require "./Mirroring"
+require "./Board"
 require "./JoinLeaveLog"
 require "./ModTools"
-require "./Perms"
+require "./Commands"
 
 module Bampersand
   extend self

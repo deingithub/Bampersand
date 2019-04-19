@@ -1,8 +1,3 @@
-require "../Commands"
-require "../Arguments"
-require "../L10N"
-require "../Perms"
-
 Commands.register_command("ping") do |args, ctx|
   ping = Time.utc_now - ctx.timestamp
   {
@@ -18,19 +13,15 @@ Commands.register_command("help") do |args, ctx|
   end
   output = output.rchop("| ")
   output += "\n\n"
-  output += L10N.do("help_info_line", Bampersand::CONFIG["prefix"])
-  {title: L10N.do("help_title"), text: output}
+  output += "See `#{Bampersand::CONFIG["prefix"]}about` for more info."
+  {title: "**BAMPERSAND HELP**", text: output}
 end
 
 Commands.register_command("about") do |args, ctx|
   uptime = Time.monotonic - Bampersand::STARTUP
   {
-    title: L10N.do("about_title", Bampersand::VERSION),
-    text:  L10N.do(
-      "about_text", Bampersand::CACHE.guilds.size,
-      Bampersand::CACHE.users.size, uptime.days,
-      uptime.hours, uptime.minutes, uptime.seconds, Bampersand::CONFIG["admin"]
-    ),
+    title: "**BAMPERSAND VERSION #{Bampersand::VERSION}",
+    text:  "This is a simple utility bot for Discord powered by [Crystal](https://crystal-lang.org).\nYou can take a peek <:blobpeek:559732380697362482> at the [documentation](https://git.15318.de/Dingens/Bampersand/wiki/Home) and the [source code](https://git.15318.de/Dingens/Bampersand)!\nCurrently running on #{Bampersand::CACHE.guilds.size} guilds, serving #{Bampersand::CACHE.users.size} users.\nUptime is #{uptime.days}d #{uptime.hours}h #{uptime.minutes}m #{uptime.seconds}s. Bot operator is <@#{Bampersand::CONFIG["admin"]}>.",
   }
 end
 

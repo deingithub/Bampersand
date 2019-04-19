@@ -1,6 +1,3 @@
-require "./Util"
-require "./L10N"
-
 module Board
   @@board_messages : Hash(UInt64, UInt64) = load_board
   extend self
@@ -67,7 +64,6 @@ module Board
 
   def build_embed(guild_id, message, count, emoji)
     ctx = Commands::GuildOnlyContext.new(guild_id: guild_id.to_u64)
-    jump_string = L10N.do("board_jump_string", count, emoji, message.channel_id, guild_id, message.channel_id, message.id)
     embed = Discord::Embed.new(
       timestamp: message.timestamp,
       author: Discord::EmbedAuthor.new(
@@ -77,8 +73,8 @@ module Board
       ),
       fields: [
         Discord::EmbedField.new(
-          L10N.do("message"),
-          jump_string
+          "Message",
+          "#{count}x #{emoji} — Posted to <##{message.channel_id}> — [Jump](https://discordapp.com/channels/#{guild_id}/#{message.channel_id}/#{message.id})"
         ),
       ],
       colour: 0x16161d

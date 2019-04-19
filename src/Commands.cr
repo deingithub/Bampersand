@@ -87,7 +87,7 @@ module Commands
         end
       elsif result == :error
         client.create_message(channel_id, "", embed: Discord::Embed.new(
-          title: L10N.do("command_failed", command).upcase,
+          title: "**failed to execute: #{command}**".upcase,
           colour: 0xdd2e44,
           description: "`#{output.to_s}`"
         ))

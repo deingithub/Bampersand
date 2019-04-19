@@ -1,5 +1,3 @@
-require "./Bampersand"
-
 module ModTools
   extend self
   @@slowmodes : Hash(UInt64, UInt32) = load_slowmodes
