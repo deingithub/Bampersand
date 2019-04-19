@@ -63,7 +63,7 @@ module State
     new_state = get(guild_id).merge(update)
     @@state[guild_id] = new_state
     Bampersand::DATABASE.exec(
-      "insert into state (guild_id, features, mirror_in, mirror_out, board_emoji, board_channel, board_min_reacts, join_channel, join_text, leave_channel, leave_text) values (?,?,?,?,?,?,?,?,?,?,?,?)",
+      "insert into state (guild_id, features, mirror_in, mirror_out, board_emoji, board_channel, board_min_reacts, join_channel, join_text, leave_channel, leave_text) values (?,?,?,?,?,?,?,?,?,?,?)",
       guild_id.to_i64,
       new_state[:features].to_i64,
       new_state[:mirror_in].to_i64,
