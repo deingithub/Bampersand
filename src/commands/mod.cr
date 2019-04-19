@@ -1,7 +1,7 @@
 Commands.register_command("ban") do |args, ctx|
   Perms.assert_level(Moderator)
   Arguments.assert_count(args, 1)
-  output = "Attempting to ban #{args.size} members…\nResponsible Moderator: <@#{ctx.issuer.id}>"
+  output = "Attempting to ban #{args.size} members…\nResponsible Moderator: <@#{ctx.issuer.id}>\n"
   guild_id = ctx.guild_id.as(UInt64)
   args.each do |argument|
     begin
@@ -12,7 +12,7 @@ Commands.register_command("ban") do |args, ctx|
       )
       output += ":heavy_check_mark: Banned <@#{user.id}>" + "\n"
     rescue
-      output += ":x: Failed to ban #{argument}" + "\n"
+      output += ":x: Failed to ban #{argument}\n"
     end
   end
   {title: "", text: output}
@@ -21,7 +21,7 @@ end
 Commands.register_command("kick") do |args, ctx|
   Perms.assert_level(Moderator)
   Arguments.assert_count(args, 1)
-  output = "Attempting to kick #{args.size} members…\nResponsible Moderator: <@#{ctx.issuer.id}>"
+  output = "Attempting to kick #{args.size} members…\nResponsible Moderator: <@#{ctx.issuer.id}>\n"
   guild_id = ctx.guild_id.as(UInt64)
   args.each do |argument|
     begin
@@ -29,7 +29,7 @@ Commands.register_command("kick") do |args, ctx|
       Bampersand::CLIENT.remove_guild_member(guild_id, user.id)
       output += ":heavy_check_mark: Kicked <@#{user.id}>" + "\n"
     rescue
-      output += ":x: Failed to kick #{argument}" + "\n"
+      output += ":x: Failed to kick #{argument}\n"
     end
   end
   {title: "", text: output}
@@ -38,7 +38,7 @@ end
 Commands.register_command("unban") do |args, ctx|
   Perms.assert_level(Moderator)
   Arguments.assert_count(args, 1)
-  output = "Attempting to unban #{args.size} members…\nResponsible Moderator: <@#{ctx.issuer.id}>"
+  output = "Attempting to unban #{args.size} members…\nResponsible Moderator: <@#{ctx.issuer.id}>\n"
   guild_id = ctx.guild_id.as(UInt64)
   args.each do |argument|
     begin
@@ -46,7 +46,7 @@ Commands.register_command("unban") do |args, ctx|
       Bampersand::CLIENT.remove_guild_ban(guild_id, user.id)
       output += ":heavy_check_mark: Pardoned <@#{user.id}>" + "\n"
     rescue
-      output += ":x: Failed to unban #{argument}" + "\n"
+      output += ":x: Failed to unban #{argument}\n"
     end
   end
   {title: "", text: output}
@@ -57,7 +57,7 @@ Commands.register_command("mute") do |args, ctx|
   Arguments.assert_count(args, 1)
   mute_role = ModTools.mute_role?(ctx.guild_id.not_nil!)
   mute_role = ModTools.create_mute_role(ctx.guild_id.not_nil!) if mute_role.nil?
-  output = "Attempting to mute #{args.size} members…\nResponsible Moderator: <@#{ctx.issuer.id}>"
+  output = "Attempting to mute #{args.size} members…\nResponsible Moderator: <@#{ctx.issuer.id}>\n"
   guild_id = ctx.guild_id.as(UInt64)
   args.each do |argument|
     begin
@@ -65,7 +65,7 @@ Commands.register_command("mute") do |args, ctx|
       Bampersand::CLIENT.add_guild_member_role(guild_id, user.id.to_u64, mute_role.id.to_u64)
       output += ":heavy_check_mark: Muted <@#{user.id}>" + "\n"
     rescue
-      output += ":x: Failed to mute #{argument}" + "\n"
+      output += ":x: Failed to mute #{argument}\n"
     end
   end
   {title: "", text: output}
@@ -76,7 +76,7 @@ Commands.register_command("unmute") do |args, ctx|
   Arguments.assert_count(args, 1)
   mute_role = ModTools.mute_role?(ctx.guild_id.not_nil!)
   raise "Mute role not found." if mute_role.nil?
-  output = "Attempting to unmute #{args.size} members…\nResponsible Moderator: <@#{ctx.issuer.id}>"
+  output = "Attempting to unmute #{args.size} members…\nResponsible Moderator: <@#{ctx.issuer.id}>\n"
   guild_id = ctx.guild_id.as(UInt64)
   args.each do |argument|
     begin
@@ -84,7 +84,7 @@ Commands.register_command("unmute") do |args, ctx|
       Bampersand::CLIENT.remove_guild_member_role(guild_id, user.id.to_u64, mute_role.id.to_u64)
       output += ":heavy_check_mark: Unmuted <@#{user.id}>" + "\n"
     rescue
-      output += ":x: Failed to unmute #{argument}" + "\n"
+      output += ":x: Failed to unmute #{argument}\n"
     end
   end
   {title: "", text: output}
@@ -112,7 +112,7 @@ Commands.register_command("warn") do |args, ctx|
     Bampersand::DATABASE.exec "insert into warnings (guild_id, user_id, mod_id, text) values (?,?,?,?)", ctx.guild_id.not_nil!.to_i64, target_user.id.to_u64.to_i64, ctx.issuer.id.to_u64.to_i64, reason
     {
       title: "Warning added for #{target_user.username}##{target_user.discriminator}",
-      text:  "Responsible Moderator: <@#{ctx.issuer.id}>\n#{reason}",
+      text:  "Responsible Moderator#{reason}",
     }
   when "list"
     output = ""
