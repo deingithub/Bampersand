@@ -14,9 +14,9 @@ Adapt `.env.example` to your needs and rename it to `.env`. It's gitignored by d
 
 ## Contributing
 
-The main codebase is located on https://git.15318.de. You can log in using GitLab or GitHub there.
+The main codebase and issue tracker are located on https://git.15318.de. You can log in using GitLab or GitHub there. You can contribute from either platform, but Gitea is preferred.
 
-1. Fork the Project on Gitea
+1. Fork the Project on your platform
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
