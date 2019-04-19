@@ -35,7 +35,7 @@ Commands.register_command("about") do |args, ctx|
 end
 
 Commands.register_command("ops") do |args, ctx|
-  Perms.assert_perms(ctx, Operator)
+  Perms.assert_level(Operator)
   Arguments.assert_count(args, 1)
   command = args.shift.downcase
   case command
@@ -46,16 +46,6 @@ Commands.register_command("ops") do |args, ctx|
     raise "Pull failed" unless system("git pull origin master")
     raise "Build failed" unless system("shards build --release")
     "Successfully rebuilt in #{Time.utc_now - ctx.timestamp}."
-  when "perms"
-    Util.assert_guild(ctx)
-    user_id = Arguments.at_position(args, 0, :user).id
-    member = Bampersand::CACHE.resolve_member(ctx.guild_id.not_nil!, user_id)
-    perms = Discord::Permissions::None
-    member.roles.each do |role_id|
-      role = Bampersand::CACHE.resolve_role(role_id)
-      perms += role.permissions.value
-    end
-    "```#{perms.to_s}```"
   else
     raise "Unknown subcommand"
   end

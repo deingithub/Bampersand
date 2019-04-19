@@ -21,7 +21,7 @@ module Perms
   end
 
   def check(guild_id, user_id, level)
-    return get_highest(guild_id, user_id) >= level
+    get_highest(guild_id, user_id) >= level
   end
   def get_highest(guild_id, user_id)
     return Level::Operator if user_id == Bampersand::CONFIG["admin"].to_u64
@@ -48,7 +48,7 @@ module Perms
     Bampersand::DATABASE.exec "insert into perms values (?,?,?)", guild_id.to_i64, @@perms[guild_id][Level::Admin]?.try(&.to_i64), @@perms[guild_id][Level::Moderator]?.try(&.to_i64)
   end
 
-  macro assert_perms(context, permissions)
-    raise "Unauthorized. Required: {{permissions}}" unless Perms.check({{context}}.guild_id, {{context}}.issuer.id.to_u64, Perms::Level::{{permissions}})
+  macro assert_level(level)
+    raise "Unauthorized. Required: {{level}}" unless Perms.check(ctx.guild_id, ctx.issuer.id.to_u64, Perms::Level::{{level}})
   end
 end

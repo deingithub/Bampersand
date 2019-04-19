@@ -34,7 +34,7 @@ Commands.register_command("tag") do |args, ctx|
   command = args.shift
   case command
   when "update"
-    Perms.assert_perms(ctx, Moderator)
+    Perms.assert_level(Moderator)
     Arguments.assert_count(args, 2)
     tag_name = args.shift
     raise L10N.do("tag_no_newlines") if tag_name.includes?("\n")
@@ -43,7 +43,7 @@ Commands.register_command("tag") do |args, ctx|
       guild.to_i64, tag_name, tag_content
     true
   when "delete"
-    Perms.assert_perms(ctx, Moderator)
+    Perms.assert_level(Moderator)
     Arguments.assert_count(args, 1)
     tag_name = args.shift
     Bampersand::DATABASE.exec "delete from tags where guild_id == ? and name == ?",
@@ -67,4 +67,13 @@ Commands.register_command("tag") do |args, ctx|
     raise L10N.do("tag_not_found") if output.size == 0
     {title: "**#{command.upcase}**", text: output}
   end
+end
+
+Commands.register_command("info") do |args, ctx|
+  <<-OUT
+  Your ID: `#{ctx.issuer.id}`
+  Your Permissions: `#{ctx.permissions.value}`
+  Your Level: `#{ctx.level}`
+  Message Timestamp: `#{ctx.timestamp}`
+  OUT
 end

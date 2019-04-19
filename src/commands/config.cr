@@ -9,7 +9,6 @@ HELP_TEXT = "| config mirror <#channel | stop>
   | config board <emoji #channel min_reacts | stop>
   | config join-log <#channel welcome @user! some more text here. | stop>
   | config leave-log <#channel @user left. more text. | stop>
-  | config lang <en …>
   | config slowmode <secs | stop>
   | config print"
 
@@ -22,7 +21,7 @@ end
 
 Commands.register_command("config") do |args, ctx|
   next {text: HELP_TEXT, title: L10N.do("config_title")} if args.size == 0
-  Perms.assert_perms(ctx, Admin)
+  Perms.assert_level(Admin)
   guild = ctx.guild_id.not_nil!
   subcommand = args.shift.downcase
   next case subcommand
@@ -31,7 +30,7 @@ Commands.register_command("config") do |args, ctx|
   when "mirror"
     Arguments.assert_count(args, 1)
     check_stop(Mirror)
-    Perms.assert_perms(ctx, Operator)
+    Perms.assert_level(Operator)
     channel = Arguments.at_position(args, 0, :channel)
     raise L10N.do("config_bad_mirror") if channel.id == ctx.channel_id
     State.set(guild, {mirror_in: ctx.channel_id, mirror_out: channel.id.to_u64})
@@ -73,12 +72,6 @@ Commands.register_command("config") do |args, ctx|
     State.feature(guild, State::Features::LeaveLog, true)
     State.set(guild, {leave_channel: channel.id.to_u64, leave_text: text})
     true
-  when "lang"
-    Arguments.assert_count(args, 1)
-    language = args[0]
-    raise L10N.do("config_bad_lang") unless L10N.lang? language
-    State.set(guild, {language: language})
-    true
   when "slowmode"
     Arguments.assert_count(args, 1)
     if args[0].downcase == "stop"
@@ -93,7 +86,7 @@ Commands.register_command("config") do |args, ctx|
     Perms.update_perms(guild, Perms::Level::Moderator, role.id.to_u64)
     true
   when "admin-role"
-    Perms.assert_perms(ctx, Owner)
+    Perms.assert_level(Owner)
     role = Arguments.at_position(args, 0, :role)
     Perms.update_perms(guild, Perms::Level::Admin, role.id.to_u64)
     true
