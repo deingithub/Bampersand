@@ -17,7 +17,7 @@ end
 Commands.register_command("about") do |args, ctx|
   uptime = Time.monotonic - Bampersand::STARTUP
   {
-    title: "**BAMPERSAND VERSION #{Bampersand::VERSION}",
+    title: "**BAMPERSAND VERSION #{Bampersand::VERSION}**",
     text:  "This is a simple utility bot for Discord powered by [Crystal](https://crystal-lang.org).\nYou can take a peek <:blobpeek:559732380697362482> at the [documentation](https://git.15318.de/Dingens/Bampersand/wiki/Home) and the [source code](https://git.15318.de/Dingens/Bampersand)!\nCurrently running on #{Bampersand::CACHE.guilds.size} guilds, serving #{Bampersand::CACHE.users.size} users.\nUptime is #{uptime.days}d #{uptime.hours}h #{uptime.minutes}m #{uptime.seconds}s. Bot operator is <@#{Bampersand::CONFIG["admin"]}>.",
   }
 end
