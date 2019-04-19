@@ -3,6 +3,7 @@ require "discordcr"
 require "dotenv"
 require "logger"
 require "sqlite3"
+require "./DiscordCr" # Fix for modify_guild_role_positions until it's merged into their master
 
 require "./Commands"
 require "./Mirroring"
@@ -13,41 +14,8 @@ require "./JoinLeaveLog"
 require "./ModTools"
 require "./Perms"
 
-module Discord::REST
-  # Changes the position of roles. Requires the "Manage Roles" permission
-  # and you cannot raise roles above the bot's highest role.
-  #
-  # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#modify-guild-role-positions)
-  def modify_guild_role_positions(guild_id : UInt64 | Snowflake,
-                                  positions : Array(ModifyRolePositionPayload))
-    response = request(
-      :guilds_gid_roles,
-      guild_id,
-      "PATCH",
-      "/guilds/#{guild_id}/roles",
-      HTTP::Headers{"Content-Type" => "application/json"},
-      positions.to_json
-    )
-
-    Array(Role).from_json(response.body)
-  end
-
-  struct ModifyRolePositionPayload
-    JSON.mapping(
-      id: Snowflake,
-      position: Int32
-    )
-
-    def initialize(id : UInt64 | Snowflake, @position : Int32)
-      id = Snowflake.new(id) unless id.is_a?(Snowflake)
-      @id = id
-    end
-  end
-end
-
 module Bampersand
   extend self
-  include Commands
 
   VERSION   = `shards version`.chomp
   PRESENCES = ["your concerns", "endless complaints", "socialist teachings", "the silence of the lambs", "anarchist teachings", "emo poetry", "FREUDE SCHÖNER GÖTTERFUNKEN", "the heat death of the universe", "[ASMR] Richard Stallman tells you to use free software", "the decline of western civilisation", "4'33'' (Nightcore Remix)", "General Protection Fault", "breadtube", "the book of origin"]
