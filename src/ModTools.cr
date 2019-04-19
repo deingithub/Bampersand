@@ -66,7 +66,7 @@ module ModTools
     channel_data = @@last_msgs[msg.channel_id]
     last_timestamp = channel_data[msg.author.id]?
     last_timestamp = Time.unix(0) if last_timestamp.nil?
-    if Time.now - last_timestamp > Time::Span.new(0, 0, cooldown)
+    if Time.utc_now - last_timestamp > Time::Span.new(0, 0, cooldown)
       @@last_msgs[msg.channel_id][msg.author.id.to_u64] = msg.timestamp
     else
       Log.debug("Enforcing slowmode on message #{msg.id} by #{msg.author.username}##{msg.author.discriminator} in #{msg.channel_id}. RIP.")
