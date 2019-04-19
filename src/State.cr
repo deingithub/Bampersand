@@ -11,8 +11,7 @@ module State
     join_channel: UInt64,
     join_text: String,
     leave_channel: UInt64,
-    leave_text: String,
-    language: String)
+    leave_text: String)
 
   def default_state : GuildState
     {
@@ -26,7 +25,6 @@ module State
       join_text:        "",
       leave_channel:    0u64,
       leave_text:       "",
-      language:         "en",
     }
   end
 
@@ -36,7 +34,7 @@ module State
     state = {} of UInt64 => GuildState
     Bampersand::DATABASE.query "select * from state" do |rs|
       # Adjust expected column count when the data schema is changed
-      raise "Invalid column count #{rs.column_count}" unless rs.column_count == 1 + 11
+      raise "Invalid column count #{rs.column_count}" unless rs.column_count == 1 + 10
       rs.each do
         state[rs.read(Int64).to_u64] = {
           features:         Features.new(rs.read(Int32)),
@@ -49,7 +47,6 @@ module State
           join_text:        rs.read(String),
           leave_channel:    rs.read(Int64).to_u64,
           leave_text:       rs.read(String),
-          language:         rs.read(String),
         }
       end
     end
@@ -66,7 +63,7 @@ module State
     new_state = get(guild_id).merge(update)
     @@state[guild_id] = new_state
     Bampersand::DATABASE.exec(
-      "insert into state (guild_id, features, mirror_in, mirror_out, board_emoji, board_channel, board_min_reacts, join_channel, join_text, leave_channel, leave_text, language) values (?,?,?,?,?,?,?,?,?,?,?,?)",
+      "insert into state (guild_id, features, mirror_in, mirror_out, board_emoji, board_channel, board_min_reacts, join_channel, join_text, leave_channel, leave_text) values (?,?,?,?,?,?,?,?,?,?,?,?)",
       guild_id.to_i64,
       new_state[:features].to_i64,
       new_state[:mirror_in].to_i64,
@@ -78,7 +75,6 @@ module State
       new_state[:join_text],
       new_state[:leave_channel].to_i64,
       new_state[:leave_text],
-      new_state[:language],
     )
   end
 
