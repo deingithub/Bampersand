@@ -7,10 +7,10 @@ module Util
   end
 
   def perms?(context, permissions)
-    user_id = context[:issuer].id
+    user_id = context.issuer.id
     return true if user_id == Bampersand::CONFIG["admin"].to_u64
-    return true if context[:guild_id].nil?
-    guild_id = context[:guild_id].not_nil!
+    return true if context.guild_id.nil?
+    guild_id = context.guild_id.not_nil!
     member = Bampersand::CACHE.resolve_member(guild_id, user_id)
     roles = member.roles.map do |element|
       Bampersand::CACHE.resolve_role(element)
@@ -25,7 +25,7 @@ module Util
   end
 
   def assert_guild(context)
-    raise "This command can only be used in guilds" if context[:guild_id].nil?
+    raise "This command can only be used in guilds" if context.guild_id.nil?
   end
 
   def reaction_to_s(emoji)

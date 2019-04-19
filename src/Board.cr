@@ -66,8 +66,7 @@ module Board
   end
 
   def build_embed(guild_id, message, count, emoji)
-    # Yes, this is very ugly.
-    ctx = {guild_id: guild_id}
+    ctx = Commands::GuildOnlyContext.new(guild_id: guild_id.to_u64)
     jump_string = L10N.do("board_jump_string", count, emoji, message.channel_id, guild_id, message.channel_id, message.id)
     embed = Discord::Embed.new(
       timestamp: message.timestamp,

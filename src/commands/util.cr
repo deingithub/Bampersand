@@ -30,7 +30,7 @@ Commands.register_command("tag") do |args, ctx|
   next TAG_HELP if args.size == 0
   Util.assert_guild(ctx)
   Arguments.assert_count(args, 1)
-  guild = ctx[:guild_id].as(UInt64)
+  guild = ctx.guild_id.as(UInt64)
   command = args.shift
   case command
   when "update"

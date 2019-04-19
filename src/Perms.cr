@@ -52,6 +52,6 @@ module Perms
   end
 
   macro assert_perms(context, permissions)
-    raise "Unauthorized. Required: {{permissions}}" unless Perms.check({{context}}[:guild_id], {{context}}[:issuer].id.to_u64, Perms::Level::{{permissions}})
+    raise "Unauthorized. Required: {{permissions}}" unless Perms.check({{context}}.guild_id, {{context}}.issuer.id.to_u64, Perms::Level::{{permissions}})
   end
 end

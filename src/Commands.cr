@@ -2,15 +2,20 @@ require "./commands/*"
 
 module Commands
   extend self
+
+
+  record CommandContext,
+  issuer : Discord::User,
+  channel_id : UInt64,
+  guild_id : UInt64?,
+  timestamp : Time
+  record GuildOnlyContext, guild_id : UInt64?
+
   alias CommandType = Proc(Array(String), CommandContext, CommandResult)
-  alias CommandContext = NamedTuple(
-    issuer: Discord::User,
-    client: Discord::Client,
-    channel_id: UInt64,
-    guild_id: UInt64?,
-    timestamp: Time)
   alias CommandResult = NamedTuple(title: String, text: String) | String | Bool
   @@COMMANDS = {} of String => CommandType
+
+
 
   def register_command(
     name, &execute : Array(String), CommandContext -> CommandResult
@@ -22,16 +27,15 @@ module Commands
     @@COMMANDS
   end
 
-  def contextualize(msg : Discord::Message)
+  def build_context(msg : Discord::Message)
     client = Bampersand::CLIENT
     guild = msg.guild_id
-    {
+    CommandContext.new(
       issuer:     msg.author,
-      client:     client,
       channel_id: msg.channel_id.to_u64,
       guild_id:   guild.try &.to_u64,
       timestamp:  msg.timestamp,
-    }
+    )
   end
 
   def handle_message(msg)
@@ -45,7 +49,7 @@ module Commands
     begin
       Log.info "#{msg.author.username}##{msg.author.discriminator} issued #{command} #{arguments}"
       output = @@COMMANDS[command].call(
-        arguments, contextualize(msg)
+        arguments, build_context(msg)
       )
       send_result(client, msg.channel_id, msg.id, command, :success, output)
     rescue e
@@ -55,9 +59,10 @@ module Commands
   end
 
   def send_result(client, channel_id, message_id, command, result, output)
-    ctx = {
-      guild_id: Util.guild(client, channel_id),
-    }
+
+    ctx = GuildOnlyContext.new(
+      guild_id: Util.guild(client, channel_id).try &.to_u64,
+    )
     begin
       if result == :success
         if output.is_a?(String)

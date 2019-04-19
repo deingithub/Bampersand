@@ -23,7 +23,7 @@ end
 Commands.register_command("config") do |args, ctx|
   next {text: HELP_TEXT, title: L10N.do("config_title")} if args.size == 0
   Perms.assert_perms(ctx, Admin)
-  guild = ctx[:guild_id].not_nil!
+  guild = ctx.guild_id.not_nil!
   subcommand = args.shift.downcase
   next case subcommand
   when "print"
@@ -33,8 +33,8 @@ Commands.register_command("config") do |args, ctx|
     check_stop(Mirror)
     Perms.assert_perms(ctx, Operator)
     channel = Arguments.at_position(args, 0, :channel)
-    raise L10N.do("config_bad_mirror") if channel.id == ctx[:channel_id]
-    State.set(guild, {mirror_in: ctx[:channel_id], mirror_out: channel.id.to_u64})
+    raise L10N.do("config_bad_mirror") if channel.id == ctx.channel_id
+    State.set(guild, {mirror_in: ctx.channel_id, mirror_out: channel.id.to_u64})
     State.feature(guild, State::Features::Mirror, true)
     true
   when "board"
@@ -82,11 +82,11 @@ Commands.register_command("config") do |args, ctx|
   when "slowmode"
     Arguments.assert_count(args, 1)
     if args[0].downcase == "stop"
-      ModTools.remove_channel_slowmode(ctx[:channel_id])
+      ModTools.remove_channel_slowmode(ctx.channel_id)
       next true
     end
     secs = args[0].to_u32
-    ModTools.set_channel_slowmode(ctx[:channel_id], secs)
+    ModTools.set_channel_slowmode(ctx.channel_id, secs)
     true
   when "mod-role"
     role = Arguments.at_position(args, 0, :role)

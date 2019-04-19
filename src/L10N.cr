@@ -18,10 +18,10 @@ module L10N
   end
 
   macro do(key, *substs)
-		%lang = if ctx[:guild_id].nil?
+		%lang = if ctx.guild_id.nil?
 			"en"
 		else
-			State.get(ctx[:guild_id])[:language]
+			State.get(ctx.guild_id)[:language]
 		end
 		string = L10N.translate(%lang, {{key}})
 		{% for subst in substs %}
