@@ -14,10 +14,9 @@ Adapt `.env.example` to your needs and rename it to `.env`. It's gitignored by d
 
 ## Contributing
 
-This project is located on [Gitea](https://git.15318.de/Dingens/Bampersand/) and all commits are mirrored to [GitLab](https://gitlab.com/deing/bampersand) and [GitHub](https://github.com/deingithub/Bampersand) for discoverability and easier contributions.  
-The main codebase and issue tracker are located on Gitea. You can log in using GitLab or GitHub there. You can contribute from any platform, but Gitea is preferred.
+This project is located on [Gitea](https://git.15318.de/Dingens/Bampersand/) and all commits are mirrored to [GitLab](https://gitlab.com/deing/bampersand) and [GitHub](https://github.com/deingithub/Bampersand) for discoverability and easier contributions. The issue tracker is exclusively on Gitea.
 
-1. Fork the Project on your platform
+1. Log in on Gitea using your favourite platform and fork *or* fork directly from your favourite platform.
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
