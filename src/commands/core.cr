@@ -4,14 +4,12 @@ Commands.register_command("ping") do |args, ctx|
 end
 
 Commands.register_command("help") do |args, ctx|
-  output = ""
-  Commands.get_commands.keys.each do |name|
-    output += "`#{Bampersand::CONFIG["prefix"]}#{name}` | "
-  end
-  output = output.rchop("| ")
-  output += "\n\n"
-  output += "See `#{Bampersand::CONFIG["prefix"]}about` for more info."
-  {title: "**BAMPERSAND COMMANDS**", text: output}
+  output = if args.size != 1
+             Commands.get_commands.keys.select { |e| !e.includes?(" ") }.reduce(" ") { |memo, e| memo + "*`#{e}`*, " }.rchop(", ")
+           else
+             Commands.get_commands.keys.select { |e| e.includes?(args[0]) }.sort!.reduce(" ") { |memo, e| memo + "*`#{e}`* #{COMMAND_INFO[e].desc}\n" }
+           end
+  {text: output.lstrip.size > 0 ? output : "No results found.", title: "Commands"}
 end
 
 Commands.register_command("about") do |args, ctx|
@@ -22,19 +20,12 @@ Commands.register_command("about") do |args, ctx|
   }
 end
 
-Commands.register_command("ops") do |args, ctx|
-  Perms.assert_level(Operator)
-  Arguments.assert_count(args, 1)
-  command = args.shift.downcase
-  case command
-  when "restart"
-    system("sudo systemctl restart bampersand")
-    raise "You should not be able to see this."
-  when "rebuild"
-    raise "Pull failed" unless system("git pull origin master")
-    raise "Build failed" unless system("shards build --release")
-    "Successfully rebuilt in #{Time.utc_now - ctx.timestamp}."
-  else
-    raise "Unknown subcommand"
-  end
+Commands.register_command("ops restart") do |args, ctx|
+  system("sudo systemctl restart bampersand")
+  raise "You should not be able to see this."
+end
+Commands.register_command("ops rebuild") do |args, ctx|
+  raise "Pull failed" unless system("git pull origin master")
+  raise "Build failed" unless system("shards build --release")
+  "Successfully rebuilt in #{Time.utc_now - ctx.timestamp}."
 end

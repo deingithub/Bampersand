@@ -51,21 +51,33 @@ module Commands
   end
 
   def handle_message(msg)
-    client = Bampersand::CLIENT
     return unless msg.content.starts_with?(Bampersand::CONFIG["prefix"])
     content = msg.content.lchop(Bampersand::CONFIG["prefix"])
-    arguments = content.split(" ")
-    command = arguments.shift
-    return unless @@COMMANDS[command]?
-    output = ""
+    @@COMMANDS.keys.each do |key|
+      next unless content.starts_with? key
+      arguments = content.lchop(key).split(" ")
+      arguments.delete("")
+      output = ""
+      run_command(msg, key, arguments)
+      break
+    end
+  end
+
+  def run_command(msg, command, args)
+    unless Perms.check(msg.guild_id, msg.author.id, COMMAND_INFO[command].level)
+      fail_str = "Unauthorized. Required: #{COMMAND_INFO[command].level}"
+      Log.warn "Refused to execute #{command} #{args} for #{msg.author.username}##{msg.author.discriminator}: Level Mismatch #{Perms.get_highest(msg.guild_id, msg.author.id)} < #{COMMAND_INFO[command].level}"
+      send_result(Bampersand::CLIENT, msg.channel_id, msg.id, command, :error, fail_str)
+      return
+    end
     begin
-      Log.info "#{msg.author.username}##{msg.author.discriminator} issued #{command} #{arguments}"
+      Log.info "#{msg.author.username}##{msg.author.discriminator} issued #{command} #{args}"
       output = @@COMMANDS[command].call(
-        arguments, build_context(msg)
+        args, build_context(msg)
       )
-      send_result(client, msg.channel_id, msg.id, command, :success, output)
+      send_result(Bampersand::CLIENT, msg.channel_id, msg.id, command, :success, output)
     rescue e
-      send_result(client, msg.channel_id, msg.id, command, :error, e)
+      send_result(Bampersand::CLIENT, msg.channel_id, msg.id, command, :error, e)
       Log.error "Failed to execute: #{e}"
     end
   end
