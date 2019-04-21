@@ -11,19 +11,22 @@ module Commands
     permissions : Discord::Permissions,
     level : Perms::Level
   record GuildOnlyContext, guild_id : UInt64?
+  record CommandInfo, desc : String, level : Perms::Level
 
   alias CommandType = Proc(Array(String), CommandContext, CommandResult)
   alias CommandResult = NamedTuple(title: String, text: String) | String | Bool
-  @@COMMANDS = {} of String => CommandType
+  @@command_exec = {} of String => CommandType
+  @@command_info = {} of String => CommandInfo
 
   def register_command(
-    name, &execute : Array(String), CommandContext -> CommandResult
+    name, desc, perms, &execute : Array(String), CommandContext -> CommandResult
   )
-    @@COMMANDS[name] = execute
+    @@command_exec[name] = execute
+    @@command_info[name] = CommandInfo.new(desc, perms)
   end
 
   def get_commands
-    @@COMMANDS
+    @@command_info
   end
 
   def build_context(msg : Discord::Message)
@@ -53,7 +56,7 @@ module Commands
   def handle_message(msg)
     return unless msg.content.starts_with?(Bampersand::CONFIG["prefix"])
     content = msg.content.lchop(Bampersand::CONFIG["prefix"])
-    @@COMMANDS.keys.each do |key|
+    @@command_exec.keys.each do |key|
       next unless content.starts_with? key
       arguments = content.lchop(key).split(" ")
       arguments.delete("")
@@ -64,15 +67,15 @@ module Commands
   end
 
   def run_command(msg, command, args)
-    unless Perms.check(msg.guild_id, msg.author.id, COMMAND_INFO[command].level)
-      fail_str = "Unauthorized. Required: #{COMMAND_INFO[command].level}"
-      Log.warn "Refused to execute #{command} #{args} for #{msg.author.username}##{msg.author.discriminator}: Level Mismatch #{Perms.get_highest(msg.guild_id, msg.author.id)} < #{COMMAND_INFO[command].level}"
+    unless Perms.check(msg.guild_id, msg.author.id, @@command_info[command].level)
+      fail_str = "Unauthorized. Required: #{@@command_info[command].level}"
+      Log.warn "Refused to execute #{command} #{args} for #{msg.author.username}##{msg.author.discriminator}: Level Mismatch #{Perms.get_highest(msg.guild_id, msg.author.id)} < #{@@command_info[command].level}"
       send_result(Bampersand::CLIENT, msg.channel_id, msg.id, command, :error, fail_str)
       return
     end
     begin
       Log.info "#{msg.author.username}##{msg.author.discriminator} issued #{command} #{args}"
-      output = @@COMMANDS[command].call(
+      output = @@command_exec[command].call(
         args, build_context(msg)
       )
       send_result(Bampersand::CLIENT, msg.channel_id, msg.id, command, :success, output)

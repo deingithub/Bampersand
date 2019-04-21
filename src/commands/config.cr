@@ -7,7 +7,7 @@ macro common(feature_enum)
   end
 end
 
-Commands.register_command("config mirror") do |args, ctx|
+Commands.register_command("config mirror", "Sets up the Mirroring feature.", Perms::Level::Operator) do |args, ctx|
   common(Mirror)
   guild = ctx.guild_id.not_nil!
   channel = Arguments.at_position(args, 0, :channel)
@@ -17,7 +17,7 @@ Commands.register_command("config mirror") do |args, ctx|
   true
 end
 
-Commands.register_command("config board") do |args, ctx|
+Commands.register_command("config board", "Sets up the Board Feature.", Perms::Level::Admin) do |args, ctx|
   common(Board)
   guild = ctx.guild_id.not_nil!
   Arguments.assert_count(args, 3)
@@ -37,7 +37,7 @@ Commands.register_command("config board") do |args, ctx|
   true
 end
 
-Commands.register_command("config join-log") do |args, ctx|
+Commands.register_command("config join-log", "Sets up the JoinLog feature.", Perms::Level::Admin) do |args, ctx|
   common(JoinLog)
   guild = ctx.guild_id.not_nil!
   Arguments.assert_count(args, 2)
@@ -49,7 +49,7 @@ Commands.register_command("config join-log") do |args, ctx|
   true
 end
 
-Commands.register_command("config leave-log") do |args, ctx|
+Commands.register_command("config leave-log", "Sets up the LeaveLog Feature.", Perms::Level::Admin) do |args, ctx|
   common(LeaveLog)
   guild = ctx.guild_id.not_nil!
   Arguments.assert_count(args, 2)
@@ -61,7 +61,7 @@ Commands.register_command("config leave-log") do |args, ctx|
   true
 end
 
-Commands.register_command("config slowmode") do |args, ctx|
+Commands.register_command("config slowmode", "Enforces slowmode in the current channel for everyone.", Perms::Level::Admin) do |args, ctx|
   guild = ctx.guild_id.not_nil!
   Arguments.assert_count(args, 1)
   if args[0].downcase == "stop"
@@ -73,21 +73,21 @@ Commands.register_command("config slowmode") do |args, ctx|
   true
 end
 
-Commands.register_command("config mod-role") do |args, ctx|
+Commands.register_command("config mod-role", "Sets the Moderator Level role.", Perms::Level::Admin) do |args, ctx|
   guild = ctx.guild_id.not_nil!
   role = Arguments.at_position(args, 0, :role)
   Perms.update_perms(guild, Perms::Level::Moderator, role.id.to_u64)
   true
 end
 
-Commands.register_command("config admin-role") do |args, ctx|
+Commands.register_command("config admin-role", "Sets the Admin Level role.", Perms::Level::Owner) do |args, ctx|
   guild = ctx.guild_id.not_nil!
   role = Arguments.at_position(args, 0, :role)
   Perms.update_perms(guild, Perms::Level::Admin, role.id.to_u64)
   true
 end
 
-Commands.register_command("config") do |args, ctx|
+Commands.register_command("config", "[Edit per-guild configuration]", Perms::Level::Admin) do |args, ctx|
   {
     text: "| config mirror <#channel | stop>
   | config board <emoji #channel min_reacts | stop>

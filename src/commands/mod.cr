@@ -1,5 +1,4 @@
-Commands.register_command("ban") do |args, ctx|
-  Perms.assert_level(Moderator)
+Commands.register_command("ban", "Attempts to ban all mentioned users.", Perms::Level::Admin) do |args, ctx|
   Arguments.assert_count(args, 1)
   output = "Attempting to ban #{args.size} members…\nResponsible Moderator: <@#{ctx.issuer.id}>\n"
   guild_id = ctx.guild_id.as(UInt64)
@@ -18,8 +17,7 @@ Commands.register_command("ban") do |args, ctx|
   {title: "", text: output}
 end
 
-Commands.register_command("kick") do |args, ctx|
-  Perms.assert_level(Moderator)
+Commands.register_command("kick", "Attempts to kick all mentioned users.", Perms::Level::Moderator) do |args, ctx|
   Arguments.assert_count(args, 1)
   output = "Attempting to kick #{args.size} members…\nResponsible Moderator: <@#{ctx.issuer.id}>\n"
   guild_id = ctx.guild_id.as(UInt64)
@@ -35,8 +33,7 @@ Commands.register_command("kick") do |args, ctx|
   {title: "", text: output}
 end
 
-Commands.register_command("unban") do |args, ctx|
-  Perms.assert_level(Moderator)
+Commands.register_command("unban", "Attempts to unban all mentioned users.", Perms::Level::Admin) do |args, ctx|
   Arguments.assert_count(args, 1)
   output = "Attempting to unban #{args.size} members…\nResponsible Moderator: <@#{ctx.issuer.id}>\n"
   guild_id = ctx.guild_id.as(UInt64)
@@ -52,8 +49,7 @@ Commands.register_command("unban") do |args, ctx|
   {title: "", text: output}
 end
 
-Commands.register_command("mute") do |args, ctx|
-  Perms.assert_level(Moderator)
+Commands.register_command("mute", "Attempts to mute all mentioned users.", Perms::Level::Moderator) do |args, ctx|
   Arguments.assert_count(args, 1)
   mute_role = ModTools.mute_role?(ctx.guild_id.not_nil!)
   mute_role = ModTools.create_mute_role(ctx.guild_id.not_nil!) if mute_role.nil?
@@ -71,8 +67,7 @@ Commands.register_command("mute") do |args, ctx|
   {title: "", text: output}
 end
 
-Commands.register_command("unmute") do |args, ctx|
-  Perms.assert_level(Moderator)
+Commands.register_command("unmute", "Attempts to unmute all mentioned users.", Perms::Level::Moderator) do |args, ctx|
   Arguments.assert_count(args, 1)
   mute_role = ModTools.mute_role?(ctx.guild_id.not_nil!)
   raise "Mute role not found." if mute_role.nil?
@@ -90,7 +85,7 @@ Commands.register_command("unmute") do |args, ctx|
   {title: "", text: output}
 end
 
-Commands.register_command("warn add") do |args, ctx|
+Commands.register_command("warn add", "Adds a warning for the mentioned user, reason optional.", Perms::Level::Moderator) do |args, ctx|
   target_user = Arguments.at_position(args, 0, :user).as(Discord::User)
   reason = args.size > 0 ? args.join(" ") : ""
   Bampersand::DATABASE.exec "insert into warnings (guild_id, user_id, mod_id, text) values (?,?,?,?)", ctx.guild_id.not_nil!.to_i64, target_user.id.to_u64.to_i64, ctx.issuer.id.to_u64.to_i64, reason
@@ -99,7 +94,7 @@ Commands.register_command("warn add") do |args, ctx|
     text:  "Responsible Moderator<@#{ctx.issuer.id}>\n#{reason}",
   }
 end
-Commands.register_command("warn list") do |args, ctx|
+Commands.register_command("warn list", "Lists all warnings for the mentioned user.", Perms::Level::Moderator) do |args, ctx|
   target_user = Arguments.at_position(args, 0, :user).as(Discord::User)
   output = ""
   count = 0
@@ -114,18 +109,18 @@ Commands.register_command("warn list") do |args, ctx|
   end
   {title: "**#{target_user.username}##{target_user.discriminator}: #{count} warning/s**".upcase, text: output}
 end
-Commands.register_command("warn remove") do |args, ctx|
+Commands.register_command("warn remove", "Removes the oldest warning for the mentioned user.", Perms::Level::Moderator) do |args, ctx|
   target_user = Arguments.at_position(args, 0, :user).as(Discord::User)
   Bampersand::DATABASE.exec "delete from warnings where guild_id == ? and user_id == ? limit 1", ctx.guild_id.not_nil!.to_i64, target_user.id.to_u64.to_i64
   true
 end
-Commands.register_command("warn expunge") do |args, ctx|
+Commands.register_command("warn expunge", "Removes all warnings for the mentioned user.", Perms::Level::Admin) do |args, ctx|
   target_user = Arguments.at_position(args, 0, :user).as(Discord::User)
   Bampersand::DATABASE.exec "delete from warnings where guild_id == ? and user_id == ?", ctx.guild_id.not_nil!.to_i64, target_user.id.to_u64.to_i64
   true
 end
 
-Commands.register_command("warn") do |args, ctx|
+Commands.register_command("warn", "[Store warnings about users]", Perms::Level::Moderator) do |args, ctx|
   {
     text: "| warn add <@user> <optional reason>
     | warn list <@user>
