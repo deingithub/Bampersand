@@ -1,9 +1,9 @@
 module ModTools
+  # This module handles setting up/fetching mute roles and enforcing slowmode
+  # for users with manage_messages permissions.
   extend self
-  @@slowmodes : Hash(UInt64, UInt32) = load_slowmodes
-  @@last_msgs = {} of UInt64 => Hash(UInt64, Time)
-  Log.info("Loaded ModTools Module: #{@@slowmodes.size} channels with slowmode")
 
+  # Tries to get the mute role for a guild
   def mute_role?(guild_id)
     mute_role_id = cache!.guild_roles[guild_id].find do |role_id|
       cache!.resolve_role(role_id).name == "B& Muted"
@@ -12,6 +12,8 @@ module ModTools
     nil
   end
 
+  # Creates a new role, override-denies write permissions for all channels B&
+  # can see, and raises as far to the top as possible.
   def create_mute_role(guild_id)
     mute_role = bot!.create_guild_role(guild_id, "B& Muted")
     cache!.guild_channels(guild_id).each do |channel_id|
@@ -28,6 +30,9 @@ module ModTools
     mute_role
   end
 
+  # Maps Channel-ID => Cooldown in sec
+  @@slowmodes : Hash(UInt64, UInt32) = load_slowmodes
+
   def load_slowmodes
     slowmodes = {} of UInt64 => UInt32
     Bampersand::DATABASE.query "select * from slowmodes" do |rs|
@@ -38,6 +43,9 @@ module ModTools
     end
     slowmodes
   end
+
+  # Maps Channel-ID => (User-Id => Timestamp)
+  @@last_msgs = {} of UInt64 => Hash(UInt64, Time)
 
   def set_channel_slowmode(channel_id, secs)
     @@slowmodes[channel_id] = secs
@@ -55,6 +63,8 @@ module ModTools
     @@slowmodes[channel_id]?
   end
 
+  # Deletes messages whose authors have already written before the cooldown
+  # elapsed and DMs them the deleted content.
   def enforce_slowmode(msg)
     cooldown = @@slowmodes[msg.channel_id]?
     return if cooldown.nil?
@@ -74,6 +84,7 @@ module ModTools
         bot!.create_message(
           dm,
           "Your message in <##{msg.channel_id}> has been removed due to slowmode enforcement. Here's the text in case you want to post it later:",
+          # Posting it as embed circumvents the 2000 char limit.
           Discord::Embed.new(description: msg.content)
         )
       rescue e
@@ -81,4 +92,6 @@ module ModTools
       end
     end
   end
+
+  Log.info("Loaded ModTools Module: #{@@slowmodes.size} channels with slowmode")
 end

@@ -1,6 +1,8 @@
 module Perms
+  # Provides the five-level privilege system for command authorization
   extend self
 
+  # Maps Guild-ID => (Level => Role-ID)
   @@perms : Hash(UInt64, Hash(Level, UInt64?)) = load_perms()
 
   def load_perms
@@ -25,7 +27,9 @@ module Perms
   end
 
   def get_highest(guild_id, user_id)
+    # Get the highest privilege level an user has access to in this guild(nilable)
     return Level::Operator if user_id == ENV["admin"].to_u64
+    # Can't run privileged commands outside a guild
     return Level::User if guild_id.nil?
     guild_id = guild_id.not_nil!
     return Level::Owner if user_id == cache!.resolve_guild(guild_id).owner_id.to_u64
@@ -49,6 +53,8 @@ module Perms
     Bampersand::DATABASE.exec "insert into perms values (?,?,?)", guild_id.to_i64, @@perms[guild_id][Level::Admin]?.try(&.to_i64), @@perms[guild_id][Level::Moderator]?.try(&.to_i64)
   end
 
+  # Not sure when this might turn out to be useful as the functionality is
+  # already integrated into Command
   macro assert_level(level)
     raise "Unauthorized. Required: {{level}}" unless Perms.check(ctx.guild_id, ctx.issuer.id.to_u64, Perms::Level::{{level}})
   end

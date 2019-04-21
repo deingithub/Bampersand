@@ -1,8 +1,12 @@
 require "../commands/*"
 
 module Commands
+  # This is the module handling command execution
   extend self
 
+  # The data a command is handed apart from the arguments.
+  # In contrast to just passing on the message struct, I can add arbitrary
+  # fields here.
   record CommandContext,
     issuer : Discord::User,
     channel_id : UInt64,
@@ -11,13 +15,18 @@ module Commands
     permissions : Discord::Permissions,
     level : Perms::Level
   record GuildOnlyContext, guild_id : UInt64?
-  record CommandInfo, desc : String, level : Perms::Level
 
+  # Command Metadata
+  record CommandInfo, desc : String, level : Perms::Level
+  # The type of command executes
   alias CommandType = Proc(Array(String), CommandContext, CommandResult)
+  # NT renders to an embed, String to plain text response, bool to ✔ reaction
   alias CommandResult = NamedTuple(title: String, text: String) | String | Bool
   @@command_exec = {} of String => CommandType
   @@command_info = {} of String => CommandInfo
 
+  # This is the function all command definitions use to add their data/exec to
+  # the module's registry.
   def register_command(
     name, desc, perms, &execute : Array(String), CommandContext -> CommandResult
   )
@@ -25,13 +34,16 @@ module Commands
     @@command_info[name] = CommandInfo.new(desc, perms)
   end
 
+  # Getters
   def command_info
     @@command_info
   end
+
   def command_execs
     @@command_execs
   end
 
+  # Creates a CommandContext from a message object
   def build_context(msg : Discord::Message)
     client = bot!
     guild = msg.guild_id
@@ -56,6 +68,8 @@ module Commands
     )
   end
 
+  # The event handler calls this.
+  # On match, execution continues in #run_command.
   def handle_message(msg)
     return unless msg.content.starts_with?(ENV["prefix"])
     content = msg.content.lchop(ENV["prefix"])
@@ -69,11 +83,13 @@ module Commands
     end
   end
 
+  # Attempts to execute a command. #send_result handles rendering the output.
   def run_command(msg, command, args)
+    # Privilege level checking
     unless Perms.check(msg.guild_id, msg.author.id, @@command_info[command].level)
       fail_str = "Unauthorized. Required: #{@@command_info[command].level}"
       Log.warn "Refused to execute #{command} #{args} for #{msg.author.username}##{msg.author.discriminator}: Level Mismatch #{Perms.get_highest(msg.guild_id, msg.author.id)} < #{@@command_info[command].level}"
-      send_result(bot!, msg.channel_id, msg.id, command, :error, fail_str)
+      send_result(msg.channel_id, msg.id, command, :error, fail_str)
       return
     end
     begin
@@ -81,30 +97,31 @@ module Commands
       output = @@command_exec[command].call(
         args, build_context(msg)
       )
-      send_result(bot!, msg.channel_id, msg.id, command, :success, output)
+      send_result(msg.channel_id, msg.id, command, :success, output)
     rescue e
-      send_result(bot!, msg.channel_id, msg.id, command, :error, e)
+      send_result(msg.channel_id, msg.id, command, :error, e)
       Log.error "Failed to execute: #{e}"
     end
   end
 
-  def send_result(client, channel_id, message_id, command, result, output)
-    ctx = GuildOnlyContext.new(
-      guild_id: Util.guild(client, channel_id).try &.to_u64,
-    )
+  # Renders the command output to discord.
+  def send_result(channel_id, message_id, command, result, output)
     begin
       if result == :success
+        # Strings render to plain-text messages,
         if output.is_a?(String)
-          client.create_message(channel_id, output)
+          bot!.create_message(channel_id, output)
+          # NamedTuples to embeds,
         elsif output.is_a?(NamedTuple(title: String, text: String))
-          client.create_message(channel_id, "", embed: Discord::Embed.new(
+          bot!.create_message(channel_id, "", embed: Discord::Embed.new(
             colour: 0x16161d, description: output[:text], title: output[:title]
           ))
+          # And `true` to a ✔ reaction.
         elsif output.is_a?(Bool) && output
-          client.create_reaction(channel_id, message_id, "✅")
+          bot!.create_reaction(channel_id, message_id, "✅")
         end
       elsif result == :error
-        client.create_message(channel_id, "", embed: Discord::Embed.new(
+        bot!.create_message(channel_id, "", embed: Discord::Embed.new(
           title: "**failed to execute: #{command}**".upcase,
           colour: 0xdd2e44,
           description: "`#{output.to_s}`"

@@ -1,3 +1,5 @@
+# This is the main code for initializing the bot client and
+
 require "db"
 require "discordcr"
 require "dotenv"
@@ -12,6 +14,7 @@ require "./DiscordCr"
 macro bot!
   Bampersand.client.not_nil!
 end
+
 macro cache!
   Bampersand.cache.not_nil!
 end
@@ -32,6 +35,9 @@ module Bampersand
   PRESENCES = ["your concerns", "endless complaints", "socialist teachings", "the silence of the lambs", "anarchist teachings", "emo poetry", "FREUDE SCHÖNER GÖTTERFUNKEN", "the heat death of the universe", "[ASMR] Richard Stallman tells you to use free software", "the decline of western civilisation", "4'33'' (Nightcore Remix)", "General Protection Fault", "breadtube", "the book of origin"]
   STARTUP   = Time.monotonic
   DATABASE  = DB.open "sqlite3://./bampersand.sqlite3"
+
+  # Needs to be nilable as we don't want to connect to discord when running
+  # tests, so the client init is in a method which isn't guaranteed to run
   @@bot : Discord::Client?
   @@cache : Discord::Cache?
 
@@ -39,16 +45,20 @@ module Bampersand
   def self.client
     @@bot
   end
+
   def self.cache
     @@cache
   end
 
+  # Entry method for booting the bot
   def self.start
+    # Prepare connection to Discord
     client = Discord::Client.new(token: "Bot #{ENV["token"]}")
     client.cache = Discord::Cache.new(client)
     @@bot = client
     @@cache = @@bot.not_nil!.cache.not_nil!
 
+    # Set up event handlers
     bot!.on_message_create do |msg|
       ModTools.enforce_slowmode(msg)
       Mirroring.handle_message(msg)
@@ -84,6 +94,7 @@ module Bampersand
 
     Log.info("Loaded Bampersand v#{Bampersand::VERSION}")
     Log.info("WHAT ARE YOUR COMMANDS?")
+    # Then, by all means, let there be … life!
     bot!.run
   end
 end

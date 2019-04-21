@@ -1,3 +1,5 @@
+# This file contains additions to discordcr that haven't been merged yet
+
 module Discord::REST
   # Changes the position of roles. Requires the "Manage Roles" permission
   # and you cannot raise roles above the bot's highest role.

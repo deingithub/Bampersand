@@ -1,11 +1,14 @@
 module Util
+  # Some utility functions
   extend self
 
+  # Get (nilable) guild id from a channel id
   def guild(client, channel_id)
     channel = cache!.resolve_channel(channel_id)
     return channel.guild_id
   end
 
+  # Check discord permissions by evaluating all roles the user has
   def perms?(context, permissions)
     user_id = context.issuer.id
     return true if user_id == ENV["admin"].to_u64
@@ -24,10 +27,12 @@ module Util
     raise "Insufficient permissions" unless Util.perms?({{context}}, Discord::Permissions::{{permissions}})
   end
 
+  # Currently not needed as all guild-requiring commands are level-privileged
   def assert_guild(context)
     raise "This command can only be used in guilds" if context.guild_id.nil?
   end
 
+  # Helper for the Board system, stringifies custom and unicode emoji
   def reaction_to_s(emoji)
     if emoji.id.nil?
       emoji.name

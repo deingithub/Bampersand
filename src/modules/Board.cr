@@ -1,6 +1,9 @@
 module Board
-  @@board_messages : Hash(UInt64, UInt64) = load_board
+  # This module handles the reaction based best-of tracker.
   extend self
+
+  # Maps Message-ID => Message-ID
+  @@board_messages : Hash(UInt64, UInt64) = load_board
 
   def load_board
     board_data = {} of UInt64 => UInt64
@@ -14,9 +17,9 @@ module Board
     board_data
   end
 
+  # The event handler calls this.
   def handle_reaction(payload)
-    client = bot!
-    guild = Util.guild(client, payload.channel_id)
+    guild = Util.guild(bot!, payload.channel_id)
     return unless guild
     # Abort if a) board is disabled
     return unless State.feature? guild, State::Features::Board
@@ -25,7 +28,7 @@ module Board
     config = State.get(guild)
     return if payload.channel_id.to_u64 == config[:board_channel]
     return unless Util.reaction_to_s(payload.emoji) == config[:board_emoji]
-    message = client.get_channel_message(payload.channel_id, payload.message_id)
+    message = bot!.get_channel_message(payload.channel_id, payload.message_id)
     # Abort if the amount of board-triggering reactions is below threshold
     count = message.reactions.not_nil!.find { |element|
       Util.reaction_to_s(element.emoji) == config[:board_emoji]
@@ -34,7 +37,7 @@ module Board
 
     unless @@board_messages.has_key? payload.message_id
       begin
-        posted_message = client.create_message(
+        posted_message = bot!.create_message(
           config[:board_channel],
           "",
           build_embed(guild, message, count, config[:board_emoji])
@@ -50,7 +53,7 @@ module Board
       end
     else
       begin
-        client.edit_message(
+        bot!.edit_message(
           config[:board_channel],
           @@board_messages[payload.message_id.to_u64],
           "",
@@ -62,6 +65,7 @@ module Board
     end
   end
 
+  # Helper for rendering the board post embed
   def build_embed(guild_id, message, count, emoji)
     ctx = Commands::GuildOnlyContext.new(guild_id: guild_id.to_u64)
     embed = Discord::Embed.new(

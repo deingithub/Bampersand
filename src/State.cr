@@ -1,6 +1,8 @@
 module State
+  # This module stores and manages guild-specific configuration.
   extend self
 
+  # TODO: Turn this into a record/struct
   alias GuildState = NamedTuple(
     features: Features,
     mirror_in: UInt64,
@@ -13,6 +15,7 @@ module State
     leave_channel: UInt64,
     leave_text: String)
 
+  # All features are disabled and values set to null-like values (not nil!)
   def default_state : GuildState
     {
       features:         Features::None,
@@ -28,6 +31,7 @@ module State
     }
   end
 
+  # Maps Guild-ID => State NT
   @@state : Hash(UInt64, GuildState) = load_state()
 
   def load_state
@@ -54,11 +58,14 @@ module State
     state
   end
 
+  # Getter defaulting to the default state
   def get(guild_id)
     return default_state unless @@state.has_key? guild_id
     @@state[guild_id]
   end
 
+  # Setter, writes to memory and DB immediately. Don't manipulate the features
+  # enum with this! Use State#feature instead.
   def set(guild_id, update)
     new_state = get(guild_id).merge(update)
     @@state[guild_id] = new_state
@@ -78,6 +85,7 @@ module State
     )
   end
 
+  # Setter for features
   def feature(guild_id, feature, state)
     current_set = get(guild_id)[:features]
     new_set = if state
@@ -90,6 +98,7 @@ module State
     set(guild_id, {features: new_set})
   end
 
+  # Getter for features
   def feature?(guild_id, feature)
     get(guild_id)[:features].includes? feature
   end

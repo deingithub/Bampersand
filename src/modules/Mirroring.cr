@@ -1,6 +1,11 @@
 module Mirroring
+  # This module mirrors all messages from certain channels to others.
+  # DANGEROUS!
+  # Can lead to looping messages (and ratelimit violations and suspensions)
+  # Setting it up is therefore restricted to the bot operator.
   extend self
 
+  # The event handler calls this.
   def handle_message(msg)
     client = bot!
     guild = msg.guild_id
@@ -15,6 +20,7 @@ module Mirroring
     end
   end
 
+  # Renders message to discord
   def format_message(msg)
     embed = Discord::Embed.new(
       title: "#{msg.author.username}##{msg.author.discriminator} (#{msg.author.id})",

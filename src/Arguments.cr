@@ -1,5 +1,28 @@
 module Arguments
+  # These are some helpers for converting string arguments to useful values
+  # and asserting their validity at the same time
   extend self
+
+  def assert_count(args, count)
+    raise "Missing arguments" if args.size < count
+  end
+
+  # Prefer using this method for commands
+  # Example: target_user = Arguments.at_position(args, 0, :user)
+  # This will either give you a valid user to work with or raise.
+  def at_position(args, position, type)
+    raise "Missing #{type} argument at #{position}" unless args[position]?
+    return case type
+    when :channel
+      to_channel(args[position])
+    when :user
+      to_user(args[position])
+    when :role
+      to_role(args[position])
+    else
+      raise "this can't happen luckily"
+    end
+  end
 
   def to_channel(input)
     begin
@@ -32,23 +55,5 @@ module Arguments
       raise "Invalid role" if role.nil?
     end
     role
-  end
-
-  def at_position(args, position, type)
-    raise "Missing #{type} argument at #{position}" unless args[position]?
-    return case type
-    when :channel
-      to_channel(args[position])
-    when :user
-      to_user(args[position])
-    when :role
-      to_role(args[position])
-    else
-      raise "this can't happen luckily"
-    end
-  end
-
-  def assert_count(args, count)
-    raise "Missing arguments" if args.size < count
   end
 end
