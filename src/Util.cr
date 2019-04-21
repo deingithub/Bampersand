@@ -2,18 +2,18 @@ module Util
   extend self
 
   def guild(client, channel_id)
-    channel = Bampersand::CACHE.resolve_channel(channel_id)
+    channel = cache!.resolve_channel(channel_id)
     return channel.guild_id
   end
 
   def perms?(context, permissions)
     user_id = context.issuer.id
-    return true if user_id == Bampersand::CONFIG["admin"].to_u64
+    return true if user_id == ENV["admin"].to_u64
     return true if context.guild_id.nil?
     guild_id = context.guild_id.not_nil!
-    member = Bampersand::CACHE.resolve_member(guild_id, user_id)
+    member = cache!.resolve_member(guild_id, user_id)
     roles = member.roles.map do |element|
-      Bampersand::CACHE.resolve_role(element)
+      cache!.resolve_role(element)
     end
     roles.any? do |element|
       element.permissions.includes?(permissions) || element.permissions.includes?(Discord::Permissions::Administrator)

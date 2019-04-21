@@ -1,4 +1,4 @@
-require "./commands/*"
+require "../commands/*"
 
 module Commands
   extend self
@@ -25,18 +25,21 @@ module Commands
     @@command_info[name] = CommandInfo.new(desc, perms)
   end
 
-  def get_commands
+  def command_info
     @@command_info
+  end
+  def command_execs
+    @@command_execs
   end
 
   def build_context(msg : Discord::Message)
-    client = Bampersand::CLIENT
+    client = bot!
     guild = msg.guild_id
     perms = if guild
-              member = Bampersand::CACHE.resolve_member(guild, msg.author.id)
+              member = cache!.resolve_member(guild, msg.author.id)
               perms_tmp = Discord::Permissions::None
               member.roles.each do |role_id|
-                role = Bampersand::CACHE.resolve_role(role_id)
+                role = cache!.resolve_role(role_id)
                 perms_tmp += role.permissions.value
               end
               perms_tmp
@@ -54,8 +57,8 @@ module Commands
   end
 
   def handle_message(msg)
-    return unless msg.content.starts_with?(Bampersand::CONFIG["prefix"])
-    content = msg.content.lchop(Bampersand::CONFIG["prefix"])
+    return unless msg.content.starts_with?(ENV["prefix"])
+    content = msg.content.lchop(ENV["prefix"])
     @@command_exec.keys.each do |key|
       next unless content.starts_with? key
       arguments = content.lchop(key).split(" ")
@@ -70,7 +73,7 @@ module Commands
     unless Perms.check(msg.guild_id, msg.author.id, @@command_info[command].level)
       fail_str = "Unauthorized. Required: #{@@command_info[command].level}"
       Log.warn "Refused to execute #{command} #{args} for #{msg.author.username}##{msg.author.discriminator}: Level Mismatch #{Perms.get_highest(msg.guild_id, msg.author.id)} < #{@@command_info[command].level}"
-      send_result(Bampersand::CLIENT, msg.channel_id, msg.id, command, :error, fail_str)
+      send_result(bot!, msg.channel_id, msg.id, command, :error, fail_str)
       return
     end
     begin
@@ -78,9 +81,9 @@ module Commands
       output = @@command_exec[command].call(
         args, build_context(msg)
       )
-      send_result(Bampersand::CLIENT, msg.channel_id, msg.id, command, :success, output)
+      send_result(bot!, msg.channel_id, msg.id, command, :success, output)
     rescue e
-      send_result(Bampersand::CLIENT, msg.channel_id, msg.id, command, :error, e)
+      send_result(bot!, msg.channel_id, msg.id, command, :error, e)
       Log.error "Failed to execute: #{e}"
     end
   end
@@ -113,6 +116,6 @@ module Commands
   end
 
   Log.info(
-    "Loaded #{Commands.get_commands.size} commands: #{Commands.get_commands.keys}"
+    "Loaded #{Commands.command_info.size} commands: #{Commands.command_info.keys}"
   )
 end

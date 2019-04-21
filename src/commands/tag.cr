@@ -1,4 +1,3 @@
-
 Commands.register_command("tag update", "Updates/creates the tag with the passed name to the passed content.", Perms::Level::Moderator) do |args, ctx|
   Perms.assert_level(Moderator)
   Arguments.assert_count(args, 2)

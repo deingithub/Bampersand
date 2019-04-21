@@ -15,7 +15,7 @@ module Board
   end
 
   def handle_reaction(payload)
-    client = Bampersand::CLIENT
+    client = bot!
     guild = Util.guild(client, payload.channel_id)
     return unless guild
     # Abort if a) board is disabled

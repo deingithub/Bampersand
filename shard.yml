@@ -1,12 +1,12 @@
 name: Bampersand
-version: 0.13.1
+version: 0.14.0
 
 authors:
   - deing <admin@15318.de>
 
 targets:
   Bampersand:
-    main: src/Bampersand.cr
+    main: src/Init.cr
 
 dependencies:
   discordcr:

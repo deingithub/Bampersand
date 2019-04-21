@@ -5,26 +5,26 @@ module ModTools
   Log.info("Loaded ModTools Module: #{@@slowmodes.size} channels with slowmode")
 
   def mute_role?(guild_id)
-    mute_role_id = Bampersand::CACHE.guild_roles[guild_id].find do |role_id|
-      Bampersand::CACHE.resolve_role(role_id).name == "B& Muted"
+    mute_role_id = cache!.guild_roles[guild_id].find do |role_id|
+      cache!.resolve_role(role_id).name == "B& Muted"
     end
-    return Bampersand::CACHE.resolve_role(mute_role_id) unless mute_role_id.nil?
+    return cache!.resolve_role(mute_role_id) unless mute_role_id.nil?
     nil
   end
 
   def create_mute_role(guild_id)
-    mute_role = Bampersand::CLIENT.create_guild_role(guild_id, "B& Muted")
-    Bampersand::CACHE.guild_channels(guild_id).each do |channel_id|
-      Bampersand::CLIENT.edit_channel_permissions(channel_id, mute_role.id, "role", Discord::Permissions::None, Discord::Permissions::SendMessages)
+    mute_role = bot!.create_guild_role(guild_id, "B& Muted")
+    cache!.guild_channels(guild_id).each do |channel_id|
+      bot!.edit_channel_permissions(channel_id, mute_role.id, "role", Discord::Permissions::None, Discord::Permissions::SendMessages)
     end
-    current_user = Bampersand::CACHE.resolve_current_user
-    member = Bampersand::CACHE.resolve_member(guild_id, current_user.id)
+    current_user = cache!.resolve_current_user
+    member = cache!.resolve_member(guild_id, current_user.id)
     position = member.roles.map do |role_id|
-      Bampersand::CACHE.resolve_role(role_id).position
+      cache!.resolve_role(role_id).position
     end.max
-    Bampersand::CLIENT.modify_guild_role_positions(guild_id, [Discord::REST::ModifyRolePositionPayload.new(mute_role.id, position)])
-    Bampersand::CACHE.cache(mute_role)
-    Bampersand::CACHE.add_guild_role(guild_id, mute_role.id)
+    bot!.modify_guild_role_positions(guild_id, [Discord::REST::ModifyRolePositionPayload.new(mute_role.id, position)])
+    cache!.cache(mute_role)
+    cache!.add_guild_role(guild_id, mute_role.id)
     mute_role
   end
 
@@ -69,9 +69,9 @@ module ModTools
     else
       Log.debug("Enforcing slowmode on message #{msg.id} by #{msg.author.username}##{msg.author.discriminator} in #{msg.channel_id}. RIP.")
       begin
-        Bampersand::CLIENT.delete_message(msg.channel_id, msg.id)
-        dm = Bampersand::CLIENT.create_dm(msg.author.id).id
-        Bampersand::CLIENT.create_message(
+        bot!.delete_message(msg.channel_id, msg.id)
+        dm = bot!.create_dm(msg.author.id).id
+        bot!.create_message(
           dm,
           "Your message in <##{msg.channel_id}> has been removed due to slowmode enforcement. Here's the text in case you want to post it later:",
           Discord::Embed.new(description: msg.content)

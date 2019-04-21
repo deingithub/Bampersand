@@ -3,90 +3,87 @@ require "discordcr"
 require "dotenv"
 require "logger"
 require "sqlite3"
-require "./DiscordCr" # Fix for modify_guild_role_positions until it's merged into their master
+
+# Fix for modify_guild_role_positions until it's merged into their master
+require "./DiscordCr"
+
+# This makes the client and its cache globally available. It's ugly
+# but shorter than writing Bampersand.client.not_nil!.whatever
+macro bot!
+  Bampersand.client.not_nil!
+end
+macro cache!
+  Bampersand.cache.not_nil!
+end
 
 require "./Util"
 require "./State"
 require "./Arguments"
 require "./Perms"
 
-require "./Mirroring"
-require "./Board"
-require "./JoinLeaveLog"
-require "./ModTools"
-require "./Commands"
+require "./modules/Mirroring"
+require "./modules/Board"
+require "./modules/JoinLeaveLog"
+require "./modules/ModTools"
+require "./modules/Commands"
 
 module Bampersand
-  extend self
-
   VERSION   = `shards version`.chomp
   PRESENCES = ["your concerns", "endless complaints", "socialist teachings", "the silence of the lambs", "anarchist teachings", "emo poetry", "FREUDE SCHÖNER GÖTTERFUNKEN", "the heat death of the universe", "[ASMR] Richard Stallman tells you to use free software", "the decline of western civilisation", "4'33'' (Nightcore Remix)", "General Protection Fault", "breadtube", "the book of origin"]
   STARTUP   = Time.monotonic
   DATABASE  = DB.open "sqlite3://./bampersand.sqlite3"
-  CONFIG    = Dotenv.load!
-  CLIENT    = load_client
-  CACHE     = CLIENT.cache.not_nil!
+  @@bot : Discord::Client?
+  @@cache : Discord::Cache?
 
-  def load_client
-    client = Discord::Client.new(token: "Bot #{CONFIG["token"]}")
-    client.cache = Discord::Cache.new(client)
-    client
+  # Don't use these, but the bot! and cache! macros instead
+  def self.client
+    @@bot
+  end
+  def self.cache
+    @@cache
   end
 
-  def start
-    client = CLIENT
-    client.on_message_create do |msg|
+  def self.start
+    client = Discord::Client.new(token: "Bot #{ENV["token"]}")
+    client.cache = Discord::Cache.new(client)
+    @@bot = client
+    @@cache = @@bot.not_nil!.cache.not_nil!
+
+    bot!.on_message_create do |msg|
       ModTools.enforce_slowmode(msg)
       Mirroring.handle_message(msg)
       Commands.handle_message(msg) unless msg.author.bot
     end
-
-    client.on_ready do |payload|
-      if CONFIG["runas"] == "prod"
-        client.status_update(
+    bot!.on_ready do |payload|
+      if ENV["runas"] == "prod"
+        bot!.status_update(
           "online",
           Discord::GamePlaying.new(name: PRESENCES.sample, type: 2i64)
         )
-      elsif CONFIG["runas"] == "dev"
-        client.status_update(
+      elsif ENV["runas"] == "dev"
+        bot!.status_update(
           "online",
-          Discord::GamePlaying.new(name: VERSION.to_s, type: 0i64)
+          Discord::GamePlaying.new(name: VERSION.to_s, type: 3i64)
         )
       else
-        raise "Invalid run-as environment #{CONFIG["runas"]}"
+        raise "Invalid run-as environment #{ENV["runas"]}"
       end
     end
-
-    client.on_message_reaction_add do |payload|
+    bot!.on_message_reaction_add do |payload|
       Board.handle_reaction(payload)
     end
-
-    client.on_guild_create do |payload|
+    bot!.on_guild_create do |payload|
       Log.info("Joined new guild #{payload.name} — Owner is #{payload.owner_id}")
     end
-
-    client.on_guild_member_add do |payload|
+    bot!.on_guild_member_add do |payload|
       JoinLeaveLog.handle_join(payload)
     end
-
-    client.on_guild_member_remove do |payload|
+    bot!.on_guild_member_remove do |payload|
       JoinLeaveLog.handle_leave(payload)
     end
 
-    client.run
+    Log.info("Loaded Bampersand v#{Bampersand::VERSION}")
+    Log.info("WHAT ARE YOUR COMMANDS?")
+    bot!.run
   end
 end
-
-SHUTDOWN = ->(s : Signal) {
-  Log.fatal "Received #{s}"
-  Bampersand::DATABASE.close
-  Log.fatal "This program is halting now, checkmate Alan"
-  exit 0
-}
-Signal::INT.trap &SHUTDOWN
-Signal::TERM.trap &SHUTDOWN
-
-Log = Logger.new(STDOUT, level: Logger::DEBUG, progname: "B&")
-Log.info("Loaded Bampersand v#{Bampersand::VERSION}")
-Log.info("WHAT ARE YOUR COMMANDS?")
-Bampersand.start

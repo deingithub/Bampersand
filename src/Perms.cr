@@ -25,18 +25,18 @@ module Perms
   end
 
   def get_highest(guild_id, user_id)
-    return Level::Operator if user_id == Bampersand::CONFIG["admin"].to_u64
+    return Level::Operator if user_id == ENV["admin"].to_u64
     return Level::User if guild_id.nil?
     guild_id = guild_id.not_nil!
-    return Level::Owner if user_id == Bampersand::CACHE.resolve_guild(guild_id).owner_id.to_u64
+    return Level::Owner if user_id == cache!.resolve_guild(guild_id).owner_id.to_u64
     guild_perms = @@perms[guild_id]?
     if guild_perms && guild_perms[Level::Admin]?
-      member = Bampersand::CACHE.resolve_member(guild_id, user_id)
+      member = cache!.resolve_member(guild_id, user_id)
       role_id = guild_perms[Level::Admin]
       return Level::Admin if member.roles.any? { |role| role.to_u64 == role_id }
     end
     if guild_perms && guild_perms[Level::Moderator]?
-      member = Bampersand::CACHE.resolve_member(guild_id, user_id)
+      member = cache!.resolve_member(guild_id, user_id)
       role_id = guild_perms[Level::Moderator]
       return Level::Moderator if member.roles.any? { |role| role.to_u64 == role_id }
     end

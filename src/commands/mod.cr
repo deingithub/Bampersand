@@ -5,7 +5,7 @@ Commands.register_command("ban", "Attempts to ban all mentioned users.", Perms::
   args.each do |argument|
     begin
       user = Arguments.to_user(argument)
-      Bampersand::CLIENT.create_guild_ban(
+      bot!.create_guild_ban(
         guild_id, user.id, nil,
         "Banned by Bampersand on behalf of #{ctx.issuer.username}##{ctx.issuer.discriminator} (#{ctx.issuer.id}) at #{Time.utc_now}."
       )
@@ -24,7 +24,7 @@ Commands.register_command("kick", "Attempts to kick all mentioned users.", Perms
   args.each do |argument|
     begin
       user = Arguments.to_user(argument)
-      Bampersand::CLIENT.remove_guild_member(guild_id, user.id)
+      bot!.remove_guild_member(guild_id, user.id)
       output += ":heavy_check_mark: Kicked <@#{user.id}>" + "\n"
     rescue
       output += ":x: Failed to kick #{argument}\n"
@@ -40,7 +40,7 @@ Commands.register_command("unban", "Attempts to unban all mentioned users.", Per
   args.each do |argument|
     begin
       user = Arguments.to_user(argument)
-      Bampersand::CLIENT.remove_guild_ban(guild_id, user.id)
+      bot!.remove_guild_ban(guild_id, user.id)
       output += ":heavy_check_mark: Pardoned <@#{user.id}>" + "\n"
     rescue
       output += ":x: Failed to unban #{argument}\n"
@@ -58,7 +58,7 @@ Commands.register_command("mute", "Attempts to mute all mentioned users.", Perms
   args.each do |argument|
     begin
       user = Arguments.to_user(argument)
-      Bampersand::CLIENT.add_guild_member_role(guild_id, user.id.to_u64, mute_role.id.to_u64)
+      bot!.add_guild_member_role(guild_id, user.id.to_u64, mute_role.id.to_u64)
       output += ":heavy_check_mark: Muted <@#{user.id}>" + "\n"
     rescue
       output += ":x: Failed to mute #{argument}\n"
@@ -76,7 +76,7 @@ Commands.register_command("unmute", "Attempts to unmute all mentioned users.", P
   args.each do |argument|
     begin
       user = Arguments.to_user(argument)
-      Bampersand::CLIENT.remove_guild_member_role(guild_id, user.id.to_u64, mute_role.id.to_u64)
+      bot!.remove_guild_member_role(guild_id, user.id.to_u64, mute_role.id.to_u64)
       output += ":heavy_check_mark: Unmuted <@#{user.id}>" + "\n"
     rescue
       output += ":x: Failed to unmute #{argument}\n"

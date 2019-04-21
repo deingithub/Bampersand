@@ -4,7 +4,7 @@ module Arguments
   def to_channel(input)
     begin
       input = input.delete("<#>").to_u64
-      channel = Bampersand::CACHE.resolve_channel(input)
+      channel = cache!.resolve_channel(input)
     rescue e
       Log.error("to_channel failed to resolve #{input}")
       raise "Invalid channel" if channel.nil?
@@ -15,7 +15,7 @@ module Arguments
   def to_user(input)
     begin
       input = input.delete("<@!>").to_u64
-      user = Bampersand::CACHE.resolve_user(input)
+      user = cache!.resolve_user(input)
     rescue e
       Log.error("to_user failed to resolve #{input}")
       raise "Invalid user" if user.nil?
@@ -26,7 +26,7 @@ module Arguments
   def to_role(input)
     begin
       input = input.delete("<@&>").to_u64
-      role = Bampersand::CACHE.resolve_role(input)
+      role = cache!.resolve_role(input)
     rescue e
       Log.error("to_role failed to resolve #{input}")
       raise "Invalid role" if role.nil?
