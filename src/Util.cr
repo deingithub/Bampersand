@@ -19,12 +19,15 @@ module Util
       cache!.resolve_role(element)
     end
     roles.any? do |element|
-      element.permissions.includes?(permissions) || element.permissions.includes?(Discord::Permissions::Administrator)
+      element.permissions.includes?(permissions) ||
+        element.permissions.includes?(Discord::Permissions::Administrator)
     end
   end
 
   macro assert_perms(context, permissions)
-    raise "Insufficient permissions" unless Util.perms?({{context}}, Discord::Permissions::{{permissions}})
+    unless Util.perms?({{context}}, Discord::Permissions::{{permissions}})
+      raise "Insufficient permissions. Required: {{permissions}}"
+    end
   end
 
   # Currently not needed as all guild-requiring commands are level-privileged

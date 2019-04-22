@@ -83,7 +83,9 @@ module Bampersand
       Board.handle_reaction(payload)
     end
     bot!.on_guild_create do |payload|
-      Log.info("Joined new guild #{payload.name} — Owner is #{payload.owner_id}")
+      Log.info(
+        "Joined new guild #{payload.name} — Owner is #{payload.owner_id}"
+      )
     end
     bot!.on_guild_member_add do |payload|
       JoinLeaveLog.handle_join(payload)

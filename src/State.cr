@@ -37,8 +37,6 @@ module State
   def load_state
     state = {} of UInt64 => GuildState
     Bampersand::DATABASE.query "select * from state" do |rs|
-      # Adjust expected column count when the data schema is changed
-      raise "Invalid column count #{rs.column_count}" unless rs.column_count == 1 + 10
       rs.each do
         state[rs.read(Int64).to_u64] = {
           features:         Features.new(rs.read(Int32)),

@@ -7,7 +7,9 @@ module Board
 
   def load_board
     board_data = {} of UInt64 => UInt64
-    Bampersand::DATABASE.query "select source_message, board_message from board" do |rs|
+    Bampersand::DATABASE.query(
+      "select source_message, board_message from board"
+    ) do |rs|
       raise "Invalid column count" unless rs.column_count == 2
       rs.each do
         board_data[rs.read(Int64).to_u64] = rs.read(Int64).to_u64

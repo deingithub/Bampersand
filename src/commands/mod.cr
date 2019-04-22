@@ -76,7 +76,9 @@ Commands.register_command("unmute", "Attempts to unmute all mentioned users.", P
   args.each do |argument|
     begin
       user = Arguments.to_user(argument)
-      bot!.remove_guild_member_role(guild_id, user.id.to_u64, mute_role.id.to_u64)
+      bot!.remove_guild_member_role(
+        guild_id, user.id.to_u64, mute_role.id.to_u64
+      )
       output += ":heavy_check_mark: Unmuted <@#{user.id}>" + "\n"
     rescue
       output += ":x: Failed to unmute #{argument}\n"
@@ -88,7 +90,10 @@ end
 Commands.register_command("warn add", "Adds a warning for the mentioned user, reason optional.", Perms::Level::Moderator) do |args, ctx|
   target_user = Arguments.at_position(args, 0, :user).as(Discord::User)
   reason = args.size > 0 ? args.join(" ") : ""
-  Bampersand::DATABASE.exec "insert into warnings (guild_id, user_id, mod_id, text) values (?,?,?,?)", ctx.guild_id.not_nil!.to_i64, target_user.id.to_u64.to_i64, ctx.issuer.id.to_u64.to_i64, reason
+  Bampersand::DATABASE.exec(
+    "insert into warnings (guild_id, user_id, mod_id, text) values (?,?,?,?)",
+    ctx.guild_id.not_nil!.to_i64, target_user.id.to_u64.to_i64,
+    ctx.issuer.id.to_u64.to_i64, reason)
   {
     title: "Warning added for #{target_user.username}##{target_user.discriminator}",
     text:  "Responsible Moderator<@#{ctx.issuer.id}>\n#{reason}",
@@ -98,7 +103,10 @@ Commands.register_command("warn list", "Lists all warnings for the mentioned use
   target_user = Arguments.at_position(args, 0, :user).as(Discord::User)
   output = ""
   count = 0
-  Bampersand::DATABASE.query "select mod_id, text, timestamp from warnings where guild_id == ? and user_id == ?", ctx.guild_id.not_nil!.to_i64, target_user.id.to_u64.to_i64 do |rs|
+  Bampersand::DATABASE.query(
+    "select mod_id, text, timestamp from warnings where guild_id == ? and user_id == ?",
+    ctx.guild_id.not_nil!.to_i64, target_user.id.to_u64.to_i64
+  ) do |rs|
     rs.each do
       mod_id = rs.read(Int64)
       text = rs.read(String)
@@ -111,12 +119,18 @@ Commands.register_command("warn list", "Lists all warnings for the mentioned use
 end
 Commands.register_command("warn remove", "Removes the oldest warning for the mentioned user.", Perms::Level::Moderator) do |args, ctx|
   target_user = Arguments.at_position(args, 0, :user).as(Discord::User)
-  Bampersand::DATABASE.exec "delete from warnings where guild_id == ? and user_id == ? limit 1", ctx.guild_id.not_nil!.to_i64, target_user.id.to_u64.to_i64
+  Bampersand::DATABASE.exec(
+    "delete from warnings where guild_id == ? and user_id == ? limit 1",
+    ctx.guild_id.not_nil!.to_i64, target_user.id.to_u64.to_i64
+  )
   true
 end
 Commands.register_command("warn expunge", "Removes all warnings for the mentioned user.", Perms::Level::Admin) do |args, ctx|
   target_user = Arguments.at_position(args, 0, :user).as(Discord::User)
-  Bampersand::DATABASE.exec "delete from warnings where guild_id == ? and user_id == ?", ctx.guild_id.not_nil!.to_i64, target_user.id.to_u64.to_i64
+  Bampersand::DATABASE.exec(
+    "delete from warnings where guild_id == ? and user_id == ?",
+    ctx.guild_id.not_nil!.to_i64, target_user.id.to_u64.to_i64
+  )
   true
 end
 

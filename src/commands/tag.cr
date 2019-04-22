@@ -5,8 +5,10 @@ Commands.register_command("tag update", "Updates/creates the tag with the passed
   tag_name = args.shift
   raise "Tag name may not contain newlines." if tag_name.includes?("\n")
   tag_content = args.join(" ")
-  Bampersand::DATABASE.exec "insert into tags (guild_id, name, content) values (?,?,?)",
+  Bampersand::DATABASE.exec(
+    "insert into tags (guild_id, name, content) values (?,?,?)",
     guild.to_i64, tag_name, tag_content
+  )
   true
 end
 Commands.register_command("tag delete", "Deletes the tag with the passed name.", Perms::Level::Moderator) do |args, ctx|
@@ -14,15 +16,19 @@ Commands.register_command("tag delete", "Deletes the tag with the passed name.",
   Arguments.assert_count(args, 1)
   guild = ctx.guild_id.not_nil!
   tag_name = args.shift
-  Bampersand::DATABASE.exec "delete from tags where guild_id == ? and name == ?",
+  Bampersand::DATABASE.exec(
+    "delete from tags where guild_id == ? and name == ?",
     guild.to_i64, tag_name
+  )
   true
 end
 Commands.register_command("tag list", "Lists all defined tags.", Perms::Level::User) do |args, ctx|
   Util.assert_guild(ctx)
   output = ""
   guild = ctx.guild_id.not_nil!
-  Bampersand::DATABASE.query "select name from tags where guild_id == ?", guild.to_i64 do |rs|
+  Bampersand::DATABASE.query(
+    "select name from tags where guild_id == ?", guild.to_i64
+  ) do |rs|
     rs.each do
       output += " `#{rs.read(String)}`"
     end
@@ -43,7 +49,10 @@ Commands.register_command("tag", "[Edit and display custom messages]", Perms::Le
   guild = ctx.guild_id.not_nil!
   tag_name = args.shift
   output = ""
-  Bampersand::DATABASE.query "select content from tags where guild_id == ? and name == ?", guild.to_i64, tag_name do |rs|
+  Bampersand::DATABASE.query(
+    "select content from tags where guild_id == ? and name == ?",
+    guild.to_i64, tag_name
+  ) do |rs|
     rs.each do
       output = rs.read(String)
     end

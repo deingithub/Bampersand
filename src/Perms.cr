@@ -26,23 +26,29 @@ module Perms
     get_highest(guild_id, user_id) >= level
   end
 
+  # Get the highest privilege level an user has access to in this guild(nilable)
   def get_highest(guild_id, user_id)
-    # Get the highest privilege level an user has access to in this guild(nilable)
     return Level::Operator if user_id == ENV["admin"].to_u64
     # Can't run privileged commands outside a guild
     return Level::User if guild_id.nil?
     guild_id = guild_id.not_nil!
-    return Level::Owner if user_id == cache!.resolve_guild(guild_id).owner_id.to_u64
+    if user_id == cache!.resolve_guild(guild_id).owner_id.to_u64
+      return Level::Owner
+    end
     guild_perms = @@perms[guild_id]?
     if guild_perms && guild_perms[Level::Admin]?
       member = cache!.resolve_member(guild_id, user_id)
       role_id = guild_perms[Level::Admin]
-      return Level::Admin if member.roles.any? { |role| role.to_u64 == role_id }
+      return Level::Admin if member.roles.any? do |role|
+                               role.to_u64 == role_id
+                             end
     end
     if guild_perms && guild_perms[Level::Moderator]?
       member = cache!.resolve_member(guild_id, user_id)
       role_id = guild_perms[Level::Moderator]
-      return Level::Moderator if member.roles.any? { |role| role.to_u64 == role_id }
+      return Level::Moderator if member.roles.any? do |role|
+                                   role.to_u64 == role_id
+                                 end
     end
     return Level::User
   end
@@ -50,12 +56,20 @@ module Perms
   def update_perms(guild_id, level, role_id)
     @@perms[guild_id] = {} of Level => UInt64? unless @@perms[guild_id]?
     @@perms[guild_id][level] = role_id
-    Bampersand::DATABASE.exec "insert into perms values (?,?,?)", guild_id.to_i64, @@perms[guild_id][Level::Admin]?.try(&.to_i64), @@perms[guild_id][Level::Moderator]?.try(&.to_i64)
+    Bampersand::DATABASE.exec(
+      "insert into perms values (?,?,?)", guild_id.to_i64,
+      @@perms[guild_id][Level::Admin]?.try(&.to_i64),
+      @@perms[guild_id][Level::Moderator]?.try(&.to_i64)
+    )
   end
 
   # Not sure when this might turn out to be useful as the functionality is
   # already integrated into Command
   macro assert_level(level)
-    raise "Unauthorized. Required: {{level}}" unless Perms.check(ctx.guild_id, ctx.issuer.id.to_u64, Perms::Level::{{level}})
+    unless Perms.check(
+      ctx.guild_id, ctx.issuer.id.to_u64, Perms::Level::{{level}}
+    )
+      raise "Unauthorized. Required: {{level}}"
+    end
   end
 end

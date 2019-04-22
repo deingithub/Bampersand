@@ -17,14 +17,20 @@ module ModTools
   def create_mute_role(guild_id)
     mute_role = bot!.create_guild_role(guild_id, "B& Muted")
     cache!.guild_channels(guild_id).each do |channel_id|
-      bot!.edit_channel_permissions(channel_id, mute_role.id, "role", Discord::Permissions::None, Discord::Permissions::SendMessages)
+      bot!.edit_channel_permissions(
+        channel_id, mute_role.id, "role",
+        Discord::Permissions::None, Discord::Permissions::SendMessages
+      )
     end
     current_user = cache!.resolve_current_user
     member = cache!.resolve_member(guild_id, current_user.id)
     position = member.roles.map do |role_id|
       cache!.resolve_role(role_id).position
     end.max
-    bot!.modify_guild_role_positions(guild_id, [Discord::REST::ModifyRolePositionPayload.new(mute_role.id, position)])
+    bot!.modify_guild_role_positions(
+      guild_id,
+      [Discord::REST::ModifyRolePositionPayload.new(mute_role.id, position)]
+    )
     cache!.cache(mute_role)
     cache!.add_guild_role(guild_id, mute_role.id)
     mute_role
@@ -36,7 +42,6 @@ module ModTools
   def load_slowmodes
     slowmodes = {} of UInt64 => UInt32
     Bampersand::DATABASE.query "select * from slowmodes" do |rs|
-      raise "Invalid column count #{rs.column_count}" unless rs.column_count == 2
       rs.each do
         slowmodes[rs.read(Int64).to_u64] = rs.read(Int64).to_u32
       end
@@ -50,13 +55,17 @@ module ModTools
   def set_channel_slowmode(channel_id, secs)
     @@slowmodes[channel_id] = secs
     @@last_msgs[channel_id] = {} of UInt64 => Time
-    Bampersand::DATABASE.exec "insert into slowmodes values (?, ?)", channel_id.to_i64, secs.to_i64
+    Bampersand::DATABASE.exec(
+      "insert into slowmodes values (?, ?)", channel_id.to_i64, secs.to_i64
+    )
   end
 
   def remove_channel_slowmode(channel_id)
     @@slowmodes.delete(channel_id)
     @@last_msgs.delete(channel_id)
-    Bampersand::DATABASE.exec "delete from slowmodes where channel_id == ?", channel_id.to_i64
+    Bampersand::DATABASE.exec(
+      "delete from slowmodes where channel_id == ?", channel_id.to_i64
+    )
   end
 
   def get_channel_slowmode(channel_id)
