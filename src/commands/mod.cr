@@ -7,7 +7,7 @@ Commands.register_command("ban", "Attempts to ban all mentioned users.", Perms::
       user = Arguments.to_user(argument)
       bot!.create_guild_ban(
         guild_id, user.id, nil,
-        "Banned by Bampersand on behalf of #{ctx.issuer.username}##{ctx.issuer.discriminator} (#{ctx.issuer.id}) at #{Time.utc_now}."
+        "Banned by Bampersand on behalf of #{ctx.issuer.tag} (#{ctx.issuer.id}) at #{Time.utc_now}."
       )
       output += ":heavy_check_mark: Banned <@#{user.id}>" + "\n"
     rescue
@@ -95,7 +95,7 @@ Commands.register_command("warn add", "Adds a warning for the mentioned user, re
     ctx.guild_id.not_nil!.to_i64, target_user.id.to_u64.to_i64,
     ctx.issuer.id.to_u64.to_i64, reason)
   {
-    title: "Warning added for #{target_user.username}##{target_user.discriminator}",
+    title: "Warning added for #{target_user.tag}",
     text:  "Responsible Moderator<@#{ctx.issuer.id}>\n#{reason}",
   }
 end
@@ -115,7 +115,7 @@ Commands.register_command("warn list", "Lists all warnings for the mentioned use
       count += 1
     end
   end
-  {title: "**#{target_user.username}##{target_user.discriminator}: #{count} warning/s**".upcase, text: output}
+  {title: "**#{target_user.tag}: #{count} warning/s**".upcase, text: output}
 end
 Commands.register_command("warn remove", "Removes the oldest warning for the mentioned user.", Perms::Level::Moderator) do |args, ctx|
   target_user = Arguments.at_position(args, 0, :user).as(Discord::User)

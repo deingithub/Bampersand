@@ -73,7 +73,7 @@ module Board
     embed = Discord::Embed.new(
       timestamp: message.timestamp,
       author: Discord::EmbedAuthor.new(
-        "#{message.author.username}##{message.author.discriminator}",
+        message.author.tag,
         nil,
         "https://cdn.discordapp.com/avatars/#{message.author.id}/#{message.author.avatar}"
       ),

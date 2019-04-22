@@ -23,7 +23,7 @@ module Mirroring
   # Renders message to discord
   def format_message(msg)
     embed = Discord::Embed.new(
-      title: "#{msg.author.username}##{msg.author.discriminator} (#{msg.author.id})",
+      title: "#{msg.author.tag} (#{msg.author.id})",
       timestamp: msg.timestamp
     )
     if msg.content.size > 0

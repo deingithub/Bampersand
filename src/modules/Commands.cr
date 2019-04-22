@@ -86,14 +86,18 @@ module Commands
   # Attempts to execute a command. #send_result handles rendering the output.
   def run_command(msg, command, args)
     # Privilege level checking
-    unless Perms.check(msg.guild_id, msg.author.id, @@command_info[command].level)
+    unless Perms.check(
+             msg.guild_id, msg.author.id, @@command_info[command].level
+           )
       fail_str = "Unauthorized. Required: #{@@command_info[command].level}"
-      Log.warn "Refused to execute #{command} #{args} for #{msg.author.username}##{msg.author.discriminator}: Level Mismatch #{Perms.get_highest(msg.guild_id, msg.author.id)} < #{@@command_info[command].level}"
+      Log.warn(
+        "Refused to execute #{command} #{args} for #{msg.author.tag}: #{Perms.get_highest(msg.guild_id, msg.author.id)} < #{@@command_info[command].level}"
+      )
       send_result(msg.channel_id, msg.id, command, :error, fail_str)
       return
     end
     begin
-      Log.info "#{msg.author.username}##{msg.author.discriminator} issued #{command} #{args}"
+      Log.info("#{msg.author.tag} issued #{command} #{args}")
       output = @@command_exec[command].call(
         args, build_context(msg)
       )

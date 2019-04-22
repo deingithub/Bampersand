@@ -31,3 +31,11 @@ module Discord::REST
     end
   end
 end
+
+module Discord
+  struct User
+    def tag
+      "#{self.username}##{self.discriminator}"
+    end
+  end
+end

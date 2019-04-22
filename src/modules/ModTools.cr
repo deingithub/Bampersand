@@ -86,7 +86,7 @@ module ModTools
     if Time.utc_now - last_timestamp > Time::Span.new(0, 0, cooldown)
       @@last_msgs[msg.channel_id][msg.author.id.to_u64] = msg.timestamp
     else
-      Log.debug("Enforcing slowmode on message #{msg.id} by #{msg.author.username}##{msg.author.discriminator} in #{msg.channel_id}. RIP.")
+      Log.debug("Enforcing slowmode on message #{msg.id} by #{msg.author.tag} in #{msg.channel_id}. RIP.")
       begin
         bot!.delete_message(msg.channel_id, msg.id)
         dm = bot!.create_dm(msg.author.id).id
