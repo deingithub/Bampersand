@@ -29,12 +29,23 @@ module Board
     # c) The reaction isn't the correct emoji
     config = State.get(guild)
     return if payload.channel_id.to_u64 == config[:board_channel]
-    return unless Util.reaction_to_s(payload.emoji) == config[:board_emoji]
+    return unless Util.reaction_to_s(payload.emoji) == config[:board_emoji] || config[:board_emoji] == "*"
     message = bot!.get_channel_message(payload.channel_id, payload.message_id)
-    # Abort if the amount of board-triggering reactions is below threshold
-    count = message.reactions.not_nil!.find { |element|
+    # Get the "target" reaction:
+    target_emoji = unless config[:board_emoji] == "*"
+      # If we're looking for a specific board emoji, search for it
+      message.reactions.not_nil!.find { |element|
       Util.reaction_to_s(element.emoji) == config[:board_emoji]
-    }.not_nil!.count
+    }.not_nil!
+    else
+      # Otherwise, take the one with the highest count
+      message.reactions.not_nil!.sort { |element|
+      element.count.to_i32
+    }.first
+    end
+    # Extract representation from the target emoji
+    count = target_emoji.count
+    emoji_s = Util.reaction_to_s(target_emoji.emoji)
     return if count < config[:board_min_reacts]
 
     unless @@board_messages.has_key? payload.message_id
@@ -42,7 +53,7 @@ module Board
         posted_message = bot!.create_message(
           config[:board_channel],
           "",
-          build_embed(guild, message, count, config[:board_emoji])
+          build_embed(guild, message, count, emoji_s)
         )
         @@board_messages[payload.message_id.to_u64] = posted_message.id.to_u64
         Bampersand::DATABASE.exec(
@@ -59,7 +70,7 @@ module Board
           config[:board_channel],
           @@board_messages[payload.message_id.to_u64],
           "",
-          build_embed(guild, message, count, config[:board_emoji])
+          build_embed(guild, message, count, emoji_s)
         )
       rescue e
         Log.error("Failed to edit board message: #{e}")
