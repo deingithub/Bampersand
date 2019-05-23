@@ -83,16 +83,17 @@ module ModTools
     channel_data = @@last_msgs[msg.channel_id]
     last_timestamp = channel_data[msg.author.id]?
     last_timestamp = Time.unix(0) if last_timestamp.nil?
-    if Time.utc_now - last_timestamp > Time::Span.new(0, 0, cooldown)
+    if msg.timestamp - last_timestamp > Time::Span.new(0, 0, cooldown)
       @@last_msgs[msg.channel_id][msg.author.id.to_u64] = msg.timestamp
     else
       Log.debug("Enforcing slowmode on message #{msg.id} by #{msg.author.tag} in #{msg.channel_id}. RIP.")
+      timeout = (msg.timestamp - last_timestamp - Time::Span.new(0, 0, cooldown)).abs
       begin
         bot!.delete_message(msg.channel_id, msg.id)
         dm = bot!.create_dm(msg.author.id).id
         bot!.create_message(
           dm,
-          "Your message in <##{msg.channel_id}> has been removed due to slowmode enforcement. Here's the text in case you want to post it later:",
+          "Your message in <##{msg.channel_id}> has been removed due to slowmode enforcement. Here's the text in case you want to post in at least #{timeout.total_milliseconds/1000} seconds:",
           # Posting it as embed circumvents the 2000 char limit.
           Discord::Embed.new(description: msg.content)
         )
