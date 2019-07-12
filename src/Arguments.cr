@@ -32,7 +32,7 @@ module Arguments
       Log.error("to_channel failed to resolve #{input}")
       raise "Invalid channel" if channel.nil?
     end
-    channel
+    channel.not_nil!
   end
 
   def to_user(input)
@@ -43,7 +43,7 @@ module Arguments
       Log.error("to_user failed to resolve #{input}")
       raise "Invalid user" if user.nil?
     end
-    user
+    user.not_nil!
   end
 
   def to_role(input)
@@ -54,6 +54,6 @@ module Arguments
       Log.error("to_role failed to resolve #{input}")
       raise "Invalid role" if role.nil?
     end
-    role
+    role.not_nil!
   end
 end

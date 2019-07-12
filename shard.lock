@@ -5,8 +5,8 @@ shards:
     version: 0.5.1
 
   discordcr:
-    github: meew0/discordcr
-    commit: 1d40f5fa0c9069a817ddbb3daf26782607d69d7d
+    github: z64/discordcr
+    commit: 1231089bea30779b2398629745e6e99784e2301d
 
   dotenv:
     github: gdotdesign/cr-dotenv
@@ -14,5 +14,5 @@ shards:
 
   sqlite3:
     github: crystal-lang/crystal-sqlite3
-    version: 0.10.0
+    version: 0.12.0
 
