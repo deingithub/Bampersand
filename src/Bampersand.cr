@@ -64,7 +64,7 @@ module Bampersand
       Mirroring.handle_message(msg)
       Commands.handle_message(msg) unless msg.author.bot
     end
-    bot!.on_ready do |payload|
+    bot!.on_ready do
       if ENV["runas"] == "prod"
         bot!.status_update(
           "online",
@@ -83,7 +83,7 @@ module Bampersand
       Board.handle_reaction(payload)
     end
     bot!.on_guild_create do |payload|
-      Log.info(
+      LOG.info(
         "Joined new guild #{payload.name} — Owner is #{payload.owner_id}"
       )
     end
@@ -94,8 +94,8 @@ module Bampersand
       JoinLeaveLog.handle_leave(payload)
     end
 
-    Log.info("Loaded Bampersand v#{Bampersand::VERSION}")
-    Log.info("WHAT ARE YOUR COMMANDS?")
+    LOG.info("Loaded Bampersand v#{Bampersand::VERSION}")
+    LOG.info("WHAT ARE YOUR COMMANDS?")
     # Then, by all means, let there be … life!
     bot!.run
   end

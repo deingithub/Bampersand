@@ -12,7 +12,7 @@ module Arguments
   # This will either give you a valid user to work with or raise.
   def at_position(args, position, type)
     raise "Missing #{type} argument at #{position}" unless args[position]?
-    return case type
+    case type
     when :channel
       to_channel(args[position])
     when :user
@@ -29,7 +29,7 @@ module Arguments
       input = input.delete("<#>").to_u64
       channel = cache!.resolve_channel(input)
     rescue e
-      Log.error("to_channel failed to resolve #{input}")
+      LOG.error("to_channel failed to resolve #{input}")
       raise "Invalid channel" if channel.nil?
     end
     channel.not_nil!
@@ -40,7 +40,7 @@ module Arguments
       input = input.delete("<@!>").to_u64
       user = cache!.resolve_user(input)
     rescue e
-      Log.error("to_user failed to resolve #{input}")
+      LOG.error("to_user failed to resolve #{input}")
       raise "Invalid user" if user.nil?
     end
     user.not_nil!
@@ -51,7 +51,7 @@ module Arguments
       input = input.delete("<@&>").to_u64
       role = cache!.resolve_role(input)
     rescue e
-      Log.error("to_role failed to resolve #{input}")
+      LOG.error("to_role failed to resolve #{input}")
       raise "Invalid role" if role.nil?
     end
     role.not_nil!

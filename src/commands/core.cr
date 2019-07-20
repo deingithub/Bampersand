@@ -1,11 +1,11 @@
 PINGS = ["Pyongyang!", "Ding!", "Pong!", "[reverberating PONG]", "Plonk."]
 
-Commands.register_command("ping", "Pongs you.", Perms::Level::User) do |args, ctx|
+Commands.register_command("ping", "Pongs you.", Perms::Level::User) do |_args, ctx|
   ping = Time.utc_now - ctx.timestamp
   ":ping_pong: " + PINGS.sample + " | `#{ping.total_milliseconds.to_i}ms`"
 end
 
-Commands.register_command("help", "Lists commands. Pass a single argument to search command descriptions.", Perms::Level::User) do |args, ctx|
+Commands.register_command("help", "Lists commands. Pass a single argument to search command descriptions.", Perms::Level::User) do |args|
   output = if args.size != 1
              Commands.command_info.keys.select do |e|
                !e.includes?(" ")
@@ -25,7 +25,7 @@ Commands.register_command("help", "Lists commands. Pass a single argument to sea
   }
 end
 
-Commands.register_command("about", "Displays stats about Bampersand and links to further resources.", Perms::Level::User) do |args, ctx|
+Commands.register_command("about", "Displays stats about Bampersand and links to further resources.", Perms::Level::User) do
   uptime = Time.monotonic - Bampersand::STARTUP
   {
     title: "**BAMPERSAND VERSION #{Bampersand::VERSION}**",

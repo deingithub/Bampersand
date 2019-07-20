@@ -16,5 +16,5 @@ module JoinLeaveLog
     bot!.create_message(config[:leave_channel], out_string)
   end
 
-  Log.info("Loaded JoinLeaveLog Module")
+  LOG.info("Loaded JoinLeaveLog Module")
 end

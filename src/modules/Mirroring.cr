@@ -16,7 +16,7 @@ module Mirroring
         State.get(guild)[:mirror_out], "", embed: format_message(msg)
       )
     rescue e
-      Log.error "Failed to mirror message #{msg.id}: #{e}"
+      LOG.error "Failed to mirror message #{msg.id}: #{e}"
     end
   end
 
@@ -35,5 +35,5 @@ module Mirroring
     embed
   end
 
-  Log.info("Loaded Mirroring Module")
+  LOG.info("Loaded Mirroring Module")
 end

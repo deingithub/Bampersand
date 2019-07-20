@@ -22,7 +22,7 @@ Commands.register_command("tag delete", "Deletes the tag with the passed name.",
   )
   true
 end
-Commands.register_command("tag list", "Lists all defined tags.", Perms::Level::User) do |args, ctx|
+Commands.register_command("tag list", "Lists all defined tags.", Perms::Level::User) do |_args, ctx|
   Util.assert_guild(ctx)
   output = ""
   guild = ctx.guild_id.not_nil!

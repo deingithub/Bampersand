@@ -5,7 +5,7 @@ module Util
   # Get (nilable) guild id from a channel id
   def guild(client, channel_id)
     channel = cache!.resolve_channel(channel_id)
-    return channel.guild_id
+    channel.guild_id
   end
 
   # Check discord permissions by evaluating all roles the user has

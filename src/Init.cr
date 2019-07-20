@@ -3,16 +3,16 @@
 # which is supposed to close the DB, before booting the main bot code
 # from the Bampersand.cr file.
 
-Log = Logger.new(STDOUT, level: Logger::DEBUG, progname: "B&")
-Log.info("Initializing…")
+LOG = Logger.new(STDOUT, level: Logger::DEBUG, progname: "B&")
+LOG.info("Initializing…")
 Dotenv.load!
 
 require "./Bampersand"
 
 SHUTDOWN = ->(s : Signal) {
-  Log.fatal "Received #{s}"
+  LOG.fatal "Received #{s}"
   Bampersand::DATABASE.close
-  Log.fatal "This program is halting now, checkmate Alan"
+  LOG.fatal "This program is halting now, checkmate Alan"
   exit 0
 }
 Signal::INT.trap &SHUTDOWN

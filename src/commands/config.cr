@@ -87,11 +87,11 @@ Commands.register_command("config admin-role", "Sets the Admin Level role.", Per
   true
 end
 
-Commands.register_command("config print", "Stringifies the configuration.", Perms::Level::Admin) do |args, ctx|
+Commands.register_command("config print", "Stringifies the configuration.", Perms::Level::Admin) do |_args, ctx|
   "```#{State.get(ctx.guild_id)}```"
 end
 
-Commands.register_command("config", "[Edit per-guild configuration]", Perms::Level::Admin) do |args, ctx|
+Commands.register_command("config", "[Edit per-guild configuration]", Perms::Level::Admin) do
   {
     text: "| config mirror <#channel | stop>
   | config board <emoji #channel min_reacts | stop>

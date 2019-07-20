@@ -89,7 +89,7 @@ end
 
 Commands.register_command("warn add", "Adds a warning for the mentioned user, reason optional.", Perms::Level::Moderator) do |args, ctx|
   target_user = Arguments.at_position(args, 0, :user).as(Discord::User)
-  reason = args.size > 0 ? args.join(" ") : ""
+  reason = args.size > 0 ? args[1..].join(" ") : ""
   Bampersand::DATABASE.exec(
     "insert into warnings (guild_id, user_id, mod_id, text) values (?,?,?,?)",
     ctx.guild_id.not_nil!.to_i64, target_user.id.to_u64.to_i64,
@@ -134,7 +134,7 @@ Commands.register_command("warn expunge", "Removes all warnings for the mentione
   true
 end
 
-Commands.register_command("warn", "[Store warnings about users]", Perms::Level::Moderator) do |args, ctx|
+Commands.register_command("warn", "[Store warnings about users]", Perms::Level::Moderator) do
   {
     text: "| warn add <@user> <optional reason>
     | warn list <@user>

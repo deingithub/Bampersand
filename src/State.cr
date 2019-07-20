@@ -52,7 +52,7 @@ module State
         }
       end
     end
-    Log.info("Loaded State Module: #{state.keys.size} stored states")
+    LOG.info("Loaded State Module: #{state.keys.size} stored states")
     state
   end
 

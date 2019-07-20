@@ -1,6 +1,6 @@
 require "http/client"
 
-Commands.register_command("leo", "Shortens the passed URL using leo.immobilien.", Perms::Level::User) do |args, ctx|
+Commands.register_command("leo", "Shortens the passed URL using leo.immobilien.", Perms::Level::User) do |args|
   Arguments.assert_count(args, 1)
   body = <<-BODY
   {"url": "#{args[0]}"}
@@ -14,7 +14,7 @@ Commands.register_command("leo", "Shortens the passed URL using leo.immobilien."
   "https://leo.immobilien/#{response["urlKey"]}"
 end
 
-Commands.register_command("info", "Displays debug information about you.", Perms::Level::User) do |args, ctx|
+Commands.register_command("info", "Displays debug information about you.", Perms::Level::User) do |_args, ctx|
   <<-OUT
   Your ID: `#{ctx.issuer.id}`
   Your Permissions: `#{ctx.permissions.value}`

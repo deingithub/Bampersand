@@ -45,7 +45,6 @@ module Commands
 
   # Creates a CommandContext from a message object
   def build_context(msg : Discord::Message)
-    client = bot!
     guild = msg.guild_id
     perms = if guild
               member = cache!.resolve_member(guild, msg.author.id)
@@ -77,7 +76,6 @@ module Commands
       next unless content.starts_with? key
       arguments = content.lchop(key).split(" ")
       arguments.delete("")
-      output = ""
       run_command(msg, key, arguments)
       break
     end
@@ -90,53 +88,51 @@ module Commands
              msg.guild_id, msg.author.id, @@command_info[command].level
            )
       fail_str = "Unauthorized. Required: #{@@command_info[command].level}"
-      Log.warn(
+      LOG.warn(
         "Refused to execute #{command} #{args} for #{msg.author.tag}: #{Perms.get_highest(msg.guild_id, msg.author.id)} < #{@@command_info[command].level}"
       )
       send_result(msg.channel_id, msg.id, command, :error, fail_str)
       return
     end
     begin
-      Log.info("#{msg.author.tag} issued #{command} #{args}")
+      LOG.info("#{msg.author.tag} issued #{command} #{args}")
       output = @@command_exec[command].call(
         args, build_context(msg)
       )
       send_result(msg.channel_id, msg.id, command, :success, output)
     rescue e
       send_result(msg.channel_id, msg.id, command, :error, e)
-      Log.error "Failed to execute: #{e}"
+      LOG.error "Failed to execute: #{e}"
     end
   end
 
   # Renders the command output to discord.
   def send_result(channel_id, message_id, command, result, output)
-    begin
-      if result == :success
-        # Strings render to plain-text messages,
-        if output.is_a?(String)
-          bot!.create_message(channel_id, output)
-          # NamedTuples to embeds,
-        elsif output.is_a?(NamedTuple(title: String, text: String))
-          bot!.create_message(channel_id, "", embed: Discord::Embed.new(
-            colour: 0x16161d, description: output[:text], title: output[:title]
-          ))
-          # And `true` to a ✔ reaction.
-        elsif output.is_a?(Bool) && output
-          bot!.create_reaction(channel_id, message_id, "✅")
-        end
-      elsif result == :error
+    if result == :success
+      # Strings render to plain-text messages,
+      if output.is_a?(String)
+        bot!.create_message(channel_id, output)
+        # NamedTuples to embeds,
+      elsif output.is_a?(NamedTuple(title: String, text: String))
         bot!.create_message(channel_id, "", embed: Discord::Embed.new(
-          title: "**failed to execute: #{command}**".upcase,
-          colour: 0xdd2e44,
-          description: "`#{output.to_s}`"
+          colour: 0x16161d, description: output[:text], title: output[:title]
         ))
+        # And `true` to a ✔ reaction.
+      elsif output.is_a?(Bool) && output
+        bot!.create_reaction(channel_id, message_id, "✅")
       end
-    rescue e
-      Log.error "Failed to deliver #{result} message to #{channel_id}: #{e}"
+    elsif result == :error
+      bot!.create_message(channel_id, "", embed: Discord::Embed.new(
+        title: "**failed to execute: #{command}**".upcase,
+        colour: 0xdd2e44,
+        description: "`#{output.to_s}`"
+      ))
     end
+  rescue e
+    LOG.error "Failed to deliver #{result} message to #{channel_id}: #{e}"
   end
 
-  Log.info(
+  LOG.info(
     "Loaded #{Commands.command_info.size} commands: #{Commands.command_info.keys}"
   )
 end

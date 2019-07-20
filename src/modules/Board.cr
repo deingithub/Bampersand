@@ -15,7 +15,7 @@ module Board
         board_data[rs.read(Int64).to_u64] = rs.read(Int64).to_u64
       end
     end
-    Log.info("Loaded Board Module: #{board_data.size} stored board messages")
+    LOG.info("Loaded Board Module: #{board_data.size} stored board messages")
     board_data
   end
 
@@ -32,23 +32,34 @@ module Board
     return unless Util.reaction_to_s(payload.emoji) == config[:board_emoji] || config[:board_emoji] == "*"
     message = bot!.get_channel_message(payload.channel_id, payload.message_id)
     # Get the "target" reaction:
-    target_emoji = unless config[:board_emoji] == "*"
-      # If we're looking for a specific board emoji, search for it
-      message.reactions.not_nil!.find { |element|
-      Util.reaction_to_s(element.emoji) == config[:board_emoji]
-    }.not_nil!
-    else
-      # Otherwise, take the one with the highest count
-      message.reactions.not_nil!.sort { |element|
-      element.count.to_i32
-    }.first
-    end
+    target_emoji = if config[:board_emoji] == "*"
+                     # If we don't have a target emoji, take the one with the highest count
+                     message.reactions.not_nil!.sort { |element|
+                       element.count.to_i32
+                     }.first
+                   else
+                     # otherwise, we're looking for a specific board emoji, search for it
+                     message.reactions.not_nil!.find { |element|
+                       Util.reaction_to_s(element.emoji) == config[:board_emoji]
+                     }.not_nil!
+                   end
     # Extract representation from the target emoji
     count = target_emoji.count
     emoji_s = Util.reaction_to_s(target_emoji.emoji)
     return if count < config[:board_min_reacts]
 
-    unless @@board_messages.has_key? payload.message_id
+    if @@board_messages.has_key? payload.message_id
+      begin
+        bot!.edit_message(
+          config[:board_channel],
+          @@board_messages[payload.message_id.to_u64],
+          "",
+          build_embed(guild, message, count, emoji_s)
+        )
+      rescue e
+        LOG.error("Failed to edit board message: #{e}")
+      end
+    else
       begin
         posted_message = bot!.create_message(
           config[:board_channel],
@@ -62,25 +73,13 @@ module Board
           posted_message.id.to_u64.to_i64
         )
       rescue e
-        Log.error("Failed to post board message: #{e}")
-      end
-    else
-      begin
-        bot!.edit_message(
-          config[:board_channel],
-          @@board_messages[payload.message_id.to_u64],
-          "",
-          build_embed(guild, message, count, emoji_s)
-        )
-      rescue e
-        Log.error("Failed to edit board message: #{e}")
+        LOG.error("Failed to post board message: #{e}")
       end
     end
   end
 
   # Helper for rendering the board post embed
   def build_embed(guild_id, message, count, emoji)
-    ctx = Commands::GuildOnlyContext.new(guild_id: guild_id.to_u64)
     embed = Discord::Embed.new(
       timestamp: message.timestamp,
       author: Discord::EmbedAuthor.new(

@@ -86,7 +86,7 @@ module ModTools
     if msg.timestamp - last_timestamp > Time::Span.new(0, 0, cooldown)
       @@last_msgs[msg.channel_id][msg.author.id.to_u64] = msg.timestamp
     else
-      Log.debug("Enforcing slowmode on message #{msg.id} by #{msg.author.tag} in #{msg.channel_id}. RIP.")
+      LOG.debug("Enforcing slowmode on message #{msg.id} by #{msg.author.tag} in #{msg.channel_id}. RIP.")
       timeout = (msg.timestamp - last_timestamp - Time::Span.new(0, 0, cooldown)).abs
       begin
         bot!.delete_message(msg.channel_id, msg.id)
@@ -98,10 +98,10 @@ module ModTools
           Discord::Embed.new(description: msg.content)
         )
       rescue e
-        Log.warn("Failed to enforce slowmode: #{e}")
+        LOG.warn("Failed to enforce slowmode: #{e}")
       end
     end
   end
 
-  Log.info("Loaded ModTools Module: #{@@slowmodes.size} channels with slowmode")
+  LOG.info("Loaded ModTools Module: #{@@slowmodes.size} channels with slowmode")
 end

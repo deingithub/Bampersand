@@ -50,7 +50,7 @@ module Perms
                                    role.to_u64 == role_id
                                  end
     end
-    return Level::User
+    Level::User
   end
 
   def update_perms(guild_id, level, role_id)
