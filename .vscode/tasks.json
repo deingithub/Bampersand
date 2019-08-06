@@ -11,6 +11,12 @@
         "kind": "build",
         "isDefault": true
       }
-    }
+    },
+    {
+      "label": "regular-shards",
+      "type": "shell",
+      "command": "shards build --debug",
+      "group": "build"
+  }
   ]
 }

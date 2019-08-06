@@ -28,6 +28,7 @@ require "./modules/Mirroring"
 require "./modules/Board"
 require "./modules/JoinLeaveLog"
 require "./modules/ModTools"
+require "./modules/Killfile"
 require "./modules/Commands"
 
 module Bampersand
@@ -84,8 +85,9 @@ module Bampersand
     end
     bot!.on_guild_create do |payload|
       LOG.info(
-        "Joined new guild #{payload.name} — Owner is #{payload.owner_id}"
+        "Joined new guild #{payload.name} [#{payload.id}] — Owner is #{payload.owner_id}"
       )
+      Killfile.handle_join(payload)
     end
     bot!.on_guild_member_add do |payload|
       JoinLeaveLog.handle_join(payload)
