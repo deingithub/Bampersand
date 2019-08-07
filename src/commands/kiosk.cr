@@ -39,7 +39,7 @@ end
 
 Commands.register_command("rolekiosk", "[Manage Role Kiosks]", Perms::Level::Admin) do
   {
-    text: "| rolekiosk update <message_id emoji|roleid;emoji|roleid;…>
+    text: "| rolekiosk update <channel_id:message_id emoji|roleid;emoji|roleid;…>
   | rolekiosk delete <message_id>
   | rolekiosk info <message_id>",
     title: "**BAMPERSAND ROLE KIOSK**",
