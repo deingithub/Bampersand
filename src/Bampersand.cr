@@ -29,6 +29,7 @@ require "./modules/Board"
 require "./modules/JoinLeaveLog"
 require "./modules/ModTools"
 require "./modules/Killfile"
+require "./modules/RoleKiosk"
 require "./modules/Commands"
 
 module Bampersand
@@ -81,7 +82,11 @@ module Bampersand
       end
     end
     bot!.on_message_reaction_add do |payload|
+      RoleKiosk.handle_reaction_add(payload)
       Board.handle_reaction(payload)
+    end
+    bot!.on_message_reaction_remove do |payload|
+      RoleKiosk.handle_reaction_remove(payload)
     end
     bot!.on_guild_create do |payload|
       LOG.info(

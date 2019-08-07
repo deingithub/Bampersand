@@ -2,7 +2,7 @@ module Killfile
   # This module handles guildwide self-blocks.
   extend self
 
-  @@killfile: Array(UInt64) = load_killfile
+  @@killfile : Array(UInt64) = load_killfile
 
   def load_killfile
     killfile = [] of UInt64

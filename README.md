@@ -12,6 +12,7 @@ Adapt `.env.example` to your needs and rename it to `.env`. It's gitignored by d
  5. `create table warnings (guild_id unsigned integer, user_id unsigned integer, mod_id unsigned integer, text string, timestamp date default current_timestamp);`
  6. `create table perms (guild_id unsigned integer unique on conflict replace, admin_id unsigned integer, moderator_id unsigned integer);`
  7. `create table killfile (guild_id unique on conflict replace);`
+ 8. `create table role_kiosks (message_id unsigned integer unique on conflict replace, data string);`
 
 ## Contributing
 
