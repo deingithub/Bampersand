@@ -1,6 +1,22 @@
 Commands.register_command("rolekiosk update", "Configure a message as a role kiosk.", Perms::Level::Admin) do |args|
   Arguments.assert_count(args, 2)
-  RoleKiosk.update_kiosk(args[0].to_u64, args[1])
+  location = args[0].split(":")
+  channel_id = location[0].to_u64
+  message_id = location[1].to_u64
+
+  # If we already have this configured, delete all our old reactions
+  old_emoji = RoleKiosk.kiosk(message_id)
+  if old_emoji
+    old_emoji.keys.each do |emoji|
+      bot!.delete_own_reaction(channel_id, message_id, emoji.delete("<>"))
+    end
+  end
+  # Add reaction template
+  emojis = args[1].split(";").map { |x| x.split("|")[0] }
+  emojis.each do |emoji|
+    bot!.create_reaction(channel_id, message_id, emoji.delete("<>"))
+  end
+  RoleKiosk.update_kiosk(message_id, args[1])
   true
 end
 
