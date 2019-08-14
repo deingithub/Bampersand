@@ -4,15 +4,8 @@ Simple Utility Bot for Discord written in Crystal and discordcr. See [the projec
 
 ## Development
 
-Adapt `.env.example` to your needs and rename it to `.env`. It's gitignored by default. Create a sqlite3 database called `bampersand.sqlite3` with the following tables:  
- 1. `create table state (guild_id unsigned integer unique on conflict replace, features unsigned integer, mirror_in unsigned integer, mirror_out unsigned integer, board_emoji string, board_channel unsigned integer, board_min_reacts unsigned integer, join_channel unsigned integer, join_text string, leave_channel unsigned integer, leave_text string);`
- 2. `create table board (source_message unsigned integer unique on conflict replace, board_message unsigned integer);`
- 3. `create table tags (guild_id unsigned integer, name string, content string, constraint yikes unique (guild_id, name) on conflict replace);`
- 4. `create table slowmodes (channel_id unsigned integer unique on conflict replace, secs unsigned integer);`
- 5. `create table warnings (guild_id unsigned integer, user_id unsigned integer, mod_id unsigned integer, text string, timestamp date default current_timestamp);`
- 6. `create table perms (guild_id unsigned integer unique on conflict replace, admin_id unsigned integer, moderator_id unsigned integer);`
- 7. `create table killfile (guild_id unique on conflict replace);`
- 8. `create table role_kiosks (message_id unsigned integer unique on conflict replace, data string);`
+Adapt `.env.example` to your needs and rename it to `.env`. It's gitignored by default.  
+Run `sqlite3 bampersand.sqlite` and enter `.read init.sql`, followed by `.exit`.
 
 ## Contributing
 
