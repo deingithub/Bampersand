@@ -2,35 +2,28 @@ module Board
   # This module handles the reaction based best-of tracker.
   extend self
 
-  # Maps Message-ID => Message-ID
-  @@board_messages : Hash(UInt64, UInt64) = load_board
-
-  def load_board
+  # Maps source Message ID => Board Message ID
+  @@board_messages : Hash(UInt64, UInt64) = ->{
     board_data = {} of UInt64 => UInt64
-    Bampersand::DATABASE.query(
+    DATABASE.query(
       "select source_message, board_message from board"
     ) do |rs|
-      raise "Invalid column count" unless rs.column_count == 2
       rs.each do
         board_data[rs.read(Int64).to_u64] = rs.read(Int64).to_u64
       end
     end
     LOG.info("Loaded Board Module: #{board_data.size} stored board messages")
     board_data
-  end
+  }.call
 
   # The event handler calls this.
-  def handle_reaction(payload)
-    guild = Util.guild(bot!, payload.channel_id)
-    return unless guild
-    # Abort if a) board is disabled
-    return unless State.feature? guild, State::Features::Board
-    # b) Message is from the board channel
-    # c) The reaction isn't the correct emoji
-    config = State.get(guild)
-    return if payload.channel_id.to_u64 == config[:board_channel]
-    return unless Util.reaction_to_s(payload.emoji) == config[:board_emoji] || config[:board_emoji] == "*"
-    message = bot!.get_channel_message(payload.channel_id, payload.message_id)
+  def handle_reaction_add(payload)
+    guild = Util.guild(BOT, payload.channel_id)
+    return unless guild && Config.feature? guild, Config::Features::Board
+    guild_config = Config.get(guild)
+    return if payload.channel_id.to_u64 == guild_config[:board_channel]
+    return unless Util.reaction_to_s(payload.emoji) == guild_config[:board_emoji] || guild_config[:board_emoji] == "*"
+    message = BOT.get_channel_message(payload.channel_id, payload.message_id)
     # Get the "target" reaction:
     target_emoji = if config[:board_emoji] == "*"
                      # If we don't have a target emoji, take the one with the highest count
@@ -50,7 +43,7 @@ module Board
 
     if @@board_messages.has_key? payload.message_id
       begin
-        bot!.edit_message(
+        BOT.edit_message(
           config[:board_channel],
           @@board_messages[payload.message_id.to_u64],
           "",
@@ -61,16 +54,16 @@ module Board
       end
     else
       begin
-        posted_message = bot!.create_message(
+        posted_message = BOT.create_message(
           config[:board_channel],
           "",
           build_embed(guild, message, count, emoji_s)
         )
         @@board_messages[payload.message_id.to_u64] = posted_message.id.to_u64
-        Bampersand::DATABASE.exec(
+        DATABASE.exec(
           "insert into board (source_message, board_message) values (?,?)",
-          payload.message_id.to_u64.to_i64,
-          posted_message.id.to_u64.to_i64
+          payload.message_id.to_i64,
+          posted_message.id.to_i64
         )
       rescue e
         LOG.error("Failed to post board message: #{e}")

@@ -7,13 +7,13 @@ module Mirroring
 
   # The event handler calls this.
   def handle_message(msg)
-    client = bot!
+    client = BOT
     guild = msg.guild_id
-    return unless State.feature? guild, State::Features::Mirror
-    return unless msg.channel_id == State.get(guild)[:mirror_in]
+    return unless Config.feature? guild, Config::Features::Mirror
+    return unless msg.channel_id == Config.get(guild)[:mirror_in]
     begin
       client.create_message(
-        State.get(guild)[:mirror_out], "", embed: format_message(msg)
+        Config.get(guild)[:mirror_out], "", embed: format_message(msg)
       )
     rescue e
       LOG.error "Failed to mirror message #{msg.id}: #{e}"

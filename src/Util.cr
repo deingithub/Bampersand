@@ -4,7 +4,7 @@ module Util
 
   # Get (nilable) guild id from a channel id
   def guild(client, channel_id)
-    channel = cache!.resolve_channel(channel_id)
+    channel = CACHE.resolve_channel(channel_id)
     channel.guild_id
   end
 
@@ -14,9 +14,9 @@ module Util
     return true if user_id == ENV["admin"].to_u64
     return true if context.guild_id.nil?
     guild_id = context.guild_id.not_nil!
-    member = cache!.resolve_member(guild_id, user_id)
+    member = CACHE.resolve_member(guild_id, user_id)
     roles = member.roles.map do |element|
-      cache!.resolve_role(element)
+      CACHE.resolve_role(element)
     end
     roles.any? do |element|
       element.permissions.includes?(permissions) ||
@@ -32,7 +32,8 @@ module Util
 
   # Currently not needed as all guild-requiring commands are level-privileged
   def assert_guild(context)
-    raise "This command can only be used in guilds" if context.guild_id.nil?
+    raise "This command can only be used in guilds" if context.message.guild_id.nil?
+    context.message.guild_id.not_nil!
   end
 
   # Helper for the Board system, stringifies custom and unicode emoji

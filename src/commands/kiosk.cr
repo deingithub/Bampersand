@@ -1,3 +1,5 @@
+require "../modules/Commands"
+
 Commands.register_command("rolekiosk update", "Configure a message as a role kiosk.", Perms::Level::Admin) do |args|
   Arguments.assert_count(args, 2)
   location = args[0].split(":")
@@ -8,13 +10,13 @@ Commands.register_command("rolekiosk update", "Configure a message as a role kio
   old_emoji = RoleKiosk.kiosk(message_id)
   if old_emoji
     old_emoji.keys.each do |emoji|
-      bot!.delete_own_reaction(channel_id, message_id, emoji.delete("<>"))
+      BOT.delete_own_reaction(channel_id, message_id, emoji.delete("<>"))
     end
   end
   # Add reaction template
   emojis = args[1].split(";").map { |x| x.split("|")[0] }
   emojis.each do |emoji|
-    bot!.create_reaction(channel_id, message_id, emoji.delete("<>"))
+    BOT.create_reaction(channel_id, message_id, emoji.delete("<>"))
   end
   RoleKiosk.update_kiosk(message_id, args[1])
   true

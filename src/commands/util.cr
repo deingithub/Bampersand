@@ -1,3 +1,4 @@
+require "../modules/Commands"
 require "http/client"
 
 Commands.register_command("leo", "Shortens the passed URL using leo.immobilien.", Perms::Level::User) do |args|
@@ -19,6 +20,6 @@ Commands.register_command("info", "Displays debug information about you.", Perms
   Your ID: `#{ctx.issuer.id}`
   Your Permissions: `#{ctx.permissions.value}`
   Your Level: `#{ctx.level}`
-  Message Timestamp: `#{ctx.timestamp}`
+  Message Timestamp: `#{ctx.message.timestamp}`
   OUT
 end

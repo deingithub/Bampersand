@@ -6,4 +6,10 @@ module Discord
       "#{self.username}##{self.discriminator}"
     end
   end
+
+  struct Snowflake
+    def to_i64
+      self.to_u64.to_i64
+    end
+  end
 end

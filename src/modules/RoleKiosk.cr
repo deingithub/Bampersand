@@ -4,11 +4,9 @@ module RoleKiosk
   extend self
 
   # Maps Message ID to Reaction string and associated RoleID
-  @@role_kiosks : Hash(UInt64, Hash(String, UInt64)) = load_kiosks
-
-  def load_kiosks
+  @@role_kiosks : Hash(UInt64, Hash(String, UInt64)) = ->{
     kiosks = {} of UInt64 => Hash(String, UInt64)
-    Bampersand::DATABASE.query(
+    DATABASE.query(
       "select message_id, data from role_kiosks"
     ) do |rs|
       rs.each do
@@ -25,10 +23,10 @@ module RoleKiosk
       end
     end
     kiosks
-  end
+  }.call
 
   def update_kiosk(message_id, data_string)
-    Bampersand::DATABASE.exec("insert into role_kiosks (message_id, data) values (?,?)", message_id.to_i64, data_string)
+    DATABASE.exec("insert into role_kiosks (message_id, data) values (?,?)", message_id.to_i64, data_string)
     emojis = [] of String
     roles = [] of UInt64
     data_string.split(";") { |arg|
@@ -44,33 +42,33 @@ module RoleKiosk
   end
 
   def delete_kiosk(message_id)
-    Bampersand::DATABASE.exec("delete from role_kiosks where message_id = ?", message_id.to_i64)
+    DATABASE.exec("delete from role_kiosks where message_id = ?", message_id.to_i64)
     @@role_kiosks.delete(message_id)
   end
 
   def handle_reaction_add(payload)
-    return if cache!.resolve_user(payload.user_id).bot
+    return if CACHE.resolve_user(payload.user_id).bot
     lookup = @@role_kiosks[payload.message_id.to_u64]?
     return unless lookup
     target_role = lookup[Util.reaction_to_s(payload.emoji)]?
     return unless target_role
-    LOG.info("Adding Role #{target_role} in #{payload.guild_id} to #{cache!.resolve_user(payload.user_id).tag}")
+    LOG.info("Adding Role #{target_role} in #{payload.guild_id} to #{CACHE.resolve_user(payload.user_id).tag}")
     begin
-      bot!.add_guild_member_role(payload.guild_id.not_nil!.to_u64, payload.user_id.to_u64, target_role)
+      BOT.add_guild_member_role(payload.guild_id.not_nil!.to_u64, payload.user_id.to_u64, target_role)
     rescue e
       LOG.error("Error while adding role: #{e}")
     end
   end
 
   def handle_reaction_remove(payload)
-    return if cache!.resolve_user(payload.user_id).bot
+    return if CACHE.resolve_user(payload.user_id).bot
     lookup = @@role_kiosks[payload.message_id.to_u64]?
     return unless lookup
     target_role = lookup[Util.reaction_to_s(payload.emoji)]?
     return unless target_role
-    LOG.info("Removing Role #{target_role} in #{payload.guild_id} from #{cache!.resolve_user(payload.user_id).tag}")
+    LOG.info("Removing Role #{target_role} in #{payload.guild_id} from #{CACHE.resolve_user(payload.user_id).tag}")
     begin
-      bot!.remove_guild_member_role(payload.guild_id.not_nil!.to_u64, payload.user_id.to_u64, target_role)
+      BOT.remove_guild_member_role(payload.guild_id.not_nil!.to_u64, payload.user_id.to_u64, target_role)
     rescue e
       LOG.error("Error while removing role: #{e}")
     end

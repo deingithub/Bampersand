@@ -5,57 +5,55 @@ module ModTools
 
   # Tries to get the mute role for a guild
   def mute_role?(guild_id)
-    mute_role_id = cache!.guild_roles[guild_id].find do |role_id|
-      cache!.resolve_role(role_id).name == "B& Muted"
+    mute_role_id = CACHE.guild_roles[guild_id].find do |role_id|
+      CACHE.resolve_role(role_id).name == "B& Muted"
     end
-    return cache!.resolve_role(mute_role_id) unless mute_role_id.nil?
+    return CACHE.resolve_role(mute_role_id) unless mute_role_id.nil?
     nil
   end
 
   # Creates a new role, override-denies write permissions for all channels B&
   # can see, and raises as far to the top as possible.
   def create_mute_role(guild_id)
-    mute_role = bot!.create_guild_role(guild_id, "B& Muted")
-    cache!.guild_channels(guild_id).each do |channel_id|
-      bot!.edit_channel_permissions(
+    mute_role = BOT.create_guild_role(guild_id, "B& Muted")
+    CACHE.guild_channels(guild_id).each do |channel_id|
+      BOT.edit_channel_permissions(
         channel_id, mute_role.id, "role",
         Discord::Permissions::None, Discord::Permissions::SendMessages
       )
     end
-    current_user = cache!.resolve_current_user
-    member = cache!.resolve_member(guild_id, current_user.id)
+    current_user = CACHE.resolve_current_user
+    member = CACHE.resolve_member(guild_id, current_user.id)
     position = member.roles.map do |role_id|
-      cache!.resolve_role(role_id).position
+      CACHE.resolve_role(role_id).position
     end.max
-    bot!.modify_guild_role_positions(
+    BOT.modify_guild_role_positions(
       guild_id,
       [Discord::REST::ModifyRolePositionPayload.new(mute_role.id, position)]
     )
-    cache!.cache(mute_role)
-    cache!.add_guild_role(guild_id, mute_role.id)
+    CACHE.cache(mute_role)
+    CACHE.add_guild_role(guild_id, mute_role.id)
     mute_role
   end
 
   # Maps Channel-ID => Cooldown in sec
-  @@slowmodes : Hash(UInt64, UInt32) = load_slowmodes
-
-  def load_slowmodes
+  @@slowmodes : Hash(UInt64, UInt32) = ->{
     slowmodes = {} of UInt64 => UInt32
-    Bampersand::DATABASE.query "select * from slowmodes" do |rs|
+    DATABASE.query "select * from slowmodes" do |rs|
       rs.each do
         slowmodes[rs.read(Int64).to_u64] = rs.read(Int64).to_u32
       end
     end
     slowmodes
-  end
+  }.call
 
   # Maps Channel-ID => (User-Id => Timestamp)
   @@last_msgs = {} of UInt64 => Hash(UInt64, Time)
 
   def set_channel_slowmode(channel_id, secs)
-    @@slowmodes[channel_id] = secs
-    @@last_msgs[channel_id] = {} of UInt64 => Time
-    Bampersand::DATABASE.exec(
+    @@slowmodes[channel_id.to_u64] = secs
+    @@last_msgs[channel_id.to_u64] = {} of UInt64 => Time
+    DATABASE.exec(
       "insert into slowmodes values (?, ?)", channel_id.to_i64, secs.to_i64
     )
   end
@@ -63,7 +61,7 @@ module ModTools
   def remove_channel_slowmode(channel_id)
     @@slowmodes.delete(channel_id)
     @@last_msgs.delete(channel_id)
-    Bampersand::DATABASE.exec(
+    DATABASE.exec(
       "delete from slowmodes where channel_id == ?", channel_id.to_i64
     )
   end
@@ -89,9 +87,9 @@ module ModTools
       LOG.debug("Enforcing slowmode on message #{msg.id} by #{msg.author.tag} in #{msg.channel_id}. RIP.")
       timeout = (msg.timestamp - last_timestamp - Time::Span.new(0, 0, cooldown)).abs
       begin
-        bot!.delete_message(msg.channel_id, msg.id)
-        dm = bot!.create_dm(msg.author.id).id
-        bot!.create_message(
+        BOT.delete_message(msg.channel_id, msg.id)
+        dm = BOT.create_dm(msg.author.id).id
+        BOT.create_message(
           dm,
           "Your message in <##{msg.channel_id}> has been removed due to slowmode enforcement. Here's the text in case you want to post in at least #{timeout.total_milliseconds/1000} seconds:",
           # Posting it as embed circumvents the 2000 char limit.

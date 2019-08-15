@@ -1,5 +1,5 @@
 require "spec"
 require "logger"
-LOG = Logger.new(STDOUT, level: Logger::DEBUG, progname: "B& SPEC")
+require "discordcr"
 
-require "../src/Bampersand"
+LOG = Logger.new(STDOUT, level: Logger::DEBUG, progname: "B& SPEC")
