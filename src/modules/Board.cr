@@ -25,7 +25,7 @@ module Board
     return unless Util.reaction_to_s(payload.emoji) == guild_config[:board_emoji] || guild_config[:board_emoji] == "*"
     message = BOT.get_channel_message(payload.channel_id, payload.message_id)
     # Get the "target" reaction:
-    target_emoji = if config[:board_emoji] == "*"
+    target_emoji = if guild_config[:board_emoji] == "*"
                      # If we don't have a target emoji, take the one with the highest count
                      message.reactions.not_nil!.sort { |element|
                        element.count.to_i32
@@ -33,18 +33,18 @@ module Board
                    else
                      # otherwise, we're looking for a specific board emoji, search for it
                      message.reactions.not_nil!.find { |element|
-                       Util.reaction_to_s(element.emoji) == config[:board_emoji]
+                       Util.reaction_to_s(element.emoji) == guild_config[:board_emoji]
                      }.not_nil!
                    end
     # Extract representation from the target emoji
     count = target_emoji.count
     emoji_s = Util.reaction_to_s(target_emoji.emoji)
-    return if count < config[:board_min_reacts]
+    return if count < guild_config[:board_min_reacts]
 
     if @@board_messages.has_key? payload.message_id
       begin
         BOT.edit_message(
-          config[:board_channel],
+          guild_config[:board_channel],
           @@board_messages[payload.message_id.to_u64],
           "",
           build_embed(guild, message, count, emoji_s)
@@ -55,7 +55,7 @@ module Board
     else
       begin
         posted_message = BOT.create_message(
-          config[:board_channel],
+          guild_config[:board_channel],
           "",
           build_embed(guild, message, count, emoji_s)
         )
