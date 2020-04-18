@@ -14,7 +14,7 @@ Dotenv.load!
 
 VERSION  = `shards version`.chomp
 STARTUP  = Time.monotonic
-DATABASE = DB.open "sqlite3://./bampersand.sqlite3"
+DATABASE = DB.open "sqlite3:#{ENV["dbfile"]}"
 
 SHUTDOWN = ->(s : Signal) {
   LOG.fatal "Received #{s}"
